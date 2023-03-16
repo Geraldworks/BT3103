@@ -46,7 +46,7 @@ export default {
   },
 
   components: {
-    AllCharts
+    AllCharts,
     Records,
     ProgressSection,
   },
