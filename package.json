@@ -1,5 +1,5 @@
 {
-  "name": "vue-project",
+  "name": "test",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -8,10 +8,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.2.47"
+    "@coreui/chartjs": "^3.1.1",
+    "@coreui/coreui": "^4.2.6",
+    "@coreui/vue": "^4.7.0",
+    "@coreui/vue-chartjs": "^2.0.1",
+    "chart.js": "^4.2.1",
+    "dotenv": "^16.0.3",
+    "firebase": "^9.17.2",
+    "prettier": "^2.8.4",
+    "vue": "^3.2.47",
+    "vue-router": "^4.1.6",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",
+    "sass": "^1.59.2",
     "vite": "^4.1.4"
   }
 }
