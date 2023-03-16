@@ -10,10 +10,12 @@
   "dependencies": {
     "@coreui/coreui": "^4.2.6",
     "@coreui/vue": "^4.7.0",
+    "chart.js": "^4.2.1",
     "dotenv": "^16.0.3",
     "firebase": "^9.17.2",
     "prettier": "^2.8.4",
     "vue": "^3.2.47",
+    "vue-chartkick": "^1.1.0",
     "vue-router": "^4.1.6",
     "vuex": "^4.0.2"
   },

@@ -3,6 +3,7 @@
     <NavBar />
   </div>
   <h1>this is home page</h1>
+  <Chart/>
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-8">
@@ -22,6 +23,7 @@
 import { useStore } from "vuex";
 import { computed } from "vue";
 import { auth } from "../../firebase";
+import Chart from "./Chart.vue";
 
 export default {
   name: "HomePageComponent",
@@ -37,6 +39,10 @@ export default {
     });
 
     return { user };
+  },
+
+  components: {
+    Chart
   }
 };
 </script>
