@@ -3,7 +3,7 @@
     <NavBar />
   </div>
   <h1>this is home page</h1>
-  <Chart />
+  <AllCharts/>
   <Records />
   <ProgressSection />
   <div class="container">
@@ -25,7 +25,7 @@
 import { useStore } from "vuex";
 import { computed } from "vue";
 import { auth } from "../../firebase";
-import Chart from "./Chart.vue";
+import AllCharts from "../AllCharts.vue"
 import Records from "./Records.vue";
 import ProgressSection from "./ProgressSection.vue";
 
@@ -46,7 +46,7 @@ export default {
   },
 
   components: {
-    Chart,
+    AllCharts
     Records,
     ProgressSection,
   },
