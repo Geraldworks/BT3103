@@ -78,6 +78,4 @@ console.log(muscleDateObject);
   padding: 5px;
 }
 
-.color1 {
-}
 </style>
