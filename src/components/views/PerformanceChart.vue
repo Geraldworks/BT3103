@@ -1,16 +1,16 @@
 <template>
-  <div class="chart">
+  <!-- <div class="chart">
     <h1>{{ chartName }} - {{ mostRecentData }}</h1>
     <CChart type="line" class="lineChart" :data="chartData" />
-  </div>
+  </div> -->
 </template>
 
-<style scoped>
+<!-- <style scoped>
 .lineChart {
   margin: auto;
   width: 300px;
   border: 3px solid gray;
-}
+} -->
 </style>
 
 <script>
