@@ -1,24 +1,29 @@
 <template>
-  <div class="chart">
+  <div>
     <h1>{{ chartName }} - {{ recentData }}%</h1>
     <line-chart class="lineChart" :data="chartData" :colors="chartColor"/>
   </div>
 </template>
 
 <script>
-// Chart component
-let fat = [32, 29, 28, 30, 26];
-let time = [1, 2, 3, 4, 5];
-
 export default {
+  // this segment is to test the graphs
   data() {
-
+    return {
+      chartData: {
+        "Monday" : 1,
+        "Tuesday": 2,
+        "Wednesday": 3,
+        "Thursday": 4,
+        "Friday": 5
+      }
+    }
   },
   props: {
     chartName: String,
-    chartData: Object,
-    recentData: String,
-    chartColor: String
+    // chartData: Object,
+    recentData: Number,
+    chartColor: Array
   },
 };
 </script>
