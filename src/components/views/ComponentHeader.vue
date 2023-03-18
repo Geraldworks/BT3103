@@ -23,14 +23,18 @@ export default {
 .blackPart {
   color: #000;
   font-family: Teko;
-  font-weight: SemiBold;
+  font-weight: 600;
   font-size: 51.2px;
+  line-height: 73px;
+  text-transform: uppercase;
   margin-right: 10px;
 }
 .redPart {
   color: #ed1f24;
   font-family: Teko;
-  font-weight: SemiBold;
+  font-weight: 600;
   font-size: 51.2px;
+  line-height: 73px;
+  text-transform: uppercase;
 }
 </style>

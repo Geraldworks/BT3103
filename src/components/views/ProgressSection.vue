@@ -1,23 +1,25 @@
 <template>
-  <div class="progress-header">
-    <ComponentHeader :blackHeader="blackHeader" :redHeader="redHeader" />
-  </div>
-  <div class="progress-chart-container">
-    <ProgressChart
-      chartName="Weight"
-      :chartData="weightData"
-      :chartColors="['#ED1F24', '#FFFFFF']"
-      :chartLibrary="{
-        cutout: '80%',
-        borderColor: '#ED1F24',
-      }"
-    />
-    <ProgressChart
-      chartName="Muscle Mass"
-      :chartData="muscleData"
-      :chartColors="['#ED1F24', '#FFFFFF']"
-      :chartLibrary="muscleLibrary"
-    />
+  <div class="progress-section-container">
+    <div class="progress-header">
+      <ComponentHeader :blackHeader="blackHeader" :redHeader="redHeader" />
+    </div>
+    <div class="progress-chart-container">
+      <ProgressChart
+        chartName="Weight"
+        :chartData="weightData"
+        :chartColors="['#ED1F24', '#FFFFFF']"
+        :chartLibrary="{
+          cutout: '80%',
+          borderColor: '#ED1F24',
+        }"
+      />
+      <ProgressChart
+        chartName="Muscle Mass"
+        :chartData="muscleData"
+        :chartColors="['#ED1F24', '#FFFFFF']"
+        :chartLibrary="muscleLibrary"
+      />
+    </div>
   </div>
 </template>
 
@@ -52,6 +54,13 @@ export default {
 </script>
 
 <style>
+.progress-section-container {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 25px;
+}
+.progress-header {
+  margin-left: 2em;
+}
 .progress-chart-container {
   display: flex;
   justify-content: space-evenly;

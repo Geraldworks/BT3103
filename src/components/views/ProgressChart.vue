@@ -33,9 +33,11 @@ export default {
   top: 553px;
   left: 839px; */
   font-family: Teko;
-  font-weight: SemiBold;
+  font-weight: 600;
   font-size: 24px;
-  opacity: 1;
+  color: #fff;
   text-align: center;
+  text-transform: uppercase;
+  line-height: 34px;
 }
 </style>
