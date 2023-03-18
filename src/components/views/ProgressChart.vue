@@ -1,6 +1,11 @@
 <template>
   <div>
-    <pie-chart :donut="true" :data="chartData"></pie-chart>
+    <pie-chart
+      :donut="true"
+      :data="chartData"
+      :colors="chartColors"
+      :library="chartLibrary"
+    ></pie-chart>
     <h1 class="chartTitle">{{ chartName }}</h1>
   </div>
 </template>
@@ -9,13 +14,13 @@
 export default {
   name: "ProgressChart",
   data() {
-    return {
-      chartName: "Weight",
-      chartData: {
-        Goal: 43,
-        Reach: 57,
-      },
-    };
+    return {};
+  },
+  props: {
+    chartName: String,
+    chartData: Object,
+    chartColors: String,
+    chartLibrary: String,
   },
 };
 </script>
