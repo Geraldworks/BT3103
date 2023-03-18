@@ -16,14 +16,17 @@ export default {
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
+
 .header-container {
   display: flex;
-  flex: 0 0 auto;
+  margin-left: 20px;
+  /* flex: 0 0 auto; */
   /* align-items: baseline; */
 }
 .blackPart {
   color: #000;
-  font-family: Teko;
+  font-family: "Teko", sans-serif;
   font-weight: 600;
   font-size: 2.67vw;
   line-height: 73px;
@@ -32,7 +35,7 @@ export default {
 }
 .redPart {
   color: #ed1f24;
-  font-family: Teko;
+  font-family: "Teko", sans-serif;
   font-weight: 600;
   font-size: 2.67vw;
   line-height: 73px;

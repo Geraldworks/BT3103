@@ -44,9 +44,12 @@ export default {
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
+
 .records-section-container {
-  display: flex;
-  flex-direction: column;
+  display: inline-block;
+  /* display: flex;
+  flex-direction: column; */
   height: 28em;
   width: 33%;
   box-sizing: border-box;
@@ -62,7 +65,7 @@ tr {
 td {
   padding: 5px;
   color: white;
-  font-family: Teko;
+  font-family: "Teko", sans-serif;
   font-weight: 600;
   font-size: 24px;
   line-height: 34px;

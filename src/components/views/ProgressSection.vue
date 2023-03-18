@@ -53,7 +53,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .progress-section-container {
   background: rgba(0, 0, 0, 0.3);
   border-radius: 25px;

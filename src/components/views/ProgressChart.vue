@@ -11,6 +11,8 @@
 </template>
 
 <script>
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
+
 export default {
   name: "ProgressChart",
   data() {
@@ -32,7 +34,7 @@ export default {
   position: absolute;
   top: 553px;
   left: 839px; */
-  font-family: Teko;
+  font-family: "Teko", sans-serif;
   font-weight: 600;
   font-size: 1.5em;
   color: #fff;
