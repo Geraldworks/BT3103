@@ -3,6 +3,7 @@ import SignUp from '../components/views/SignUp.vue';
 import SignIn from '../components/views/SignIn.vue';
 import HomePage from '../components/views/HomePage.vue';
 import LandingPage from '../components/views/LandingPage.vue';
+import TrainerPage from '../components/views/TrainerPage.vue';
 // import PerformancePage from '../components/views/PerformancePage.vue';
 
 
@@ -32,6 +33,11 @@ const routes = [
     //     name: 'Performance',
     //     component: PerformancePage
     // }
+    {
+        path: '/trainer',
+        name: 'Trainer',
+        component: TrainerPage
+    }
 ];
 
 const router = createRouter({
