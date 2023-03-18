@@ -1,10 +1,10 @@
 <template>
-<NavBar />
-<h1> This is booking page</h1>
+  <Navbar />
+  <h1>This is booking page</h1>
 </template>
 
 <script>
 export default {
-    name: "BookingPage"
-}
+  name: "BookingPage",
+};
 </script>

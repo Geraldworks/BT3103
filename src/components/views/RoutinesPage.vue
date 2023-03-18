@@ -1,5 +1,5 @@
 <template>
-<NavBar />
+<Navbar />
 <h1> This is routines page</h1>
 </template>
 

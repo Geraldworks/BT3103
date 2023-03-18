@@ -1,12 +1,13 @@
 <template>
   <div>
-    <NavBar />
+    <Navbar />
   </div>
-  <h1>this is home page</h1>
+  <h1>This is home page</h1>
+  <h3>Welcome back, {{ name }}</h3>
   <AllCharts/>
   <Records />
   <ProgressSection />
-  <div class="container">
+  <!-- <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-8">
         <div v-if="user.loggedIn" class="alert alert-success" role="alert">
@@ -18,37 +19,60 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>
-import { useStore } from "vuex";
-import { computed } from "vue";
-import { auth } from "../../firebase";
+import { mapGetters, useStore } from "vuex";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../../firebase";
 import AllCharts from "../AllCharts.vue"
 import Records from "./Records.vue";
 import ProgressSection from "./ProgressSection.vue";
+import Navbar from "./Navbar.vue";
+
 
 export default {
-  name: "HomePageComponent",
-  setup() {
-    const store = useStore();
-
-    auth.onAuthStateChanged((user) => {
-      store.dispatch("fetchUser", user);
-    });
-
-    const user = computed(() => {
-      return store.getters.user;
-    });
-
-    return { user };
-  },
-
+  name: "HomePage",
   components: {
+    Navbar,
     AllCharts,
     Records,
     ProgressSection,
+  },
+  computed: {
+    ...mapGetters(["user"]),
+  },
+  data() {
+    return {
+      name: "",
+      contactNo: "",
+      emergencyContactName: "",
+      emergencyContactNumber: "",
+    };
+  },
+  mounted() {
+    const store = useStore();
+    auth.onAuthStateChanged((user) => {
+      store.dispatch("fetchUser", user);
+    }); // whenever page refreshes, the auth will have a short buffer from unknown to signed in / signed out
+  },
+  async updated() {
+    console.log("updated");
+    console.log(this.user);
+    const docRef = doc(db, "client", this.user.data.email);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      console.log("Document data:", docSnap.data());
+      this.contactNo = docSnap.data().contactNo;
+      this.emergencyContactName = docSnap.data().emergencyContactName;
+      this.emergencyContactNumber = docSnap.data().emergencyContactNumber;
+      this.name = docSnap.data().fullName;
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+    }
   },
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-<NavBar />
+<Navbar />
 <h1> This is calendar page</h1>
 </template>
 
