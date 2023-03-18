@@ -34,10 +34,10 @@ export default {
   left: 839px; */
   font-family: Teko;
   font-weight: 600;
-  font-size: 24px;
+  font-size: 1.5em;
   color: #fff;
   text-align: center;
   text-transform: uppercase;
-  line-height: 34px;
+  line-height: 2.125em;
 }
 </style>

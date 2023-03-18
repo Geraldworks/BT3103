@@ -4,8 +4,7 @@
   </div>
   <body>
     <AllCharts />
-    <Records />
-    <ProgressSection />
+    <PerformanceBottom />
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-md-8">
@@ -27,8 +26,7 @@ import { useStore } from "vuex";
 import { computed } from "vue";
 import { auth } from "../../firebase";
 import AllCharts from "../AllCharts.vue";
-import Records from "./Records.vue";
-import ProgressSection from "./ProgressSection.vue";
+import PerformanceBottom from "./PerformanceBottom.vue";
 
 export default {
   name: "HomePageComponent",
@@ -48,8 +46,7 @@ export default {
 
   components: {
     AllCharts,
-    Records,
-    ProgressSection,
+    PerformanceBottom,
   },
 };
 </script>

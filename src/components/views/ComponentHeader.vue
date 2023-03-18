@@ -18,13 +18,14 @@ export default {
 <style scoped>
 .header-container {
   display: flex;
-  align-items: baseline;
+  flex: 0 0 auto;
+  /* align-items: baseline; */
 }
 .blackPart {
   color: #000;
   font-family: Teko;
   font-weight: 600;
-  font-size: 51.2px;
+  font-size: 2.67vw;
   line-height: 73px;
   text-transform: uppercase;
   margin-right: 10px;
@@ -33,7 +34,7 @@ export default {
   color: #ed1f24;
   font-family: Teko;
   font-weight: 600;
-  font-size: 51.2px;
+  font-size: 2.67vw;
   line-height: 73px;
   text-transform: uppercase;
 }

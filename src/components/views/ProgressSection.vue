@@ -34,11 +34,11 @@ export default {
       redHeader: "Progress",
       weightData: {
         Progress: 43,
-        Reach: 57,
+        Remaining: 57,
       },
       muscleData: {
         Progress: 87,
-        Reach: 13,
+        Remaining: 13,
       },
       muscleLibrary: {
         cutout: "80%",
@@ -57,10 +57,11 @@ export default {
 .progress-section-container {
   background: rgba(0, 0, 0, 0.3);
   border-radius: 25px;
+  display: inline-block;
+  height: 28em;
+  box-sizing: border-box;
 }
-.progress-header {
-  margin-left: 2em;
-}
+
 .progress-chart-container {
   display: flex;
   justify-content: space-evenly;
