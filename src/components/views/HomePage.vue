@@ -83,7 +83,7 @@ export default {
 
 .content-container {
   background-color: #d9d9d9;
-  margin: 0 30px;
+  margin: 0px 150px;
   border-radius: 25px;
 }
 </style>
