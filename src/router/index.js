@@ -3,7 +3,11 @@ import SignUp from '../components/views/SignUp.vue';
 import SignIn from '../components/views/SignIn.vue';
 import HomePage from '../components/views/HomePage.vue';
 import LandingPage from '../components/views/LandingPage.vue';
-// import PerformancePage from '../components/views/PerformancePage.vue';
+import PerformancePage from '../components/views/PerformancePage.vue';
+import BookingPage from '../components/views/BookingPage.vue';
+import CalendarPage from '../components/views/CalendarPage.vue';
+import RoutinesPage from '../components/views/RoutinesPage.vue';
+
 
 
 const routes = [
@@ -27,11 +31,27 @@ const routes = [
         name: 'Home',
         component: HomePage
     },
-    // {
-    //     path: '/performance',
-    //     name: 'Performance',
-    //     component: PerformancePage
-    // }
+    {
+        path: '/performance',
+        name: 'Performance',
+        component: PerformancePage
+    },
+    {
+        path: '/booking',
+        name: 'Booking',
+        component: BookingPage
+    },
+    {
+        path: '/calendar',
+        name: 'Calendar',
+        component: CalendarPage
+    },
+    {
+        path: '/routines',
+        name: 'Routines',
+        component: RoutinesPage
+    },
+
 ];
 
 const router = createRouter({

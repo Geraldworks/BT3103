@@ -3,6 +3,8 @@
     <div>
       <NavBar />
     </div>
+    <h1>This is home page</h1>
+    <h3>Welcome back, {{ name }}</h3>
     <PerformanceHeader />
     <div class="content-container">
       <AllCharts />
@@ -22,34 +24,59 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>
-import { useStore } from "vuex";
-import { computed } from "vue";
-import { auth } from "../../firebase";
-import AllCharts from "../AllCharts.vue";
+import { mapGetters, useStore } from "vuex";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../../firebase";
+import AllCharts from "../AllCharts.vue"
 import Records from "./Records.vue";
 import ProgressSection from "./ProgressSection.vue";
 import PerformanceHeader from "../PerformanceHeader.vue";
 
 export default {
-  name: "HomePageComponent",
-  setup() {
+  name: "HomePage",
+  components: {
+    Navbar,
+    AllCharts,
+    Records,
+    ProgressSection,
+  },
+  computed: {
+    ...mapGetters(["user"]),
+  },
+  data() {
+    return {
+      name: "",
+      contactNo: "",
+      emergencyContactName: "",
+      emergencyContactNumber: "",
+    };
+  },
+  mounted() {
     const store = useStore();
-
     auth.onAuthStateChanged((user) => {
       store.dispatch("fetchUser", user);
-    });
-
-    const user = computed(() => {
-      return store.getters.user;
-    });
-
-    return { user };
+    }); // whenever page refreshes, the auth will have a short buffer from unknown to signed in / signed out
   },
+  async updated() {
+    console.log("updated");
+    console.log(this.user);
+    const docRef = doc(db, "client", this.user.data.email);
+    const docSnap = await getDoc(docRef);
 
+    if (docSnap.exists()) {
+      console.log("Document data:", docSnap.data());
+      this.contactNo = docSnap.data().contactNo;
+      this.emergencyContactName = docSnap.data().emergencyContactName;
+      this.emergencyContactNumber = docSnap.data().emergencyContactNumber;
+      this.name = docSnap.data().fullName;
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+    }
   components: {
     AllCharts,
     Records,
