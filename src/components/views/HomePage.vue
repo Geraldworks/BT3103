@@ -22,7 +22,7 @@
         </div>
       </div>
     </div>
-  </div> -->
+  </div> 
 </template>
 
 <script>
@@ -59,8 +59,6 @@ export default {
     }); // whenever page refreshes, the auth will have a short buffer from unknown to signed in / signed out
   },
   async updated() {
-    console.log("updated");
-    console.log(this.user);
     const docRef = doc(db, "client", this.user.data.email);
     const docSnap = await getDoc(docRef);
 

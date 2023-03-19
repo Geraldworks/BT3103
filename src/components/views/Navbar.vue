@@ -54,7 +54,7 @@
             </CDropdownToggle>
             <CDropdownMenu>
               <CDropdownItem href="#">Edit Profile</CDropdownItem>
-              <CButton @click="signOut">Sign Out</CButton>
+              <CDropdownItem @click="signOut">Sign Out</CDropdownItem>
             </CDropdownMenu>
           </CDropdown>
       </div>
