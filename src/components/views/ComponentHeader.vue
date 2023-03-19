@@ -1,7 +1,7 @@
 <template>
   <div class="header-container">
-    <h1 class="blackPart">{{ blackHeader }}</h1>
-    <h1 class="redPart">{{ redHeader }}</h1>
+    <p class="blackPart">{{ blackHeader }}</p>
+    <p class="redPart">{{ redHeader }}</p>
   </div>
 </template>
 
@@ -21,6 +21,7 @@ export default {
 .header-container {
   display: flex;
   margin: 1vw;
+  flex-wrap: wrap;
   /* flex: 0 0 auto; */
   /* align-items: baseline; */
 }
@@ -29,7 +30,7 @@ export default {
   font-family: "Teko", sans-serif;
   font-weight: 600;
   font-size: 2.67vw;
-  line-height: 73px;
+  line-height: 7vh;
   text-transform: uppercase;
   margin-right: 10px;
 }
@@ -38,7 +39,7 @@ export default {
   font-family: "Teko", sans-serif;
   font-weight: 600;
   font-size: 2.67vw;
-  line-height: 73px;
+  line-height: 7vh;
   text-transform: uppercase;
 }
 </style>

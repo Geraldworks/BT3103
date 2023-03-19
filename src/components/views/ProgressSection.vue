@@ -17,7 +17,10 @@
         chartName="Muscle Mass"
         :chartData="muscleData"
         :chartColors="['#ED1F24', '#FFFFFF']"
-        :chartLibrary="muscleLibrary"
+        :chartLibrary="{
+          cutout: '80%',
+          borderColor: '#ED1F24',
+        }"
       />
     </div>
   </div>
@@ -40,10 +43,6 @@ export default {
         Progress: 87,
         Remaining: 13,
       },
-      muscleLibrary: {
-        cutout: "80%",
-        borderColor: "#ED1F24",
-      },
     };
   },
   components: {
@@ -55,10 +54,15 @@ export default {
 
 <style scoped>
 .progress-section-container {
-  background: rgba(0, 0, 0, 0.3);
+  /* background: rgba(0, 0, 0, 0.3);
   border-radius: 25px;
   display: inline-block;
   height: 34.5vh;
+  box-sizing: border-box; */
+  display: flex;
+  flex-direction: column;
+  /* height: 34.5vh; */
+  width: 100%;
   box-sizing: border-box;
 }
 

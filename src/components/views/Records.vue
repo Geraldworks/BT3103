@@ -50,14 +50,15 @@ export default {
   /* display: inline-block; */
   display: flex;
   flex-direction: column;
-  height: 34.5vh;
-  width: 33%;
+  /* height: 34.5vh; */
+  width: 100%;
   box-sizing: border-box;
 }
 table {
   width: 90%;
   margin: 0 auto;
-  padding: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
 }
 tr {
   border: 1px solid white;

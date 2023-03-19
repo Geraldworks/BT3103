@@ -1,7 +1,11 @@
 <template>
   <div class="bottom-container">
-    <Records class="records-section" />
-    <ProgressSection class="progress-section" />
+    <div class="records-section">
+      <Records />
+    </div>
+    <div class="progress-section">
+      <ProgressSection />
+    </div>
   </div>
 </template>
 
@@ -24,16 +28,28 @@ export default {
 <style scoped>
 .bottom-container {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .records-section {
-  width: 33%;
-  background: rgba(0, 0, 0, 0.3);
+  flex: 1;
+  /* height: 40vh; */
+  background-color: rgba(0, 0, 0, 0.3);
   border-radius: 25px;
+  margin: 5px;
 }
 
 .progress-section {
-  width: 67%;
-  margin-left: 10px;
+  flex: 2;
+  /* height: 40vh; */
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 25px;
+  margin: 5px;
+}
+
+@media screen and (max-width: 1150px) {
+  .bottom-container {
+    flex-direction: column;
+  }
 }
 </style>
