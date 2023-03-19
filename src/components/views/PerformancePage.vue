@@ -1,6 +1,8 @@
 <template>
   <div>
+    <Navbar />
     <PerformanceChart />
+    <h1>This is performance page</h1>
   </div>
 </template>
 
@@ -9,7 +11,7 @@ import PerformanceChart from "./PerformanceChart.vue";
 export default {
   name: "PerformancePage",
   components: {
-    PerformanceChart,
+    PerformanceChart
   },
 };
 </script>
