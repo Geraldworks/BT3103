@@ -4,7 +4,7 @@
       <Records />
     </div>
     <div class="progress-section">
-      <ProgressSection />
+      <ProgressSection :email="email" />
     </div>
   </div>
 </template>
@@ -17,6 +17,9 @@ export default {
   name: "PerformanceBottom",
   data() {
     return {};
+  },
+  props: {
+    email: String,
   },
   components: {
     Records,
@@ -36,7 +39,7 @@ export default {
   /* height: 40vh; */
   background-color: rgba(0, 0, 0, 0.3);
   border-radius: 25px;
-  margin: 0px 20px;
+  margin: 0px 20px 10px 20px;
 }
 
 .progress-section {
@@ -44,7 +47,7 @@ export default {
   /* height: 40vh; */
   background-color: rgba(0, 0, 0, 0.3);
   border-radius: 25px;
-  margin: 0px 20px;
+  margin: 0px 20px 10px 20px;
 }
 
 @media screen and (max-width: 1350px) {

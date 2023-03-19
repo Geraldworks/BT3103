@@ -8,7 +8,10 @@
       :library="chartLibrary"
       style="height: 150px; width: 100%; font-family: 'Teko', sans-serif"
     ></pie-chart>
-    <h1 class="chartTitle">{{ chartName }} --- {{ progressOutput }}%</h1>
+    <h1 class="chartTitle">
+      <span class="red-text">{{ progressOutput }}% Complete</span> | {{ goal }}
+      {{ chartName }}
+    </h1>
   </div>
 </template>
 
@@ -21,6 +24,7 @@ export default {
   props: {
     chartName: String,
     progressOutput: String,
+    goal: String,
     chartData: Object,
     chartColors: String,
     chartLibrary: String,
@@ -43,5 +47,9 @@ export default {
 
 .chart {
   max-width: 100%;
+}
+
+.red-text {
+  color: #ed1f24;
 }
 </style>

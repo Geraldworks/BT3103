@@ -6,7 +6,7 @@
     <PerformanceHeader />
     <div class="content-container">
       <AllCharts :email="email" />
-      <PerformanceBottom class="bottom"/>
+      <PerformanceBottom class="bottom" :email="email" />
     </div>
   </div>
 </template>
