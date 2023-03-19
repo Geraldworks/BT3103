@@ -110,7 +110,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 @import url("https://fonts.googleapis.com/css?family=Source Sans Pro");
 
 nav {
@@ -140,7 +140,7 @@ nav {
   text-decoration: none;
   font-weight: bold;
   text-transform: uppercase;
-  padding: 10px 50px;
+  padding: 0px 10px;
   box-sizing: border-box;
   border-radius: 8px;
 }

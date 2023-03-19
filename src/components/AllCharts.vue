@@ -81,6 +81,7 @@ export default {
       :chartData="fatDateObject"
       :chartColor="['#FF0000']"
       :recentData="recentFat"
+      metric="%"
     />
     <Chart
       class="chart"
@@ -88,6 +89,7 @@ export default {
       :chartData="weightDateObject"
       :chartColor="['#FF0000']"
       :recentData="recentWeight"
+      metric="KG"
     />
     <Chart
       class="chart"
@@ -95,6 +97,7 @@ export default {
       :chartData="muscleDateObject"
       :chartColor="['#FF0000']"
       :recentData="recentMuscle"
+      metric="%"
     />
   </div>
 </template>
