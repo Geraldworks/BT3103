@@ -5,7 +5,7 @@
     </div>
     <PerformanceHeader />
     <div class="content-container">
-      <AllCharts :email="email"/>
+      <AllCharts :email="email" />
       <PerformanceBottom />
     </div>
     <div class="container">
@@ -21,7 +21,7 @@
         </div>
       </div>
     </div>
-  </div> 
+  </div>
 </template>
 
 <script>
@@ -39,7 +39,7 @@ export default {
   },
   data() {
     return {
-      email: ""
+      email: "",
     };
   },
   mounted() {
@@ -68,19 +68,20 @@ export default {
 };
 </script>
 
-<style scoped> 
+<style scoped>
 .performance-page {
   background-color: black;
   overflow-y: hidden;
+  min-width: 800px; /* Or else the PerformanceBottom component will overflow into the side margin */
 }
 
 .content-container {
   background-color: #d9d9d9;
-  margin: 0px 150px;
+  margin: 0vw 10vw;
   border-radius: 25px;
 }
 
 body::-webkit-scrollbar {
-  display: none
+  display: none;
 }
 </style>
