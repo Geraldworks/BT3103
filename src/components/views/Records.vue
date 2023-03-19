@@ -25,6 +25,10 @@
 </template>
 
 <script>
+import { db, auth } from "../../firebase.js";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { useStore, mapGetters } from "vuex";
+
 import ComponentHeader from "./ComponentHeader.vue";
 export default {
   name: "Records",
@@ -32,13 +36,50 @@ export default {
     return {
       blackHeader: "Personal",
       redHeader: "Records",
-      deadliftData: 50,
-      benchPressData: 50,
-      squatData: 50,
+      deadliftData: null,
+      benchPressData: null,
+      squatData: null,
     };
   },
   components: {
     ComponentHeader,
+  },
+  props: {
+    email: String,
+  },
+  computed: {
+    ...mapGetters(["user"]),
+  },
+  mounted() {
+    const store = useStore();
+    auth.onAuthStateChanged((user) => {
+      store.dispatch("fetchUser", user);
+    });
+  },
+  async created() {
+    try {
+      const clientRef = collection(db, "client");
+      const q = query(clientRef, where("email", "==", this.user.data.email));
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((doc) => {
+        // Retrieving the only data will the correct email
+        let documentData = doc.data();
+
+        // retrieve personal records
+        let deadliftRecord = documentData.records["deadlift"];
+        let benchPressRecord = documentData.records["benchPress"];
+        let squatRecord = documentData.records["squat"];
+
+        // Assign the values to data()
+        this.deadliftData = deadliftRecord;
+        this.benchPressData = benchPressRecord;
+        this.squatData = squatRecord;
+      });
+    } catch (error) {
+      console.log(error);
+      console.log("No email observed in database");
+    }
   },
 };
 </script>
