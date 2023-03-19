@@ -32,14 +32,6 @@ export default {
 }
 
 .records-section {
-  flex: 1;
-  /* height: 40vh; */
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 25px;
-  margin: 20px;
-}
-
-.progress-section {
   flex: 2;
   /* height: 40vh; */
   background-color: rgba(0, 0, 0, 0.3);
@@ -47,7 +39,15 @@ export default {
   margin: 20px;
 }
 
-@media screen and (max-width: 1150px) {
+.progress-section {
+  flex: 3;
+  /* height: 40vh; */
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 25px;
+  margin: 20px;
+}
+
+@media screen and (max-width: 1350px) {
   .bottom-container {
     flex-direction: column;
   }

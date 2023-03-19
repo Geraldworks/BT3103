@@ -6,20 +6,24 @@
     <div class="progress-chart-container">
       <ProgressChart
         chartName="Weight"
+        :progressOutput="weightData.Progress"
         :chartData="weightData"
         :chartColors="['#ED1F24', '#FFFFFF']"
         :chartLibrary="{
           cutout: '80%',
           borderColor: '#ED1F24',
+          color: '#000',
         }"
       />
       <ProgressChart
         chartName="Muscle Mass"
         :chartData="muscleData"
+        :progressOutput="muscleData.Progress"
         :chartColors="['#ED1F24', '#FFFFFF']"
         :chartLibrary="{
           cutout: '80%',
           borderColor: '#ED1F24',
+          color: '#000',
         }"
       />
     </div>
@@ -45,6 +49,7 @@ export default {
       },
     };
   },
+  computed: {},
   components: {
     ProgressChart,
     ComponentHeader,

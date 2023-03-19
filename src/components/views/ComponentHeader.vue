@@ -29,7 +29,7 @@ export default {
   color: #000;
   font-family: "Teko", sans-serif;
   font-weight: 600;
-  font-size: 2.67vw;
+  font-size: 3.2em;
   line-height: 7vh;
   text-transform: uppercase;
   margin-right: 10px;
@@ -38,7 +38,7 @@ export default {
   color: #ed1f24;
   font-family: "Teko", sans-serif;
   font-weight: 600;
-  font-size: 2.67vw;
+  font-size: 3.2em;
   line-height: 7vh;
   text-transform: uppercase;
 }
