@@ -104,6 +104,7 @@ export default {
     async signOut() {
       await this.$store.dispatch("logOut");
       this.$router.push("/signin");
+      sessionStorage.clear();
     },
   },
 };

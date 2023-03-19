@@ -6,6 +6,7 @@ import {
 import { auth, db } from "./firebase";
 import { signOut } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import createPersistedState from 'vuex-persistedstate';
 
 const store = createStore({
   state: {
@@ -27,6 +28,11 @@ const store = createStore({
       state.user.data = data;
     },
   },
+  plugins: [
+    createPersistedState({
+      storage: window.sessionStorage,
+    })
+  ],
   actions: {
     async signUp(
       context,
@@ -52,6 +58,7 @@ const store = createStore({
         // push info to db
         await setDoc(doc(db, "client", email), {
           gymmboxxid: gymmboxxid,
+          email: email,
           bookingIds: [],
           contactNo: contactNo,
           datetime: [],
