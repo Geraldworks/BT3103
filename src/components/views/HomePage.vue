@@ -22,7 +22,7 @@
         </div>
       </div>
     </div>
-  </div> -->
+  </div>
 </template>
 
 <script>
@@ -84,14 +84,19 @@ export default {
 }
 </script>
 
-<style>
+<style scoped> 
 .performance-page {
   background-color: black;
+  overflow-y: hidden;
 }
 
 .content-container {
   background-color: #D9D9D9;
   margin: 0 30px;
   border-radius: 25px;
+}
+
+body::-webkit-scrollbar {
+  display: none
 }
 </style>
