@@ -1,7 +1,7 @@
 <template>
   <nav>
     <div class="navbar-brand">
-      <a href="/home">
+      <a href="/performance">
         <img src="gymmbuddy.png" alt="Logo" />
       </a>
     </div>
