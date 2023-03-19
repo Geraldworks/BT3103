@@ -6,8 +6,7 @@
     <PerformanceHeader />
     <div class="content-container">
       <AllCharts />
-      <Records />
-      <ProgressSection />
+      <PerformanceBottom />
     </div>
     <div class="container">
       <div class="row justify-content-center">
@@ -29,18 +28,12 @@
 import { mapGetters, useStore } from "vuex";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../../firebase";
-import AllCharts from "../AllCharts.vue"
-import Records from "./Records.vue";
-import ProgressSection from "./ProgressSection.vue";
+import AllCharts from "../AllCharts.vue";
+import PerformanceBottom from "./PerformanceBottom.vue";
 import PerformanceHeader from "../PerformanceHeader.vue";
 
 export default {
   name: "HomePage",
-  components: {
-    AllCharts,
-    Records,
-    ProgressSection,
-  },
   computed: {
     ...mapGetters(["user"]),
   },
@@ -75,21 +68,25 @@ export default {
   },
   components: {
     AllCharts,
-    Records,
-    ProgressSection,
+    PerformanceBottom,
     PerformanceHeader,
   },
-}
+};
 </script>
 
-<style>
+<style scoped> 
 .performance-page {
   background-color: black;
+  overflow-y: hidden;
 }
 
 .content-container {
-  background-color: #D9D9D9;
-  margin: 0 30px;
+  background-color: #d9d9d9;
+  margin: 0px 150px;
   border-radius: 25px;
+}
+
+body::-webkit-scrollbar {
+  display: none
 }
 </style>

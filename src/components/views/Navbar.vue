@@ -120,13 +120,16 @@ nav {
   background-color: black;
   color: #fff;
   height: 200px;
-  padding: 20px;
   font-family: "Source Sans Pro", "sans-serif";
   font-size: larger;
+  border-bottom: 5px solid #ED1F24;
+  box-sizing: border-box;
 }
 
 .navbar-brand img {
-  height: 80px;
+  position: relative;
+  top: 5px;
+  height: 100px;
   margin-bottom: 20px;
   margin-top: 20px;
 }
@@ -136,7 +139,9 @@ nav {
   text-decoration: none;
   font-weight: bold;
   text-transform: uppercase;
-  padding: 10px 20px;
+  padding: 10px 50px;
+  box-sizing: border-box;
+  border-radius: 8px;
 }
 
 .nav-link:hover {
@@ -147,6 +152,15 @@ nav {
   color: rgb(237, 31, 36);
 }
 
+.row {
+  position: relative;
+  top: 10px
+}
+
+.col {
+  box-sizing: border-box;
+  padding: 0px 10px;
+}
 </style>
 
 <!-- <template>
