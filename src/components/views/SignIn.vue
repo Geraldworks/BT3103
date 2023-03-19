@@ -70,8 +70,6 @@
 import { ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-// import { doc, getDoc } from "firebase/firestore";
-// import { db } from "../../firebase";
 
 export default {
   name: "SignInComponent",
@@ -89,16 +87,7 @@ export default {
           email: email.value,
           password: password.value,
         });
-        // const docRef = doc(db, "client", email.value);
-        // const docSnap = await getDoc(docRef);
-
-        // if (docSnap.exists()) {
-        //   console.log("Document data:", docSnap.data().bookingIds);
-        // } else {
-        //   // doc.data() will be undefined in this case
-        //   console.log("No such document!");
-        // }
-          router.push("/home");
+          router.push("/performance");
       } catch (err) {
         error.value = err.message;
       }
