@@ -6,8 +6,7 @@ import PerformancePage from '../components/views/PerformancePage.vue';
 import BookingPage from '../components/views/BookingPage.vue';
 import CalendarPage from '../components/views/CalendarPage.vue';
 import RoutinesPage from '../components/views/RoutinesPage.vue';
-
-
+import store from '../store';
 
 const routes = [
     {
@@ -52,5 +51,13 @@ const router = createRouter({
     history: createWebHistory(),
     routes
 });
+
+router.beforeEach(async (to, from) => {
+    if (!store.state.user.loggedIn && (to.name !== 'SignIn' && to.name !== 'Landing' && to.name !== 'SignUp')) {
+        return { name: 'SignIn' };
+    } else if (store.state.user.loggedIn && (to.name == 'Landing' || to.name == 'SignUp' || to.name == 'SignIn')) {
+        return { name: 'Performance'};
+    }
+})
 
 export default router;

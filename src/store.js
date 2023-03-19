@@ -81,6 +81,7 @@ const store = createStore({
         context.commit("SET_USER", {
           email: email,
         });
+        context.commit("SET_LOGGED_IN", auth.currentUser !== null); // set loggedIn
       } else {
         throw new Error("login failed");
       }
