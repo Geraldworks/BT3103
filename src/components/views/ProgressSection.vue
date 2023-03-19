@@ -76,9 +76,9 @@ export default {
   async created() {
     try {
       const clientRef = collection(db, "client");
-      const q = query(clientRef, where("email", "==", this.user.data.email)); // this should be made reactive
+      const q = query(clientRef, where("email", "==", this.user.data.email));
       const querySnapshot = await getDocs(q);
-      console.log("Obtained querySnapshot");
+
       querySnapshot.forEach((doc) => {
         // Retrieving the only data will the correct email
         let documentData = doc.data();

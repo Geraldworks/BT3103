@@ -1,7 +1,7 @@
 <template>
   <div class="bottom-container">
     <div class="records-section">
-      <Records />
+      <Records :email="email" />
     </div>
     <div class="progress-section">
       <ProgressSection :email="email" />
