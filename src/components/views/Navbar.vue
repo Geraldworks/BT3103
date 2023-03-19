@@ -103,7 +103,7 @@ export default {
   methods: {
     async signOut() {
       await this.$store.dispatch("logOut");
-      this.$router.push("/signin");
+      this.$router.push("/");
       sessionStorage.clear();
     },
   },
