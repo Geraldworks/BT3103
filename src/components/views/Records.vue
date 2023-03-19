@@ -47,10 +47,10 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
 
 .records-section-container {
-  display: inline-block;
-  /* display: flex;
-  flex-direction: column; */
-  height: 28em;
+  /* display: inline-block; */
+  display: flex;
+  flex-direction: column;
+  height: 34.5vh;
   width: 33%;
   box-sizing: border-box;
 }

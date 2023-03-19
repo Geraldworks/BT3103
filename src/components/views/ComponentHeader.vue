@@ -20,7 +20,7 @@ export default {
 
 .header-container {
   display: flex;
-  margin-left: 20px;
+  margin: 1vw;
   /* flex: 0 0 auto; */
   /* align-items: baseline; */
 }

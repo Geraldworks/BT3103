@@ -58,7 +58,7 @@ export default {
   background: rgba(0, 0, 0, 0.3);
   border-radius: 25px;
   display: inline-block;
-  height: 28em;
+  height: 34.5vh;
   box-sizing: border-box;
 }
 
