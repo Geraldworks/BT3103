@@ -1,10 +1,8 @@
 <template>
   <div class="performance-page">
     <div>
-      <NavBar />
+      <Navbar />
     </div>
-    <h1>This is home page</h1>
-    <h3>Welcome back, {{ name }}</h3>
     <PerformanceHeader />
     <div class="content-container">
       <AllCharts />
@@ -39,7 +37,6 @@ import PerformanceHeader from "../PerformanceHeader.vue";
 export default {
   name: "HomePage",
   components: {
-    Navbar,
     AllCharts,
     Records,
     ProgressSection,
