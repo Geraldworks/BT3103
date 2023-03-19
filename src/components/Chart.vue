@@ -10,18 +10,18 @@ export default {
   // this segment is to test the graphs
   data() {
     return {
-      chartData: {
-        "Monday" : 1,
-        "Tuesday": 2,
-        "Wednesday": 3,
-        "Thursday": 4,
-        "Friday": 5
-      }
+      // chartData: {
+      //   "Monday" : 1,
+      //   "Tuesday": 2,
+      //   "Wednesday": 3,
+      //   "Thursday": 4,
+      //   "Friday": 5
+      // }
     }
   },
   props: {
     chartName: String,
-    // chartData: Object,
+    chartData: Object,
     recentData: Number,
     chartColor: Array
   },

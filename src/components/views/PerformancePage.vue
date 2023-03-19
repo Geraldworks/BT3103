@@ -5,7 +5,7 @@
     </div>
     <PerformanceHeader />
     <div class="content-container">
-      <AllCharts />
+      <AllCharts :email="email"/>
       <PerformanceBottom />
     </div>
     <div class="container">
@@ -39,10 +39,7 @@ export default {
   },
   data() {
     return {
-      name: "",
-      contactNo: "",
-      emergencyContactName: "",
-      emergencyContactNumber: "",
+      email: ""
     };
   },
   mounted() {
@@ -52,19 +49,16 @@ export default {
     }); // whenever page refreshes, the auth will have a short buffer from unknown to signed in / signed out
   },
   async updated() {
-    const docRef = doc(db, "client", this.user.data.email);
-    const docSnap = await getDoc(docRef);
+    this.email = this.user.data.email; // setting and passing the prop down to allcharts
+    // const docRef = doc(db, "client", this.user.data.email);
+    // const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data());
-      this.contactNo = docSnap.data().contactNo;
-      this.emergencyContactName = docSnap.data().emergencyContactName;
-      this.emergencyContactNumber = docSnap.data().emergencyContactNumber;
-      this.name = docSnap.data().fullName;
-    } else {
-      // doc.data() will be undefined in this case
-      console.log("No such document!");
-    }
+    // if (docSnap.exists()) {
+    //   console.log("Document data:", docSnap.data());
+    // } else {
+    //   // doc.data() will be undefined in this case
+    //   console.log("No such document!");
+    // }
   },
   components: {
     AllCharts,

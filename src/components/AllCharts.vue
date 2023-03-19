@@ -15,6 +15,9 @@ export default {
       recentMuscle: null,
     };
   },
+  props: {
+    email: String,
+  },
   methods: {
     makeObject(dates, healthData) {
       let obj = {};
@@ -39,7 +42,7 @@ export default {
   async created() {
     try {
       const clientRef = collection(db, "client");
-      const q = query(clientRef, where("email", "==", "dbtest@gmail.com")); // this should be made reactive
+      const q = query(clientRef, where("email", "==", this.email)); // this should be made reactive
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         // Retrieving the only data will the correct email
@@ -66,36 +69,36 @@ export default {
       console.log("No email observed in database");
     }
   },
-//   async updated() {
-//     try {
-//       const clientRef = collection(db, "client");
-//       const q = query(clientRef, where("email", "==", "dbtest@gmail.com")); // this should be made reactive
-//       const querySnapshot = await getDocs(q);
-//       querySnapshot.forEach((doc) => {
-//         // Retrieving the only data will the correct email
-//         let documentData = doc.data();
+  // async beforeUpdate() { // causes infinite db calls
+  //   try {
+  //     const clientRef = collection(db, "client");
+  //     const q = query(clientRef, where("email", "==", this.email)); // this should be made reactive
+  //     const querySnapshot = await getDocs(q);
+  //     querySnapshot.forEach((doc) => {
+  //       // Retrieving the only data will the correct email
+  //       let documentData = doc.data();
 
-//         // storing the array information (only getting last 5 data)
-//         let fatPercentageData = documentData.fatPercentage.slice(-5);
-//         let weightData = documentData.weight.slice(-5);
-//         let muscleMassData = documentData.muscleMass.slice(-5);
-//         let dates = documentData.datetime.slice(-5).map((dt) => dt.toDate());
+  //       // storing the array information (only getting last 5 data)
+  //       let fatPercentageData = documentData.fatPercentage.slice(-5);
+  //       let weightData = documentData.weight.slice(-5);
+  //       let muscleMassData = documentData.muscleMass.slice(-5);
+  //       let dates = documentData.datetime.slice(-5).map((dt) => dt.toDate());
 
-//         // assigning the recent health data
-//         this.recentFat = fatPercentageData[fatPercentageData.length - 1];
-//         this.recentWeight = weightData[weightData.length - 1];
-//         this.recentMuscle = muscleMassData[muscleMassData.length - 1];
+  //       // assigning the recent health data
+  //       this.recentFat = fatPercentageData[fatPercentageData.length - 1];
+  //       this.recentWeight = weightData[weightData.length - 1];
+  //       this.recentMuscle = muscleMassData[muscleMassData.length - 1];
 
-//         // making the health data objects
-//         this.fatDateObject = this.makeObject(dates, fatPercentageData);
-//         this.weightDateObject = this.makeObject(dates, weightData);
-//         this.muscleDateObject = this.makeObject(dates, muscleMassData);
-//       });
-//     } catch (error) {
-//       console.log(error);
-//       console.log("No email observed in database");
-//     }
-//   },
+  //       // making the health data objects
+  //       this.fatDateObject = this.makeObject(dates, fatPercentageData);
+  //       this.weightDateObject = this.makeObject(dates, weightData);
+  //       this.muscleDateObject = this.makeObject(dates, muscleMassData);
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //     console.log("No email observed in database");
+  //   }
+  // },
 };
 </script>
 
@@ -141,7 +144,7 @@ export default {
   height: 460px;
 }
 
-.chart-container:not(:hover){
+.chart-container:not(:hover) {
   overflow-x: hidden;
 }
 
