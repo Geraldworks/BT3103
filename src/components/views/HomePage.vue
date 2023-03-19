@@ -77,13 +77,14 @@ export default {
       // doc.data() will be undefined in this case
       console.log("No such document!");
     }
+  },
   components: {
     AllCharts,
     Records,
     ProgressSection,
     PerformanceHeader,
   },
-};
+}
 </script>
 
 <style>
