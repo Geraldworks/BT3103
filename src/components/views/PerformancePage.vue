@@ -73,6 +73,7 @@ export default {
   margin: 0vw 10vw;
   border-radius: 25px;
   padding-bottom: 30px;
+  margin-top: 22px;
 }
 
 body::-webkit-scrollbar {

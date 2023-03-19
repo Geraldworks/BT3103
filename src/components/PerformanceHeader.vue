@@ -7,7 +7,7 @@
       alt="an image"
     />
     <div class="your-profile">
-      <div>Your Profile</div>
+      <div>YOUR PROFILE</div>
     </div>
   </div>
 </template>
@@ -16,12 +16,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
 
 .profile-container {
-  padding: 20px 50px;
+  padding: 20px 10vw;
   display: flex;
   justify-content: flex-start;
   font-family: Teko;
   background-color: black;
   color: white;
+  background-image: url("@/assets/images/profile_bg.jpg");
+  background-size:contain;
 }
 
 hr {
