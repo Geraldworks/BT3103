@@ -76,14 +76,19 @@ export default {
 };
 </script>
 
-<style>
+<style scoped> 
 .performance-page {
   background-color: black;
+  overflow-y: hidden;
 }
 
 .content-container {
   background-color: #d9d9d9;
   margin: 0px 150px;
   border-radius: 25px;
+}
+
+body::-webkit-scrollbar {
+  display: none
 }
 </style>
