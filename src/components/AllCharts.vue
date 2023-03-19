@@ -41,6 +41,7 @@ export default {
   },
   async created() {
     try {
+      console.log(this.email)
       const clientRef = collection(db, "client");
       const q = query(clientRef, where("email", "==", this.email)); // this should be made reactive
       const querySnapshot = await getDocs(q);
@@ -68,37 +69,7 @@ export default {
       console.log(error);
       console.log("No email observed in database");
     }
-  },
-  // async beforeUpdate() { // causes infinite db calls
-  //   try {
-  //     const clientRef = collection(db, "client");
-  //     const q = query(clientRef, where("email", "==", this.email)); // this should be made reactive
-  //     const querySnapshot = await getDocs(q);
-  //     querySnapshot.forEach((doc) => {
-  //       // Retrieving the only data will the correct email
-  //       let documentData = doc.data();
-
-  //       // storing the array information (only getting last 5 data)
-  //       let fatPercentageData = documentData.fatPercentage.slice(-5);
-  //       let weightData = documentData.weight.slice(-5);
-  //       let muscleMassData = documentData.muscleMass.slice(-5);
-  //       let dates = documentData.datetime.slice(-5).map((dt) => dt.toDate());
-
-  //       // assigning the recent health data
-  //       this.recentFat = fatPercentageData[fatPercentageData.length - 1];
-  //       this.recentWeight = weightData[weightData.length - 1];
-  //       this.recentMuscle = muscleMassData[muscleMassData.length - 1];
-
-  //       // making the health data objects
-  //       this.fatDateObject = this.makeObject(dates, fatPercentageData);
-  //       this.weightDateObject = this.makeObject(dates, weightData);
-  //       this.muscleDateObject = this.makeObject(dates, muscleMassData);
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //     console.log("No email observed in database");
-  //   }
-  // },
+  }
 };
 </script>
 
@@ -140,7 +111,7 @@ export default {
   font-weight: bolder;
   overflow-x: auto;
   width: 90%;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   height: 460px;
 }
 

@@ -6,20 +6,7 @@
     <PerformanceHeader />
     <div class="content-container">
       <AllCharts :email="email" />
-      <PerformanceBottom />
-    </div>
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-8">
-          <div v-if="user.loggedIn" class="alert alert-success" role="alert">
-            Welcome, {{ user.data.email }} <br /><br />
-            You are logged in!
-          </div>
-          <div v-else class="alert alert-danger" role="alert">
-            You are not logged in!
-          </div>
-        </div>
-      </div>
+      <PerformanceBottom class="bottom"/>
     </div>
   </div>
 </template>
@@ -48,7 +35,7 @@ export default {
       store.dispatch("fetchUser", user);
     }); // whenever page refreshes, the auth will have a short buffer from unknown to signed in / signed out
   },
-  async updated() {
+  async created() {
     this.email = this.user.data.email; // setting and passing the prop down to allcharts
     // const docRef = doc(db, "client", this.user.data.email);
     // const docSnap = await getDoc(docRef);
@@ -65,6 +52,11 @@ export default {
     PerformanceBottom,
     PerformanceHeader,
   },
+  watch: {
+    email(newEmail) {
+      console.log(newEmail);
+    },
+  },
 };
 </script>
 
@@ -73,12 +65,14 @@ export default {
   background-color: black;
   overflow-y: hidden;
   min-width: 800px; /* Or else the PerformanceBottom component will overflow into the side margin */
+  padding-bottom: 50px;
 }
 
 .content-container {
   background-color: #d9d9d9;
   margin: 0vw 10vw;
   border-radius: 25px;
+  padding-bottom: 30px;
 }
 
 body::-webkit-scrollbar {

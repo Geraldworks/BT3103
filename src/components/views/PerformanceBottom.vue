@@ -36,7 +36,7 @@ export default {
   /* height: 40vh; */
   background-color: rgba(0, 0, 0, 0.3);
   border-radius: 25px;
-  margin: 20px;
+  margin: 0px 20px;
 }
 
 .progress-section {
@@ -44,7 +44,7 @@ export default {
   /* height: 40vh; */
   background-color: rgba(0, 0, 0, 0.3);
   border-radius: 25px;
-  margin: 20px;
+  margin: 0px 20px;
 }
 
 @media screen and (max-width: 1350px) {
