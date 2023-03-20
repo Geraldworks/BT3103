@@ -1,43 +1,76 @@
 <script>
 import Chart from "./Chart.vue";
-
-// Importing Data from firebase
-// Make this whole thing async
-let fats = [3, 4, 5, 6, 7];
-let weights = [5, 6, 7, 8, 7];
-let muscles = [16, 14, 12, 10, 15];
-//let dates = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-let dates = [1, 2, 3, 4, 5];
-
-let makeObject = function (dates, data) {
-  let obj = {};
-  for (let i = 0; i < dates.length; i++) {
-    obj[dates[i]] = data[i];
-  }
-  return obj;
-};
-
-let fatDateObject = makeObject(dates, fats);
-let weightDateObject = makeObject(dates, weights);
-let muscleDateObject = makeObject(dates, muscles);
+import { db, auth } from "../firebase.js";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { useStore, mapGetters } from "vuex";
 
 export default {
   data() {
     return {
-      fatDateObject,
-      weightDateObject,
-      muscleDateObject,
-      recentFat: fats[fats.length - 1],
-      recentWeight: weights[weights.length - 1],
-      recentMuscle: muscles[muscles.length - 1]
+      fatDateObject: {},
+      weightDateObject: {},
+      muscleDateObject: {},
+      recentFat: null,
+      recentWeight: null,
+      recentMuscle: null,
     };
+  },
+  props: {
+    email: String,
+  },
+  methods: {
+    makeObject(dates, healthData) {
+      let obj = {};
+      for (let i = 0; i < dates.length; i++) {
+        obj[dates[i]] = healthData[i];
+      }
+      return obj;
+    },
+  },
+  computed: {
+    ...mapGetters(["user"]),
   },
   components: {
     Chart,
   },
-};
+  mounted() {
+    const store = useStore();
+    auth.onAuthStateChanged((user) => {
+      store.dispatch("fetchUser", user);
+    });
+  },
+  async created() {
+    try {
+      // console.log(this.email)
+      const clientRef = collection(db, "client");
+      const q = query(clientRef, where("email", "==", this.user.data.email)); // this should be made reactive
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        // Retrieving the only data will the correct email
+        let documentData = doc.data();
 
-console.log(muscleDateObject);
+        // storing the array information (only getting last 5 data)
+        let fatPercentageData = documentData.fatPercentage.slice(-5);
+        let weightData = documentData.weight.slice(-5);
+        let muscleMassData = documentData.muscleMass.slice(-5);
+        let dates = documentData.datetime.slice(-5).map((dt) => dt.toDate());
+
+        // assigning the recent health data
+        this.recentFat = fatPercentageData[fatPercentageData.length - 1];
+        this.recentWeight = weightData[weightData.length - 1];
+        this.recentMuscle = muscleMassData[muscleMassData.length - 1];
+
+        // making the health data objects
+        this.fatDateObject = this.makeObject(dates, fatPercentageData);
+        this.weightDateObject = this.makeObject(dates, weightData);
+        this.muscleDateObject = this.makeObject(dates, muscleMassData);
+      });
+    } catch (error) {
+      console.log(error);
+      console.log("No email observed in database");
+    }
+  }
+};
 </script>
 
 <template>
@@ -48,6 +81,7 @@ console.log(muscleDateObject);
       :chartData="fatDateObject"
       :chartColor="['#FF0000']"
       :recentData="recentFat"
+      metric="%"
     />
     <Chart
       class="chart"
@@ -55,6 +89,7 @@ console.log(muscleDateObject);
       :chartData="weightDateObject"
       :chartColor="['#FF0000']"
       :recentData="recentWeight"
+      metric="KG"
     />
     <Chart
       class="chart"
@@ -62,20 +97,38 @@ console.log(muscleDateObject);
       :chartData="muscleDateObject"
       :chartColor="['#FF0000']"
       :recentData="recentMuscle"
+      metric="%"
     />
   </div>
 </template>
 
-<style>
+<style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
+
 .chart-container {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
+  margin: auto;
+  text-transform: uppercase;
+  font-family: "Teko", sans-serif;
+  font-weight: bolder;
+  overflow-x: auto;
+  width: 90%;
+  margin-bottom: 10px;
+  height: 460px;
+}
+
+.chart-container:not(:hover) {
+  overflow-x: hidden;
 }
 
 .chart {
-  width: 30%;
-  margin: 5px;
-  padding: 5px;
+  width: 800px;
+  min-width: 380px;
+  height: 380px;
+  margin: 30px 20px;
+  padding: 10px;
+  background-color: white;
+  border-radius: 10px;
 }
-
 </style>

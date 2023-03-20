@@ -9,7 +9,9 @@
           <div class="card-body">
             <form action="#" @submit.prevent="SignUp">
               <div class="form-group row py-2">
-                <label for="fullName" class="col-md-4 col-form-label text-md-right"
+                <label
+                  for="fullName"
+                  class="col-md-4 col-form-label text-md-right"
                   >FULL NAME:</label
                 >
 
@@ -28,7 +30,9 @@
               </div>
 
               <div class="form-group row py-2">
-                <label for="gymmboxxid" class="col-md-4 col-form-label text-md-right"
+                <label
+                  for="gymmboxxid"
+                  class="col-md-4 col-form-label text-md-right"
                   >GYMMBOXX ID:</label
                 >
 
@@ -157,7 +161,7 @@
                     @input="validateForm"
                   />
                 </div>
-                <p v-if="errorMessage" class="alert alert-danger">
+                <p v-if="errorMessage" class="alert alert-danger mt-3">
                   {{ errorMessage }}
                 </p>
               </div>
@@ -167,9 +171,12 @@
                   <button
                     type="submit"
                     class="btn btn-primary mt-2"
-                    @click="signUp"
                   >
-                    Sign Up
+                    <div
+                      v-if="isLoading"
+                      class="spinner-border spinner-border-sm"
+                    ></div>
+                    Sign-Up
                   </button>
                 </div>
               </div>
@@ -182,66 +189,56 @@
 </template>
 
 <script>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useStore } from "vuex";
-
 export default {
   name: "SignUpComponent",
-  setup() {
-    const fullName = ref(""); // ref is to make it reactive
-    const gymmboxxid = ref("");
-    const contactNo = ref("");
-    const emergencyContactName = ref("");
-    const emergencyContactNo = ref("");
-    const email = ref("");
-    const password = ref("");
-    const confirmPassword = ref("");
-    const errorMessage = ref("");
-
-    const router = useRouter();
-    const store = useStore();
-
-    const SignUp = async () => {
-      try {
-        await store.dispatch("signUp", {
-          gymmboxxid: gymmboxxid.value,
-          contactNo: contactNo.value,
-          emergencyContactName: emergencyContactName.value,
-          emergencyContactNo: emergencyContactNo.value,
-          fullName: fullName.value,
-          email: email.value,
-          password: password.value,
-        });
-        router.push("/signin");
-      } catch (err) {
-        error.value = err.message;
-      }
-    };
-
+  data() {
     return {
-      SignUp,
-      fullName,
-      gymmboxxid,
-      contactNo,
-      emergencyContactName,
-      emergencyContactNo,
-      email,
-      password,
-      confirmPassword,
-      errorMessage,
-      router,
-    };
+      isLoading: false,
+      fullName: "",
+      gymmboxxid: "",
+      contactNo: "",
+      emergencyContactName: "",
+      emergencyContactNo: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      errorMessage: ""
+    }
   },
   methods: {
-    validateForm() { // validate that passwords are the same
+    validateForm() {
+      // validate that passwords are the same
       if (this.password !== this.confirmPassword) {
-        this.errorMessage = "Passwords do not match";
+        this.errorMessage = "Passwords do not match.";
         return false;
       }
       this.errorMessage = "";
       return true;
     },
+    async SignUp() {
+      this.isLoading = true;
+      try {
+        await this.$store.dispatch("signUp", {
+          gymmboxxid: this.gymmboxxid,
+          contactNo: this.contactNo,
+          emergencyContactName: this.emergencyContactName,
+          emergencyContactNo: this.emergencyContactNo,
+          fullName: this.fullName,
+          email: this.email,
+          password: this.password,
+        }).then((response) => {
+          this.$router.push("/signin");
+        });
+      } catch (err) {
+        this.isLoading = false;
+        if (err.code === "auth/email-already-in-use") {
+          // Rewrite the message
+          this.errorMessage = "Email already in use.";
+        } else {
+          this.errorMessage = err.message;
+        }
+      }
+    }
   },
 };
 </script>
