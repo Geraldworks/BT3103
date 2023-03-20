@@ -7,7 +7,6 @@
             <h3>SIGN IN TO ACCOUNT</h3>
           </div>
           <div class="card-body">
-            <div v-if="error" class="alert alert-danger">{{ error }}</div>
             <form action="#" @submit.prevent="SignIn">
               <div class="form-group row py-2">
                 <label for="email" class="col-md-4 col-form-label text-md-right"
@@ -49,13 +48,16 @@
 
               <div class="form-group row mb-0">
                 <div class="col-md-8 offset-md-4">
-                  <button
-                    type="submit"
-                    class="btn btn-primary mt-2"
-                    @click="fetchFromDb"
-                  >
+                  <button type="submit" class="btn btn-primary mt-2">
+                    <div
+                      v-if="isLoading"
+                      class="spinner-border spinner-border-sm"
+                    ></div>
                     Sign In
                   </button>
+                </div>
+                <div v-if="error" class="alert alert-danger mt-2">
+                  {{ error }}
                 </div>
               </div>
             </form>
@@ -67,34 +69,37 @@
 </template>
 
 <script>
-import { ref } from "vue";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
-
 export default {
   name: "SignInComponent",
-  setup() {
-    const email = ref("");
-    const password = ref("");
-    const error = ref(null);
-
-    const store = useStore();
-    const router = useRouter();
-
-    const SignIn = async () => {
+  data() {
+    return {
+      isLoading: false,
+      email: "",
+      password: "",
+      error: null
+    };
+  },
+  methods: {
+    async SignIn() {
+      this.isLoading = true;
       try {
-        await store.dispatch("signIn", {
+        await this.$store.dispatch("signIn", {
           email: email.value,
           password: password.value,
+        }).then((response) => {
+          this.$router.push("/performance");
         });
-        // console.log(store.state.user.loggedIn);
-        router.push("/performance");
       } catch (err) {
-        error.value = err.message;
+        this.isLoading = false;
+        if (err.code === "auth/wrong-password") {
+          this.error = "Incorrect password, please try again.";
+        } else if (err.code === "auth/user-not-found") {
+          this.error = "User not registered, please sign up with us.";
+        } else {
+          this.error = err.message;
+        }
       }
-    };
-
-    return { SignIn, email, password, error };
-  }
+    },
+  },
 };
 </script>
