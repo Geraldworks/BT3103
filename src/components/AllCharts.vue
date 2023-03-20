@@ -41,7 +41,7 @@ export default {
   },
   async created() {
     try {
-      console.log(this.email)
+      // console.log(this.email)
       const clientRef = collection(db, "client");
       const q = query(clientRef, where("email", "==", this.user.data.email)); // this should be made reactive
       const querySnapshot = await getDocs(q);

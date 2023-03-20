@@ -87,7 +87,7 @@ export default {
           email: email.value,
           password: password.value,
         });
-        console.log(store.state.user.loggedIn);
+        // console.log(store.state.user.loggedIn);
         router.push("/performance");
       } catch (err) {
         error.value = err.message;

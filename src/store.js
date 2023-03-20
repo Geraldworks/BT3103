@@ -69,6 +69,15 @@ const store = createStore({
           muscleMass: [],
           routineIds: [],
           weight: [],
+          records: {
+            benchPress: 0,
+            deadlift: 0,
+            squat: 0
+          }, 
+          goals: {
+            muscleMassGoal: 0,
+            weightGoal: 0,
+          }
         });
       } else {
         throw new Error("Unable to register user");
