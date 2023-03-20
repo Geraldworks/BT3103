@@ -3,39 +3,57 @@
     <NavBar />
 </div>
 <h1> Your clients</h1>
-<h1>{ trainer }</h1>
+<h2> {{ bookingIds }}</h2>
+<button> fetch data </button>
 <div>
 
 </div>
 
 </template>
 <script>
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../firebase";
-import { auth } from "../../firebase";
-import { useStore } from "vuex";
-import { computed } from "vue";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db, auth } from "../../firebase.js";
+import { useStore, mapGetters } from "vuex";
 
 export default {
     name: "TrainerComponent",
-    setup() {
+    data() {
+        return {
+            clients: null,
+            bookings: null
+        };
+    },
+    props: {
+        email: String,
+    },
+    computed: {
+        ...mapGetters(["user"]),
+    },
+    mounted() {
         const store = useStore();
-        const user1 = computed(() => {
-            return store.getters.user;
+        auth.onAuthStateChanged((user) => {
+        store.dispatch("fetchUser", user);
         });
-    
-        // const docRef1 = doc(db, "client", 'dbtest@gmail.com');
-        // const docSnap = await getDoc(docRef1);
-        // if (docSnap.exists()) {
-        //     console.log("Document data:", docSnap.data().bookingIds);
-        // } else {
-        //     // doc.data() will be undefined in this case
-        //     console.log("No such document!");
-        // }
-        let trainer = await db.collection('trainer').get()
-        return {trainer}
-        return { user1 };
+    },
+    async created() {
+        try {
+            const trainerRef = collection(db, "trainer");
+            const q = query(trainerRef, where("email", "==", this.user.data.email));
+            const querySnapshot = await getDocs(q);
 
-    } 
+            querySnapshot.forEach((doc) => {
+                let documentData = doc.data();
+
+                let clientIds = document.ClientsId;
+                let bookingIds = document.bookingIds;
+
+                this.clients = clientIds;
+                this.bookings = bookingsIds;
+            });
+        } catch (error) {
+            console.log(error);
+            console.log("No email observed in database");
+        }
+    }
 }
 </script>
