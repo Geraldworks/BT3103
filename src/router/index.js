@@ -55,6 +55,11 @@ const routes = [
     path: "/trainer-calendar",
     name: "TrainerCalendarPage",
     component: TrainerCalendarPage,
+  },    
+  {
+    path: '/trainer',
+    name: 'Trainer',
+    component: TrainerPage
   },
 ];
 
