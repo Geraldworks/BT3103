@@ -157,7 +157,7 @@
                     @input="validateForm"
                   />
                 </div>
-                <p v-if="errorMessage" class="alert alert-danger">
+                <p v-if="errorMessage" class="alert alert-danger mt-3">
                   {{ errorMessage }}
                 </p>
               </div>
@@ -215,7 +215,12 @@ export default {
         });
         router.push("/signin");
       } catch (err) {
-        error.value = err.message;
+        if (err.code === "auth/email-already-in-use") {
+          // Rewrite the message
+          errorMessage.value = "Email already in use."
+        } else {
+          errorMessage.value = err.message;
+        }
       }
     };
 
@@ -236,7 +241,7 @@ export default {
   methods: {
     validateForm() { // validate that passwords are the same
       if (this.password !== this.confirmPassword) {
-        this.errorMessage = "Passwords do not match";
+        this.errorMessage = "Passwords do not match.";
         return false;
       }
       this.errorMessage = "";
