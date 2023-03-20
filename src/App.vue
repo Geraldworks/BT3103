@@ -13,6 +13,5 @@ import '@coreui/coreui/dist/css/coreui.min.css';
 
 export default {
     name: "App",
-    components: { Navbar }
 };
 </script>

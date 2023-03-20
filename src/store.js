@@ -13,6 +13,7 @@ const store = createStore({
     user: {
       loggedIn: false,
       data: null,
+      isTrainer: null
     },
   },
   getters: {
@@ -27,6 +28,9 @@ const store = createStore({
     SET_USER(state, data) {
       state.user.data = data;
     },
+    SET_TRAINER(state, value) {
+      state.user.isTrainer = value;
+    }
   },
   plugins: [
     createPersistedState({
@@ -99,6 +103,7 @@ const store = createStore({
     async logOut(context) {
       await signOut(auth);
       context.commit("SET_USER", null); // to reset the email saved in store
+      context.commit("SET_TRAINER", null); // to reset isTrainer
     },
 
     async fetchUser(context, user) {
@@ -110,6 +115,10 @@ const store = createStore({
       } else {
         context.commit("SET_USER", null);
       }
+    },
+
+    async fetchTrainer(context) {
+      context.commit("SET_TRAINER", true);
     }
   },
 });

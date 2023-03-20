@@ -69,6 +69,9 @@
 </template>
 
 <script>
+import { doc, getDoc } from "@firebase/firestore";
+import { db } from "../../firebase";
+
 export default {
   name: "SignInComponent",
   data() {
@@ -76,19 +79,42 @@ export default {
       isLoading: false,
       email: "",
       password: "",
-      error: null
+      error: null,
     };
   },
   methods: {
     async SignIn() {
       this.isLoading = true;
       try {
-        await this.$store.dispatch("signIn", {
-          email: email.value,
-          password: password.value,
-        }).then((response) => {
-          this.$router.push("/performance");
-        });
+        await this.$store
+          .dispatch("signIn", {
+            email: email.value,
+            password: password.value,
+          })
+          .then((response) => {
+            // Fetch data to check if trainer
+            const docRef = doc(db, "trainer", this.email);
+            console.log(this.email);
+            getDoc(docRef)
+              .then((docSnap) => {
+                const id = docSnap.data().gymmboxxid;
+                if (id.includes("T")) {
+                  // TRAINER ACCOUNT
+                  console.log("TRAINER ACCOUNT");
+
+                  // SET AS TRAINER
+                  this.$store.dispatch("fetchTrainer"); 
+
+                  this.$router.push("/clients");
+                } 
+              })
+              .catch((err) => {
+                // CLIENT ACCOUNT
+                console.log("CLIENT ACCOUNT");
+                
+                this.$router.push("/performance");
+              });
+          });
       } catch (err) {
         this.isLoading = false;
         if (err.code === "auth/wrong-password") {
