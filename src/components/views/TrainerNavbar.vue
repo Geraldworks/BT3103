@@ -42,10 +42,10 @@
         </div>
       </div>
     </nav>
-  </template>
+</template>
   
-  <script>
-  import {
+<script>
+import {
     CNavbar,
     CNavItem,
     CDropdown,

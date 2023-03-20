@@ -56,11 +56,6 @@ const routes = [
     name: "TrainerCalendarPage",
     component: TrainerCalendarPage,
   },    
-  {
-    path: '/trainer',
-    name: 'Trainer',
-    component: TrainerPage
-  },
 ];
 
 const router = createRouter({

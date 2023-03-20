@@ -1,15 +1,15 @@
 <template>
 <div class="Trainer-Page">
     <div>
-        <Navbar />
+        <TrainerNavbar />
     </div>
     <h1> Your clients</h1>
 
-    <div v-for="name in clientinfo" class = "trying">
-        <h3>Emergency contact Name: {{ name[1] }}</h3>
-        <h3>Emergency contact number: {{ name[0] }}</h3>
+    <div v-for="(item, key) in clientinfo" class = "trying">
+        <h3 class="Name">Name: {{ key }}</h3>
+        <h3 class="Routine">Emergency contact Name: {{ item[1] }}</h3>
+        <h3 class="Session">Emergency contact number: {{ item[0] }}</h3>
     </div>
-    <div>{{clientinfo}}</div>
 </div>
 
 
@@ -19,9 +19,11 @@
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db, auth } from "../../firebase.js";
 import { useStore, mapGetters } from "vuex";
+import TrainerNavbar from './TrainerNavbar.vue';
 
 export default {
     name: "TrainerComponent",
+    components: {TrainerNavbar},
     data() {
         return {
             clients: null,
@@ -39,7 +41,7 @@ export default {
     mounted() {
         const store = useStore();
         auth.onAuthStateChanged((user) => {
-        store.dispatch("fetchUser", user);
+            store.dispatch("fetchUser", user);
         });
     },
     async created() {
@@ -93,5 +95,17 @@ export default {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+}
+.Name {
+    margin-left: 20px;
+}
+.Routine {
+    text-align: right;
+    margin-right: 20px;
+}
+
+.Session {
+    text-align: right;
+    margin-right: 20px;
 }
 </style>
