@@ -9,6 +9,8 @@ import RoutinesPage from "../components/views/RoutinesPage.vue";
 import TrainerPage from "../components/views/TrainerPage.vue";
 import TrainerCalendarPage from "../components/views/TrainerCalendarPage.vue";
 import NotFound from "../components/views/NotFound.vue";
+import ClientPerformancePage from "../components/views/ClientPerformancePage.vue";
+
 import store from "../store";
 
 const routes = [
@@ -61,7 +63,12 @@ const routes = [
     path: "/:catchAll(.*)",
     name: "NotFound",
     component: NotFound
-  }
+  },
+  {
+    path: "/ClientPerformance/:clientEmail",
+    name: "ClientPerformancePage",
+    component: ClientPerformancePage,
+  },    
 ];
 
 const router = createRouter({
