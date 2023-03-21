@@ -4,7 +4,7 @@
   </template>
   
   <script>
-import TrainerNavbar from './TrainerNavbar.vue';
+import TrainerNavbar from '../trainer/TrainerNavbar.vue';
 
   export default {
     name: "TrainerCalendarPage",

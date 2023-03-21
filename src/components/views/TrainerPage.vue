@@ -14,7 +14,7 @@
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db, auth } from "../../firebase.js";
 import { useStore, mapGetters } from "vuex";
-import TrainerNavbar from './TrainerNavbar.vue';
+import TrainerNavbar from '../trainer/TrainerNavbar.vue';
 
 export default {
     name: "TrainerComponent",
