@@ -84,20 +84,40 @@ export default {
         let documentData = doc.data();
 
         // storing the latest information
-        let weightData = documentData.weight.slice(-1);
-        let muscleMassData = documentData.muscleMass.slice(-1);
+        let weightData = documentData.weight.slice(-1)[0];
+        let muscleMassData = documentData.muscleMass.slice(-1)[0];
 
         // storing the goals
         let weightGoalValue = documentData.goals["weightGoal"];
         let muscleMassGoalValue = documentData.goals["muscleMassGoal"];
 
-        // Compute the progress
-        let weightProgress = Number(
-          (weightData / weightGoalValue) * 100
-        ).toFixed();
-        let muscleMassProgress = Number(
-          (muscleMassData / muscleMassGoalValue) * 100
-        ).toFixed();
+        // Declare the progress variable
+        let weightProgress;
+
+        if (weightData < weightGoalValue) {
+          // if goal has not been hit
+          // Compute the progress
+          weightProgress = Number(
+            (weightData / weightGoalValue) * 100
+          ).toFixed();
+        } else {
+          // if goal is hit or exceeded
+          weightProgress = 100;
+        }
+
+        // Declare the progress variable
+        let muscleMassProgress;
+
+        if (muscleMassData < muscleMassGoalValue) {
+          // Compute the progress
+          muscleMassProgress = Number(
+            (muscleMassData / muscleMassGoalValue) * 100
+          ).toFixed();
+        } else {
+          // if goal is hit or exceeded
+          console.log("Entered else condition");
+          muscleMassProgress = 100;
+        }
 
         // Assign the values to data()
         this.weightGoal = `${weightGoalValue}kg`;
