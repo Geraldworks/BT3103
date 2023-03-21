@@ -1,7 +1,7 @@
 <template>
   <div class="performance-page">
     <div>
-      <Navbar />
+      <TrainerNavbar />
     </div>
     <PerformanceHeader />
     <div class="content-container">
@@ -15,9 +15,10 @@
 import { mapGetters, useStore } from "vuex";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../../firebase";
-import AllCharts from "../AllCharts.vue";
-import PerformanceBottom from "./PerformanceBottom.vue";
-import PerformanceHeader from "../PerformanceHeader.vue";
+import TrainerNavbar from "../trainer/TrainerNavbar.vue"
+import AllCharts from "../client/AllCharts.vue";
+import PerformanceBottom from "../client/PerformanceBottom.vue";
+import PerformanceHeader from "../client/PerformanceHeader.vue";
 
 export default {
   name: "ClientPerformancePage",
@@ -51,6 +52,7 @@ export default {
     AllCharts,
     PerformanceBottom,
     PerformanceHeader,
+    TrainerNavbar
   },
   watch: {
     email(newEmail) {
