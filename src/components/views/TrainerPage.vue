@@ -3,12 +3,15 @@
     <div>
         <TrainerNavbar />
     </div>
-    <h1> Your clients</h1>
+    <h1 class="header1"> Your clients</h1>
+    <hr>
 
-    <div v-for="(item, key) in clientinfo" class = "trying">
-        <h3 class="Name">Name: {{ key }}</h3>
-        <h3 class="Routine">Emergency contact Name: {{ item[1] }}</h3>
-        <h3 class="Session">Emergency contact number: {{ item[0] }}</h3>
+    <div v-for="(item, key) in clientinfo" class = "box">
+        <h3 class="Session"><span class="red-text">Session:</span> <span class="white-text">{{ item[1] }}</span></h3>
+        <router-link to="/trainer-calendar">
+            <h3 class="Name">Name: {{ key }}</h3>
+        </router-link>
+        <h3 class="Routine"><span class="red-text">Routine:</span> <span class="white-text">{{ item[0] }}</span></h3>
     </div>
 </div>
 
@@ -20,6 +23,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db, auth } from "../../firebase.js";
 import { useStore, mapGetters } from "vuex";
 import TrainerNavbar from './TrainerNavbar.vue';
+import router from '@/router'
 
 export default {
     name: "TrainerComponent",
@@ -84,28 +88,55 @@ export default {
 </script>
 <style scoped>
 .Trainer-Page {
+    background-color: black;
+    overflow-y: hidden;
+    min-width: 800px; 
+    padding-bottom: 50px;
+    min-height: 100vh;
+}
+hr {
+    background-color: rgb(255, 255, 255);
+    border: 3px solid rgb(255, 255, 255);
 
 }
-
-.trying {
+.header1 {
+    color:white;
+    margin-left:40px;
+}
+.box {
     flex: 2;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: #4b4a4a;
     border-radius: 25px;
     margin: 0px 20px 10px 20px;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    z-index: 2;
+}
+.Session {
+    text-align: right;
+    margin-right: 70px;
+    margin-top: 20px;
+    font-size: 1.5rem;
+}
+.red-text {
+    color:red;
+}
+.white-text {
+    color:white;
 }
 .Name {
-    margin-left: 20px;
+    margin-left: 30px;
+    margin-top: 10px;
+    font-size: 2.25rem;
+    font-weight: bold;
+    color:white;
 }
 .Routine {
     text-align: right;
-    margin-right: 20px;
-}
-
-.Session {
-    text-align: right;
-    margin-right: 20px;
+    margin-right: 70px;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color:white;
 }
 </style>
