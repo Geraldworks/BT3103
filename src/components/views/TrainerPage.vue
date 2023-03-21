@@ -7,11 +7,20 @@
     <hr>
 
     <div v-for="(item, key) in clientinfo" class = "box">
-        <h3 class="Session"><span class="red-text">Session:</span> <span class="white-text">{{ item[1] }}</span></h3>
-        <router-link to="/trainer-calendar">
-            <h3 class="Name">Name: {{ key }}</h3>
+        <h3 class="Session">
+            <span class="red-text">Session:</span> 
+            <span class="white-text">{{ item[1] }}</span>
+        </h3>
+
+        <router-link :to='{ name: "ClientPerformancePage", params: { clientEmail: "key" } }'>
+            <h3 class="Name">Name: {{ item[0] }}</h3>
         </router-link>
-        <h3 class="Routine"><span class="red-text">Routine:</span> <span class="white-text">{{ item[0] }}</span></h3>
+        <h3 class="Name">Name: {{ key }}</h3>
+        
+        <h3 class="Routine">
+            <span class="red-text">Routine:</span> 
+            <span class="white-text">{{ item[2] }}</span>
+        </h3>
     </div>
 </div>
 
@@ -32,7 +41,7 @@ export default {
         return {
             clients: null,
             bookings: null,
-            clientNames: null,
+            clientemails: null,
             clientinfo: null
         };
     },
@@ -53,18 +62,16 @@ export default {
             const trainerRef = collection(db, "trainer");
             const q = query(trainerRef, where("email", "==", this.user.data.email));
             const querySnapshot = await getDocs(q);
-
+            
             querySnapshot.forEach((doc) => {
                 let documentData = doc.data();
-
                 let clientIds = documentData.ClientsId;
                 let BookingIds = documentData.bookingIds;
-
                 this.clients = clientIds;
                 this.bookings = BookingIds;
             });
-            const clientList = [];
             const clientInfo = {};
+
             const clientRef = collection(db, "client");
             const q2 = query(clientRef, where("email", "in", this.clients));
             const querySnapshot2 = await getDocs(q2);
@@ -72,12 +79,12 @@ export default {
             querySnapshot2.forEach((clientEmail) => {
                 let documentData2 = clientEmail.data();
                 let holder = [];
-                clientList.push(documentData2.fullName);
-                holder.push(documentData2.emergencyContactNo);
-                holder.push(documentData2.emergencyContactName);
-                clientInfo[documentData2.fullName] = holder;
+                holder.push(documentData2.fullName);
+                holder.push(documentData2.emergencyContactNo); // push the session instead
+                holder.push(documentData2.emergencyContactName); // push the rountine 
+                clientInfo[documentData2.email] = holder;
             })
-            this.clientNames = clientList;
+            // this.clientemails = clientEmails;
             this.clientinfo = clientInfo;
         } catch (error) {
             console.log(error);
