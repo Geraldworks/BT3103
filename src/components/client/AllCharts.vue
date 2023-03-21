@@ -1,6 +1,6 @@
 <script>
 import Chart from "./Chart.vue";
-import { db, auth } from "../firebase.js";
+import { db, auth } from "../../firebase.js";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useStore, mapGetters } from "vuex";
 

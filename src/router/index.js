@@ -8,6 +8,7 @@ import CalendarPage from "../components/views/CalendarPage.vue";
 import RoutinesPage from "../components/views/RoutinesPage.vue";
 import TrainerPage from "../components/views/TrainerPage.vue";
 import TrainerCalendarPage from "../components/views/TrainerCalendarPage.vue";
+import NotFound from "../components/views/NotFound.vue";
 import ClientPerformancePage from "../components/views/ClientPerformancePage.vue";
 
 import store from "../store";
@@ -57,7 +58,12 @@ const routes = [
     path: "/trainer-calendar",
     name: "TrainerCalendarPage",
     component: TrainerCalendarPage,
-  }, 
+  },
+  {
+    path: "/:catchAll(.*)",
+    name: "NotFound",
+    component: NotFound
+  },
   {
     path: "/ClientPerformance/:clientEmail",
     name: "ClientPerformancePage",
