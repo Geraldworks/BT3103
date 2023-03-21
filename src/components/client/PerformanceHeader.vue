@@ -3,7 +3,7 @@
     <!--Profile Picture-->
     <img
       class="profile-picture"
-      src="../assets/images/test.jpeg"
+      src="@/assets/images/test.jpeg"
       alt="an image"
     />
     <div class="your-profile">
