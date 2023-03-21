@@ -2,7 +2,7 @@
     <nav>
       <div class="navbar-brand">
         <a href="/clients">
-          <img src="gymmbuddy.png" alt="Logo" />
+          <img src="/gymmbuddy.png" alt="Logo" />
         </a>
       </div>
       <div class="row">
