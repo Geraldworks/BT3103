@@ -1,7 +1,7 @@
 <template>
   <div class="performance-page">
     <div>
-      <Navbar />
+      <TrainerNavbar />
     </div>
     <TrainerPerformanceHeader :email= "holder"/>
     <div class="content-container">
@@ -15,6 +15,7 @@
 import AllCharts from "../client/AllCharts.vue";
 import PerformanceBottom from "../client/PerformanceBottom.vue";
 import TrainerPerformanceHeader from "../trainer/TrainerPerformanceHeader.vue";
+import TrainerNavbar from '../trainer/TrainerNavbar.vue';
 
 export default {
   name: "ClientPerformancePage",
@@ -23,6 +24,7 @@ export default {
     AllCharts,
     PerformanceBottom,
     TrainerPerformanceHeader,
+    TrainerNavbar,
   },
   created() {
     this.holder = this.$route.params.clientEmail;
