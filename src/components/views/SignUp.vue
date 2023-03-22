@@ -1,186 +1,239 @@
+<style scoped>
+.button-div {
+  text-align: center;
+}
+
+button {
+  width: 120px;
+  height: 50px;
+  border-radius: 25px; /* half of height */
+  background-color: rgb(237, 12, 16);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  margin: 5px;
+  margin-top: 30px;
+  font-size: 1.5rem;
+  text-align: center;
+  box-sizing: border-box;
+  color: white;
+  font-family: Teko;
+}
+
+button:hover {
+  animation-name: pill-button-highlight;
+  animation-duration: 0.15s;
+  animation-fill-mode: forwards;
+  box-sizing: border-box;
+}
+
+@keyframes pill-button-highlight {
+  from {
+    border: 0px white solid;
+  }
+  to {
+    border: 2px white solid;
+  }
+}
+
+.background-color-change {
+  background-color: #d9d9d9;
+  padding: 10px 20px 10px 20px;
+  box-shadow: 0px 0px 3px grey;
+  overflow: auto;
+  margin-bottom: 50px;
+}
+
+.signUp-page {
+  min-width: 100vw;
+  min-height: 100vh;
+  background-color: #d9d9d9;
+  position: relative;
+}
+</style>
+
 <template>
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-header text-center">
-            <h3>SIGN UP FOR ACCOUNT</h3>
-          </div>
-          <div class="card-body">
-            <form action="#" @submit.prevent="SignUp">
-              <div class="form-group row py-2">
-                <label
-                  for="fullName"
-                  class="col-md-4 col-form-label text-md-right"
-                  >FULL NAME:</label
-                >
-
-                <div class="col-md-6">
-                  <input
-                    id="fullName"
-                    type="text"
-                    class="form-control"
-                    name="fullName"
-                    value
-                    required
-                    autofocus
-                    v-model="fullName"
-                  />
-                </div>
-              </div>
-
-              <div class="form-group row py-2">
-                <label
-                  for="gymmboxxid"
-                  class="col-md-4 col-form-label text-md-right"
-                  >GYMMBOXX ID:</label
-                >
-
-                <div class="col-md-6">
-                  <input
-                    id="gymmboxxid"
-                    type="text"
-                    class="form-control"
-                    name="gymmboxxid"
-                    required
-                    v-model="gymmboxxid"
-                  />
-                </div>
-              </div>
-
-              <div class="form-group row py-2">
-                <label
-                  for="contactNo"
-                  class="col-md-4 col-form-label text-md-right"
-                  >CONTACT NUMBER:</label
-                >
-
-                <div class="col-md-6">
-                  <input
-                    id="contactNo"
-                    type="text"
-                    class="form-control"
-                    name="contactNo"
-                    required
-                    v-model="contactNo"
-                  />
-                </div>
-              </div>
-
-              <div class="form-group row py-2">
-                <label
-                  for="emergencyContactName"
-                  class="col-md-4 col-form-label text-md-right"
-                  >EMERGENCY CONTACT:</label
-                >
-
-                <div class="col-md-6">
-                  <input
-                    id="emergencyContactName"
-                    type="text"
-                    class="form-control"
-                    name="emergencyContactName"
-                    required
-                    v-model="emergencyContactName"
-                  />
-                </div>
-              </div>
-
-              <div class="form-group row py-2">
-                <label
-                  for="emergencyContactNo"
-                  class="col-md-4 col-form-label text-md-right"
-                  >EMERGENCY CONTACT NUMBER:</label
-                >
-
-                <div class="col-md-6">
-                  <input
-                    id="emergencyContactNo"
-                    type="text"
-                    class="form-control"
-                    name="emergencyContactNo"
-                    required
-                    v-model="emergencyContactNo"
-                  />
-                </div>
-              </div>
-
-              <div class="form-group row py-2">
-                <label for="email" class="col-md-4 col-form-label text-md-right"
-                  >EMAIL:</label
-                >
-
-                <div class="col-md-6">
-                  <input
-                    id="email"
-                    type="email"
-                    class="form-control"
-                    name="email"
-                    value
-                    required
-                    autofocus
-                    v-model="email"
-                  />
-                </div>
-              </div>
-
-              <div class="form-group row py-2">
-                <label
-                  for="password"
-                  class="col-md-4 col-form-label text-md-right"
-                  >PASSWORD:</label
-                >
-
-                <div class="col-md-6">
-                  <input
-                    id="password"
-                    type="password"
-                    class="form-control"
-                    name="password"
-                    required
-                    v-model="password"
-                  />
-                </div>
-              </div>
-
-              <div class="form-group row py-2">
-                <label
-                  for="confirmPassword"
-                  class="col-md-4 col-form-label text-md-right"
-                  >CONFIRM PASSWORD:</label
-                >
-
-                <div class="col-md-6">
-                  <input
-                    id="confirmPassword"
-                    type="password"
-                    class="form-control"
-                    name="confirmPassword"
-                    required
-                    v-model="confirmPassword"
-                    @input="validateForm"
-                  />
-                </div>
-                <p v-if="errorMessage" class="alert alert-danger mt-3">
-                  {{ errorMessage }}
-                </p>
-              </div>
-
-              <div class="form-group row mb-0">
-                <div class="col-md-8 offset-md-4">
-                  <button
-                    type="submit"
-                    class="btn btn-primary mt-2"
+  <div class="signUp-page">
+    <SignUpHeader headerWords="sign up for account" />
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card background-color-change">
+            <div class="card-body">
+              <form action="#" @submit.prevent="SignUp">
+                <div class="form-group row py-2">
+                  <label
+                    for="fullName"
+                    class="col-md-4 col-form-label text-md-right"
+                    >FULL NAME:</label
                   >
-                    <div
-                      v-if="isLoading"
-                      class="spinner-border spinner-border-sm"
-                    ></div>
-                    Sign-Up
-                  </button>
+
+                  <div class="col-md-6">
+                    <input
+                      id="fullName"
+                      type="text"
+                      class="form-control"
+                      name="fullName"
+                      value
+                      required
+                      autofocus
+                      v-model="fullName"
+                    />
+                  </div>
                 </div>
-              </div>
-            </form>
+
+                <div class="form-group row py-2">
+                  <label
+                    for="gymmboxxid"
+                    class="col-md-4 col-form-label text-md-right"
+                    >GYMMBOXX ID:</label
+                  >
+
+                  <div class="col-md-6">
+                    <input
+                      id="gymmboxxid"
+                      type="text"
+                      class="form-control"
+                      name="gymmboxxid"
+                      required
+                      v-model="gymmboxxid"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group row py-2">
+                  <label
+                    for="contactNo"
+                    class="col-md-4 col-form-label text-md-right"
+                    >CONTACT NUMBER:</label
+                  >
+
+                  <div class="col-md-6">
+                    <input
+                      id="contactNo"
+                      type="text"
+                      class="form-control"
+                      name="contactNo"
+                      required
+                      v-model="contactNo"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group row py-2">
+                  <label
+                    for="emergencyContactName"
+                    class="col-md-4 col-form-label text-md-right"
+                    >EMERGENCY CONTACT:</label
+                  >
+
+                  <div class="col-md-6">
+                    <input
+                      id="emergencyContactName"
+                      type="text"
+                      class="form-control"
+                      name="emergencyContactName"
+                      required
+                      v-model="emergencyContactName"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group row py-2">
+                  <label
+                    for="emergencyContactNo"
+                    class="col-md-4 col-form-label text-md-right"
+                    >EMERGENCY CONTACT NO:</label
+                  >
+
+                  <div class="col-md-6">
+                    <input
+                      id="emergencyContactNo"
+                      type="text"
+                      class="form-control"
+                      name="emergencyContactNo"
+                      required
+                      v-model="emergencyContactNo"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group row py-2">
+                  <label
+                    for="email"
+                    class="col-md-4 col-form-label text-md-right"
+                    >EMAIL:</label
+                  >
+
+                  <div class="col-md-6">
+                    <input
+                      id="email"
+                      type="email"
+                      class="form-control"
+                      name="email"
+                      value
+                      required
+                      autofocus
+                      v-model="email"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group row py-2">
+                  <label
+                    for="password"
+                    class="col-md-4 col-form-label text-md-right"
+                    >PASSWORD:</label
+                  >
+
+                  <div class="col-md-6">
+                    <input
+                      id="password"
+                      type="password"
+                      class="form-control"
+                      name="password"
+                      required
+                      v-model="password"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group row py-2">
+                  <label
+                    for="confirmPassword"
+                    class="col-md-4 col-form-label text-md-right"
+                    >CONFIRM PASSWORD:</label
+                  >
+
+                  <div class="col-md-6">
+                    <input
+                      id="confirmPassword"
+                      type="password"
+                      class="form-control"
+                      name="confirmPassword"
+                      required
+                      v-model="confirmPassword"
+                      @input="validateForm"
+                    />
+                  </div>
+                  <p v-if="errorMessage" class="alert alert-danger mt-3">
+                    {{ errorMessage }}
+                  </p>
+                </div>
+
+                <div class="form-group row mb-0">
+                  <div class="button-div">
+                    <button type="submit" class="btn btn-primary mt-2">
+                      <div
+                        v-if="isLoading"
+                        class="spinner-border spinner-border-sm"
+                      ></div>
+                      Sign-Up
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
@@ -189,6 +242,8 @@
 </template>
 
 <script>
+import SignUpHeader from "../SignUpHeader.vue"
+
 export default {
   name: "SignUpComponent",
   data() {
@@ -202,8 +257,11 @@ export default {
       email: "",
       password: "",
       confirmPassword: "",
-      errorMessage: ""
-    }
+      errorMessage: "",
+    };
+  },
+  components: {
+    SignUpHeader
   },
   methods: {
     validateForm() {
@@ -218,17 +276,19 @@ export default {
     async SignUp() {
       this.isLoading = true;
       try {
-        await this.$store.dispatch("signUp", {
-          gymmboxxid: this.gymmboxxid,
-          contactNo: this.contactNo,
-          emergencyContactName: this.emergencyContactName,
-          emergencyContactNo: this.emergencyContactNo,
-          fullName: this.fullName,
-          email: this.email,
-          password: this.password,
-        }).then((response) => {
-          this.$router.push("/signin");
-        });
+        await this.$store
+          .dispatch("signUp", {
+            gymmboxxid: this.gymmboxxid,
+            contactNo: this.contactNo,
+            emergencyContactName: this.emergencyContactName,
+            emergencyContactNo: this.emergencyContactNo,
+            fullName: this.fullName,
+            email: this.email,
+            password: this.password,
+          })
+          .then((response) => {
+            this.$router.push("/signin");
+          });
       } catch (err) {
         this.isLoading = false;
         if (err.code === "auth/email-already-in-use") {
@@ -238,7 +298,7 @@ export default {
           this.errorMessage = err.message;
         }
       }
-    }
+    },
   },
 };
 </script>
