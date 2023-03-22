@@ -13,7 +13,8 @@ const store = createStore({
     user: {
       loggedIn: false,
       data: null,
-      isTrainer: null
+      isTrainer: null,
+      clientEmail: null
     },
   },
   getters: {
@@ -30,6 +31,9 @@ const store = createStore({
     },
     SET_TRAINER(state, value) {
       state.user.isTrainer = value;
+    },
+    SET_CLIENT_EMAIL(state, value) {
+      state.user.clientEmail = value;
     }
   },
   plugins: [
@@ -119,6 +123,10 @@ const store = createStore({
 
     async fetchTrainer(context) {
       context.commit("SET_TRAINER", true);
+    },
+
+    async setClientEmail(context, email) {
+      context.commit("SET_CLIENT_EMAIL", email);
     }
   },
 });

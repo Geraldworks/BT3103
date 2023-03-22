@@ -11,6 +11,7 @@
             class="nav-link"
             to="/clients"
             exact-active-class="active-nav-link"
+            @click="removeEmailToRender"
           >
             <p>CLIENTS</p>
           </router-link>
@@ -46,17 +47,10 @@
   
 <script>
 import {
-    CNavbar,
-    CNavItem,
     CDropdown,
-    CNavbarNav,
-    CNavbarToggler,
     CDropdownToggle,
-    CContainer,
-    CCollapse,
     CDropdownItem,
     CDropdownMenu,
-    CNavLink,
   } from "@coreui/vue";
   import { mapGetters } from "vuex";
   import { auth } from "@/firebase.js";
@@ -82,6 +76,10 @@ import {
         this.$router.push("/");
         sessionStorage.clear();
       },
+      removeEmailToRender() {
+      this.$store.dispatch("setClientEmail", null);
+      this.refreshPage();
+    },
     },
   };
   </script>
