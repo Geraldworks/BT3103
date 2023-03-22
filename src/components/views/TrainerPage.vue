@@ -6,30 +6,40 @@
     <!-- v-if is used to render client information or trainer information selectively on the same page -->
     <!-- if the trainer clicks on a specific client, we update clientEmailToRender and refresh the page with 
          the client information with the email pass to clientEmailToRender -->
-    <h1 v-if="!user.clientEmail" class="header1">YOUR CLIENTS</h1>
+    <div v-if="!user.clientEmail" class="header1">YOUR CLIENTS</div>
     <div v-if="!user.clientEmail" class="client-cards-container">
       <div
         v-for="(clientInfo, clientEmail) in clientInfo"
         class="box"
         :key="refreshCount"
       >
-        <h3 class="Session">
-          <span class="red-text">Session:</span>
-          <span class="white-text">{{ clientInfo[1] }}</span>
-        </h3>
-        <h3 class="Name" @click="setEmailToRender(clientEmail)">
-          Name: {{ clientInfo[0] }} <br>
-          Email: {{ clientEmail }}
-        </h3>
-
-        <h3 class="Routine">
-          <span class="red-text">Routine:</span>
-          <span class="white-text">{{ clientInfo[2] }}</span>
-        </h3>
+        <div class="client-card" @click="setEmailToRender(clientEmail)">
+          <div class="Name">
+            {{ clientInfo[0] }}
+          </div>
+          <div class="session-routine">
+            <div>
+              <h3 class="Session">
+                <div class="red-text">Next Session: </div>
+                <div class="red-text">Routine: </div>
+              </h3>
+            </div>
+            <div class="filler">
+              <div>_</div>
+              <div>_</div>
+            </div>
+            <div>
+              <h3 class="Routine">
+                <div class="white-text">  {{clientInfo[1] ? clientInfo[1] : "No Upcoming Session" }}</div>
+                <div class="white-text">  {{clientInfo[2] ? clientInfo[2] : "No Upcoming Routine"}} </div>
+              </h3>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div v-if="user.clientEmail">
-        <!-- ClientPerformance listens for the returnToHome event
+      <!-- ClientPerformance listens for the returnToHome event
              when this occurs, we remove the current client email that is rendered 
              we then render everything again using the :key attribute -->
       <ClientPerformance
@@ -134,6 +144,7 @@ export default {
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@600&display=swap");
 
 .Trainer-Page {
   background-color: black;
@@ -147,10 +158,20 @@ export default {
   color: white;
   margin: 40px 200px 20px 200px;
   border-bottom: 5px solid white;
+  font-size: 3.5rem;
+}
+
+.filler {
+  color: transparent;
+}
+.client-card {
+  display: flex;
+  justify-content: space-between;
+  margin: 40px;
 }
 
 .client-cards-container {
-  height: calc(100vh - 380px);
+  height: calc(100vh - 400px);
   overflow: auto;
   box-sizing: border-box;
 }
@@ -180,9 +201,16 @@ export default {
 
 .Session {
   text-align: right;
-  margin-right: 70px;
-  margin-top: 20px;
   font-size: 1.5rem;
+}
+
+.session-routine {
+  font-family: "Source Sanr Pro", sans-serif;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-right: 50px;
+  width: 400px;
 }
 .red-text {
   color: red;
@@ -191,18 +219,16 @@ export default {
   color: white;
 }
 .Name {
-  margin-left: 30px;
-  margin-top: 10px;
-  font-size: 2.25rem;
+  margin-left: 50px;
+  font-size: 55px;
   font-weight: bold;
   color: white;
 }
 .Routine {
-  text-align: right;
-  margin-right: 70px;
-  margin-bottom: 20px;
+  text-align: left;
   font-size: 1.5rem;
   color: white;
+  margin-left: auto;
 }
 
 @keyframes client-highlighting {

@@ -36,7 +36,6 @@
                 />
               </CDropdownToggle>
               <CDropdownMenu>
-                <CDropdownItem href="#">Edit Profile</CDropdownItem>
                 <CDropdownItem @click="signOut">Sign Out</CDropdownItem>
               </CDropdownMenu>
             </CDropdown>
@@ -78,7 +77,6 @@ import {
       },
       removeEmailToRender() {
       this.$store.dispatch("setClientEmail", null);
-      this.refreshPage();
     },
     },
   };

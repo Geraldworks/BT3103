@@ -26,11 +26,6 @@
   background-size:contain;
 }
 
-hr {
-  background-color: rgb(255, 255, 255);
-  border: 3px solid rgb(255, 255, 255);
-}
-
 .profile-picture {
   border-radius: 50%;
   width: 100px;

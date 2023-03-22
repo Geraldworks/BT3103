@@ -7,12 +7,16 @@
       alt="profile picture"
     />
     <div class="your-profile">
-      <div>
-        Viewing <span style="color: #ed1f24">{{ clientName }}</span>
-      </div>
-      <!-- If we detect that the trainer wants to return, we will emit "refresh" to 
+      <div class="trainer-options">
+        <div>
+          Viewing <span style="color: #ed1f24">{{ clientName }}</span>
+        </div>
+        <!-- If we detect that the trainer wants to return, we will emit "refresh" to 
            go back to the page with all the client cards-->
-      <span class="right-side-items" @click="returnBackToTrainerHomePage()">Return</span>
+        <div class="right-side-items" @click="returnBackToTrainerHomePage()">
+          Return
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -70,11 +74,6 @@ export default {
   background-size: contain;
 }
 
-hr {
-  background-color: rgb(255, 255, 255);
-  border: 3px solid rgb(255, 255, 255);
-}
-
 .profile-picture {
   border-radius: 50%;
   width: 100px;
@@ -94,11 +93,17 @@ hr {
   border-bottom: 5px solid white;
 }
 
+.trainer-options {
+  display: flex;
+}
 .right-side-items {
   margin-left: auto;
+  font-size: 32px;
+  margin-top: 16px;
 }
 
 .right-side-items:hover {
+  display: inline;
   cursor: pointer;
   animation: turn-red;
   animation-duration: 0.3s;
