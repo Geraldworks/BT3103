@@ -3,20 +3,18 @@
     <div>
       <Navbar />
     </div>
-    <PerformanceHeader />
+    <TrainerPerformanceHeader :email= "holder"/>
     <div class="content-container">
-      <AllCharts :email= clientEmail />
-      <PerformanceBottom class="bottom" :email= clientEmail />
+      <AllCharts :email= "holder" />
+      <PerformanceBottom class="bottom" :email= "holder" />
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters, useStore } from "vuex";
-import {db, auth} from "../../firebase.js"
 import AllCharts from "../client/AllCharts.vue";
 import PerformanceBottom from "../client/PerformanceBottom.vue";
-import PerformanceHeader from "../client/PerformanceHeader.vue";
+import TrainerPerformanceHeader from "../trainer/TrainerPerformanceHeader.vue";
 
 export default {
   name: "ClientPerformancePage",
@@ -24,8 +22,17 @@ export default {
   components: {
     AllCharts,
     PerformanceBottom,
-    PerformanceHeader,
+    TrainerPerformanceHeader,
   },
+  created() {
+    this.holder = this.$route.params.clientEmail;
+  },
+  data() {
+    return {
+      holder: ""
+    }
+  }
+
 };
 </script>
 <style scoped>
