@@ -68,6 +68,7 @@ const routes = [
     path: "/ClientPerformance/:clientEmail",
     name: "ClientPerformancePage",
     component: ClientPerformancePage,
+    props: true
   },    
 ];
 
