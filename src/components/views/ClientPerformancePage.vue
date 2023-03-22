@@ -3,65 +3,40 @@
     <div>
       <TrainerNavbar />
     </div>
-    <PerformanceHeader />
+    <TrainerPerformanceHeader :email= "holder"/>
     <div class="content-container">
-      <AllCharts :email="email" />
-      <PerformanceBottom class="bottom" :email="email" />
+      <AllCharts :email= "holder" />
+      <PerformanceBottom class="bottom" :email= "holder" />
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters, useStore } from "vuex";
-import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "../../firebase";
-import TrainerNavbar from "../trainer/TrainerNavbar.vue"
 import AllCharts from "../client/AllCharts.vue";
 import PerformanceBottom from "../client/PerformanceBottom.vue";
-import PerformanceHeader from "../client/PerformanceHeader.vue";
+import TrainerPerformanceHeader from "../trainer/TrainerPerformanceHeader.vue";
+import TrainerNavbar from '../trainer/TrainerNavbar.vue';
 
 export default {
   name: "ClientPerformancePage",
-  computed: {
-    ...mapGetters(["user"]),
-  },
-  data() {
-    return {
-      email: "",
-    };
-  },
-  mounted() {
-    const store = useStore();
-    auth.onAuthStateChanged((user) => {
-      store.dispatch("fetchUser", user);
-    }); // whenever page refreshes, the auth will have a short buffer from unknown to signed in / signed out
-  },
-  async created() {
-    this.email = this.user.data.email; // setting and passing the prop down to allcharts
-    // const docRef = doc(db, "client", this.user.data.email);
-    // const docSnap = await getDoc(docRef);
-
-    // if (docSnap.exists()) {
-    //   console.log("Document data:", docSnap.data());
-    // } else {
-    //   // doc.data() will be undefined in this case
-    //   console.log("No such document!");
-    // }
-  },
+  props:["clientEmail"],
   components: {
     AllCharts,
     PerformanceBottom,
-    PerformanceHeader,
-    TrainerNavbar
+    TrainerPerformanceHeader,
+    TrainerNavbar,
   },
-  watch: {
-    email(newEmail) {
-      console.log(newEmail);
-    },
+  created() {
+    this.holder = this.$route.params.clientEmail;
   },
+  data() {
+    return {
+      holder: ""
+    }
+  }
+
 };
 </script>
-
 <style scoped>
 .performance-page {
   background-color: black;

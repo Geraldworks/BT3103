@@ -5,14 +5,12 @@
     </div>
     <h1 class="header1"> Your clients</h1>
     <hr>
-
     <div v-for="(item, key) in clientinfo" class = "box">
         <h3 class="Session">
             <span class="red-text">Session:</span> 
             <span class="white-text">{{ item[1] }}</span>
         </h3>
-
-        <router-link :to='{ name: "ClientPerformancePage", params: { clientEmail: "key" } }'>
+        <router-link :to='{ name: "ClientPerformancePage", params: { clientEmail: key } }'>
             <h3 class="Name">Name: {{ item[0] }}</h3>
         </router-link>
         <h3 class="Name">Name: {{ key }}</h3>
@@ -32,6 +30,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db, auth } from "../../firebase.js";
 import { useStore, mapGetters } from "vuex";
 import TrainerNavbar from '../trainer/TrainerNavbar.vue';
+import router from '@/router'
 
 export default {
     name: "TrainerComponent",
@@ -61,7 +60,7 @@ export default {
             const trainerRef = collection(db, "trainer");
             const q = query(trainerRef, where("email", "==", this.user.data.email));
             const querySnapshot = await getDocs(q);
-            
+            // querying for the list of clients that this trainer ma
             querySnapshot.forEach((doc) => {
                 let documentData = doc.data();
                 let clientIds = documentData.ClientsId;
@@ -74,7 +73,7 @@ export default {
             const clientRef = collection(db, "client");
             const q2 = query(clientRef, where("email", "in", this.clients));
             const querySnapshot2 = await getDocs(q2);
-
+            // querying for the client information from the client table
             querySnapshot2.forEach((clientEmail) => {
                 let documentData2 = clientEmail.data();
                 let holder = [];

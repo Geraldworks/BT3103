@@ -76,7 +76,7 @@ export default {
   async created() {
     try {
       const clientRef = collection(db, "client");
-      const q = query(clientRef, where("email", "==", this.user.data.email));
+      const q = query(clientRef, where("email", "==", this.email));
       const querySnapshot = await getDocs(q);
 
       querySnapshot.forEach((doc) => {
