@@ -58,25 +58,18 @@ import {
     CDropdownMenu,
     CNavLink,
   } from "@coreui/vue";
-  import { useStore } from "vuex";
-  import { useRouter } from "vue-router";
-  import { computed } from "vue";
+  import { mapGetters } from "vuex";
   import { auth } from "@/firebase.js";
   
   export default {
     name: "TrainerNavbar",
-    setup() {
-      const store = useStore();
-      const router = useRouter();
+    mounted() {
       auth.onAuthStateChanged((user) => {
-        store.dispatch("fetchUser", user);
+        this.$store.dispatch("fetchUser", user);
       });
-      console.log(store.state.user);
-      const user = computed(() => {
-        return store.getters.user;
-      });
-  
-      return { user };
+    },
+    computed: {
+      ...mapGetters(['user'])
     },
     data() {
       return {

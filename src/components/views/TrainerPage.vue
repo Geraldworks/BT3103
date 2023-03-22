@@ -18,7 +18,8 @@
           <span class="white-text">{{ clientInfo[1] }}</span>
         </h3>
         <h3 class="Name" @click="setEmailToRender(clientEmail)">
-          Name: {{ clientEmail }}
+          Name: {{ clientInfo[0] }} <br>
+          Email: {{ clientEmail }}
         </h3>
 
         <h3 class="Routine">
