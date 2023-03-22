@@ -8,3 +8,9 @@ export default {
   name: "BookingPage",
 };
 </script>
+
+<style scoped>
+body {
+  background-color: black;
+}
+</style>
