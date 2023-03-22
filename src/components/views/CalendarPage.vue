@@ -67,56 +67,6 @@ export default {
   font-family: Teko;
   font-size: 1.2rem;
 }
-
-.dialog-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.dialog-box {
-  background-color: white;
-  padding: 20px;
-  border-radius: 5px;
-  max-width: 600px;
-}
-
-.dialog-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.dialog-header h2 {
-  margin: 0;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.5em;
-}
-
-.dialog-body {
-  margin-bottom: 20px;
-}
-
-.dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.dialog-footer button {
-  margin-left: 10px;
-}
 </style>
 
 <style>
