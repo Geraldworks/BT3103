@@ -6,8 +6,8 @@
     <!-- v-if is used to render client information or trainer information selectively on the same page -->
     <!-- if the trainer clicks on a specific client, we update clientEmailToRender and refresh the page with 
          the client information with the email pass to clientEmailToRender -->
-    <h1 v-if="!clientEmailToRender" class="header1">YOUR CLIENTS</h1>
-    <div v-if="!clientEmailToRender" class="client-cards-container">
+    <h1 v-if="!user.clientEmail" class="header1">YOUR CLIENTS</h1>
+    <div v-if="!user.clientEmail" class="client-cards-container">
       <div
         v-for="(clientInfo, clientEmail) in clientInfo"
         class="box"
@@ -18,7 +18,8 @@
           <span class="white-text">{{ clientInfo[1] }}</span>
         </h3>
         <h3 class="Name" @click="setEmailToRender(clientEmail)">
-          Name: {{ clientEmail }}
+          Name: {{ clientInfo[0] }} <br>
+          Email: {{ clientEmail }}
         </h3>
 
         <h3 class="Routine">
@@ -27,12 +28,12 @@
         </h3>
       </div>
     </div>
-    <div v-if="clientEmailToRender">
+    <div v-if="user.clientEmail">
         <!-- ClientPerformance listens for the returnToHome event
              when this occurs, we remove the current client email that is rendered 
              we then render everything again using the :key attribute -->
       <ClientPerformance
-        :clientEmail="clientEmailToRender"
+        :clientEmail="user.clientEmail"
         :key="refreshCount"
         @returnToHome="removeEmailToRender()"
       />
@@ -43,7 +44,7 @@
 <script>
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db, auth } from "../../firebase.js";
-import { useStore, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import TrainerNavbar from "../trainer/TrainerNavbar.vue";
 import ClientPerformance from "../trainer/ClientPerformance.vue";
 
@@ -57,7 +58,6 @@ export default {
     return {
       clients: null,
       clientInfo: null,
-      clientEmailToRender: null,
       refreshCount: 0, // helps to update components when there are state changes
     };
   },
@@ -68,12 +68,12 @@ export default {
     },
     // this method helps to set the specific client information to render
     setEmailToRender(email) {
-      this.clientEmailToRender = email;
+      this.$store.dispatch("setClientEmail", email);
       this.refreshPage();
     },
     // this method helps to remove the specific client information to render when the trainer clicks back
     removeEmailToRender() {
-      this.clientEmailToRender = null;
+      this.$store.dispatch("setClientEmail", null);
       this.refreshPage();
     },
   },
@@ -84,9 +84,8 @@ export default {
     ...mapGetters(["user"]),
   },
   mounted() {
-    const store = useStore();
     auth.onAuthStateChanged((user) => {
-      store.dispatch("fetchUser", user);
+      this.$store.dispatch("fetchUser", user);
     });
   },
   async created() {

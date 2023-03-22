@@ -28,7 +28,6 @@ export default {
     // this.holder = this.$route.params.clientEmail;
   },
   data() {
-
     // return {
     //   holder: ""
     // }

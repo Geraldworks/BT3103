@@ -11,6 +11,7 @@
             class="nav-link"
             to="/clients"
             exact-active-class="active-nav-link"
+            @click="removeEmailToRender"
           >
             <p>CLIENTS</p>
           </router-link>
@@ -46,37 +47,23 @@
   
 <script>
 import {
-    CNavbar,
-    CNavItem,
     CDropdown,
-    CNavbarNav,
-    CNavbarToggler,
     CDropdownToggle,
-    CContainer,
-    CCollapse,
     CDropdownItem,
     CDropdownMenu,
-    CNavLink,
   } from "@coreui/vue";
-  import { useStore } from "vuex";
-  import { useRouter } from "vue-router";
-  import { computed } from "vue";
+  import { mapGetters } from "vuex";
   import { auth } from "@/firebase.js";
   
   export default {
     name: "TrainerNavbar",
-    setup() {
-      const store = useStore();
-      const router = useRouter();
+    mounted() {
       auth.onAuthStateChanged((user) => {
-        store.dispatch("fetchUser", user);
+        this.$store.dispatch("fetchUser", user);
       });
-      console.log(store.state.user);
-      const user = computed(() => {
-        return store.getters.user;
-      });
-  
-      return { user };
+    },
+    computed: {
+      ...mapGetters(['user'])
     },
     data() {
       return {
@@ -89,6 +76,10 @@ import {
         this.$router.push("/");
         sessionStorage.clear();
       },
+      removeEmailToRender() {
+      this.$store.dispatch("setClientEmail", null);
+      this.refreshPage();
+    },
     },
   };
   </script>
