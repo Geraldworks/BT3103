@@ -1,12 +1,9 @@
 <template>
   <div class="performance-page">
-    <div>
-      <TrainerNavbar />
-    </div>
-    <TrainerPerformanceHeader :email= "holder"/>
+    <TrainerPerformanceHeader :email= "clientEmail" @returnToHome="returnBackToTrainerHomePage()"/>
     <div class="content-container">
-      <AllCharts :email= "holder" />
-      <PerformanceBottom class="bottom" :email= "holder" />
+      <AllCharts :email= "clientEmail" />
+      <PerformanceBottom class="bottom" :email= "clientEmail" />
     </div>
   </div>
 </template>
@@ -14,8 +11,8 @@
 <script>
 import AllCharts from "../client/AllCharts.vue";
 import PerformanceBottom from "../client/PerformanceBottom.vue";
-import TrainerPerformanceHeader from "../trainer/TrainerPerformanceHeader.vue";
-import TrainerNavbar from '../trainer/TrainerNavbar.vue';
+import TrainerPerformanceHeader from "./TrainerPerformanceHeader.vue";
+import TrainerNavbar from './TrainerNavbar.vue';
 
 export default {
   name: "ClientPerformancePage",
@@ -27,14 +24,21 @@ export default {
     TrainerNavbar,
   },
   created() {
-    this.holder = this.$route.params.clientEmail;
+    // can consider storing something here to maintain client view
+    // this.holder = this.$route.params.clientEmail;
   },
   data() {
-    return {
-      holder: ""
-    }
-  }
 
+    // return {
+    //   holder: ""
+    // }
+  },
+  methods: {
+    returnBackToTrainerHomePage() {
+      this.$emit("returnToHome")
+    }
+  },
+  emits: ["returnToHome"]
 };
 </script>
 <style scoped>
