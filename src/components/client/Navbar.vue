@@ -42,7 +42,7 @@
           <p>ROUTINES</p>
         </router-link>
       </div>
-      <div class="col">
+      <div class="col signOut">
         <CDropdown class="d-flex" variant="nav-item" :popper="false">
             <CDropdownToggle color="secondary">
               <img
@@ -156,6 +156,7 @@ nav {
   box-sizing: border-box;
   padding: 0px 10px;
 }
+
 </style>
 
 <!-- <template>

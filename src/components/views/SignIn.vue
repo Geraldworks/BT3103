@@ -1,76 +1,147 @@
+<style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
+.button-div {
+  text-align: center;
+}
+
+button {
+  width: 120px;
+  height: 50px;
+  border-radius: 25px; /* half of height */
+  background-color: rgb(237, 12, 16);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  margin: 5px;
+  margin-top: 30px;
+  font-size: 1.5rem;
+  text-align: center;
+  box-sizing: border-box;
+  color: white;
+  font-family: Teko;
+}
+
+button:hover {
+  animation-name: pill-button-highlight;
+  animation-duration: 0.15s;
+  animation-fill-mode: forwards;
+  box-sizing: border-box;
+}
+
+@keyframes pill-button-highlight {
+  from {
+    border: 0px white solid;
+  }
+  to {
+    border: 2px white solid;
+  }
+}
+
+.signIn-page {
+  min-width: 100vw;
+  min-height: 100vh;
+  background-color: #d9d9d9;
+  position: relative;
+  overflow: auto;
+}
+
+.background-color-change {
+  background-color: #d9d9d9;
+  padding: 10px 20px 10px 20px;
+  box-shadow: 0px 0px 3px grey;
+  margin-bottom: 50px
+}
+
+.no-account {
+  position: relative;
+  top: 20px;
+  text-align: center;
+  text-decoration: underline;
+}
+
+.no-account:hover {
+  cursor: pointer;
+}
+</style>
+
 <template>
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-header text-center">
-            <h3>SIGN IN TO ACCOUNT</h3>
-          </div>
-          <div class="card-body">
-            <form action="#" @submit.prevent="SignIn">
-              <div class="form-group row py-2">
-                <label for="email" class="col-md-4 col-form-label text-md-right"
-                  >EMAIL:</label
-                >
+  <div class="signIn-page">
+    <SignUpHeader headerWords="sign in to account" />
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-7">
+          <div class="card background-color-change">
+            <div class="card-body">
+              <form action="#" @submit.prevent="SignIn">
+                <div class="form-group row py-2">
+                  <label
+                    for="email"
+                    class="col-md-4 col-form-label text-md-right"
+                    >EMAIL:</label
+                  >
 
-                <div class="col-md-6">
-                  <input
-                    id="email"
-                    type="email"
-                    class="form-control"
-                    name="email"
-                    value
-                    required
-                    autofocus
-                    v-model="email"
-                  />
+                  <div class="col-md-6">
+                    <input
+                      id="email"
+                      type="email"
+                      class="form-control"
+                      name="email"
+                      value
+                      required
+                      autofocus
+                      v-model="email"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div class="form-group row py-2">
-                <label
-                  for="password"
-                  class="col-md-4 col-form-label text-md-right"
-                  >PASSWORD:</label
-                >
+                <div class="form-group row py-2">
+                  <label
+                    for="password"
+                    class="col-md-4 col-form-label text-md-right"
+                    >PASSWORD:</label
+                  >
 
-                <div class="col-md-6">
-                  <input
-                    id="password"
-                    type="password"
-                    class="form-control"
-                    name="password"
-                    required
-                    v-model="password"
-                  />
+                  <div class="col-md-6">
+                    <input
+                      id="password"
+                      type="password"
+                      class="form-control"
+                      name="password"
+                      required
+                      v-model="password"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div class="form-group row mb-0">
-                <div class="col-md-8 offset-md-4">
-                  <button type="submit" class="btn btn-primary mt-2">
-                    <div
-                      v-if="isLoading"
-                      class="spinner-border spinner-border-sm"
-                    ></div>
-                    Sign In
-                  </button>
+                <div class="form-group row mb-0">
+                  <div class="button-div">
+                    <button type="submit" class="btn btn-primary mt-2">
+                      <div
+                        v-if="isLoading"
+                        class="spinner-border spinner-border-sm"
+                      ></div>
+                      Sign In
+                    </button>
+                  </div>
+                  <div v-if="error" class="alert alert-danger mt-4">
+                    {{ error }}
+                  </div>
                 </div>
-                <div v-if="error" class="alert alert-danger mt-2">
-                  {{ error }}
-                </div>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <div class="no-account">Don't have an account? Create one</div>
+    <!-- Make this a push to the sign up page -->
   </div>
 </template>
 
 <script>
 import { doc, getDoc } from "@firebase/firestore";
 import { db } from "../../firebase";
+import SignUpHeader from "../SignUpHeader.vue";
 
 export default {
   name: "SignInComponent",
@@ -81,6 +152,9 @@ export default {
       password: "",
       error: null,
     };
+  },
+  components: {
+    SignUpHeader,
   },
   methods: {
     async SignIn() {
@@ -103,15 +177,15 @@ export default {
                   console.log("TRAINER ACCOUNT");
 
                   // SET AS TRAINER
-                  this.$store.dispatch("fetchTrainer"); 
+                  this.$store.dispatch("fetchTrainer");
 
                   this.$router.push("/clients");
-                } 
+                }
               })
               .catch((err) => {
                 // CLIENT ACCOUNT
                 console.log("CLIENT ACCOUNT");
-                
+
                 this.$router.push("/performance");
               });
           });
