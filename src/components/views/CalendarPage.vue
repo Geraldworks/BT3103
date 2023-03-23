@@ -13,12 +13,20 @@
       <vue-cal
         class="calendar"
         active-view="month"
-        :disable-views="['years', 'year', 'week']"
-        events-on-month-view="true"
+        :disable-views="['years', 'year', 'day']"
         :time-from="9 * 60"
         :time-to="23 * 60"
+        :time-step="60"
         :events="events"
         :on-event-click="onEventClick"
+        :editable-events="{
+          title: true,
+          drag: true,
+          resize: false,
+          delete: false,
+          create: true,
+        }"
+        :snap-to-time="60"
       />
     </div>
   </div>
@@ -40,8 +48,18 @@ export default {
           title: "Gym Session",
         },
         {
+          start: "2023-03-27 15:00",
+          end: "2023-03-27 17:00",
+          title: "Gym Session",
+        },
+        {
           start: "2023-03-15 10:00",
           end: "2023-03-15 12:00",
+          title: "Gym Session",
+        },
+        {
+          start: "2023-03-15 14:00",
+          end: "2023-03-15 16:00",
           title: "Gym Session",
         },
       ],
@@ -71,8 +89,13 @@ export default {
 
 <style>
 .vuecal__event {
-  background-color: red;
+  background-color: darkgray;
+  border-color: black;
   box-sizing: border-box;
   padding: 5px;
+}
+
+.vuecal__cell--has-events {
+  background-color: #fffacd;
 }
 </style>
