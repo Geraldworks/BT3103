@@ -20,8 +20,8 @@
           <div class="session-routine">
             <div>
               <h3 class="Session">
-                <div class="red-text">Next Session: </div>
-                <div class="red-text">Routine: </div>
+                <div class="red-text upper">Next Session: </div>
+                <div class="red-text lower">Routine: </div>
               </h3>
             </div>
             <div class="filler">
@@ -30,8 +30,8 @@
             </div>
             <div>
               <h3 class="Routine">
-                <div class="white-text">  {{clientInfo[1] ? clientInfo[1] : "No Upcoming Session" }}</div>
-                <div class="white-text">  {{clientInfo[2] ? clientInfo[2] : "No Upcoming Routine"}} </div>
+                <div class="white-text upper">  {{clientInfo[1] ? clientInfo[1] : "No Upcoming Session" }}</div>
+                <div class="white-text lower">  {{clientInfo[2] ? clientInfo[2] : "No Upcoming Routine"}} </div>
               </h3>
             </div>
           </div>
@@ -204,6 +204,9 @@ export default {
   font-size: 1.5rem;
 }
 
+.upper {
+  padding-bottom : 20px;
+}
 .session-routine {
   font-family: "Source Sanr Pro", sans-serif;
   display: flex;
