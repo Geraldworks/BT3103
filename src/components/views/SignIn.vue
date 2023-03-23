@@ -133,7 +133,9 @@ button:hover {
         </div>
       </div>
     </div>
-    <div class="no-account">Don't have an account? Create one</div>
+    <div class="no-account">
+      <a href="/signup">Don't have an account? Create one</a>
+    </div>
     <!-- Make this a push to the sign up page -->
   </div>
 </template>
