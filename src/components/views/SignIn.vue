@@ -134,7 +134,7 @@ button:hover {
       </div>
     </div>
     <div class="no-account">
-      <a href="/signup">Don't have an account? Create one</a>
+      <div @click="goToSignUp()">Don't have an account? Create one</div>
     </div>
     <!-- Make this a push to the sign up page -->
   </div>
@@ -159,6 +159,9 @@ export default {
     SignUpHeader,
   },
   methods: {
+    goToSignUp() {
+      this.$router.push("/signUp")
+    },
     async SignIn() {
       this.isLoading = true;
       try {
