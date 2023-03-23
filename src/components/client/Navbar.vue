@@ -42,7 +42,7 @@
           <p>ROUTINES</p>
         </router-link>
       </div>
-      <div class="col">
+      <div class="col signOut">
         <CDropdown class="d-flex" variant="nav-item" :popper="false">
             <CDropdownToggle color="secondary">
               <img
@@ -53,7 +53,8 @@
               />
             </CDropdownToggle>
             <CDropdownMenu>
-              <CDropdownItem href="#">Edit Profile</CDropdownItem>
+              <CDropdownItem href="/editprofile">Edit Profile</CDropdownItem>
+              <CDropdownItem href="/goals">Set Goals</CDropdownItem>
               <CDropdownItem @click="signOut">Sign Out</CDropdownItem>
             </CDropdownMenu>
           </CDropdown>
@@ -64,17 +65,10 @@
 
 <script>
 import {
-  CNavbar,
-  CNavItem,
   CDropdown,
-  CNavbarNav,
-  CNavbarToggler,
   CDropdownToggle,
-  CContainer,
-  CCollapse,
   CDropdownItem,
   CDropdownMenu,
-  CNavLink,
 } from "@coreui/vue";
 import { mapGetters } from "vuex";
 import { auth } from "@/firebase.js";
@@ -156,49 +150,5 @@ nav {
   box-sizing: border-box;
   padding: 0px 10px;
 }
-</style>
 
-<!-- <template>
-  <div class="navbar-brand">
-    <img src="gymmbuddy.png" alt="Logo" />
-  </div>
-  <CNavbar expand="lg" class="bg-black">
-    <CContainer fluid>
-      <CNavbarToggler
-        aria-label="Toggle navigation"
-        aria-expanded="{visible}"
-        @click="visible = !visible"
-      />
-      <CCollapse class="navbar-collapse" :visible="visible">
-        <CNavbarNav>
-          <CNavItem>
-            <CNavLink href="/performance" active> Performance </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="/booking" active> Booking </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="/calendar" active> Calendar </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="/routines" active> Routines </CNavLink>
-          </CNavItem>
-          <CDropdown class="d-flex" variant="nav-item" :popper="false">
-            <CDropdownToggle color="secondary">
-              <img
-                src="/abstract-user-flat-4.svg"
-                alt=""
-                width="22"
-                height="24"
-              />
-            </CDropdownToggle>
-            <CDropdownMenu>
-              <CDropdownItem href="#">Edit Profile</CDropdownItem>
-              <CButton @click="signOut">Sign Out</CButton>
-            </CDropdownMenu>
-          </CDropdown>
-        </CNavbarNav>
-      </CCollapse>
-    </CContainer>
-  </CNavbar>
-</template> -->
+</style>

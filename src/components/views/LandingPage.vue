@@ -153,6 +153,7 @@ body {
   font-size: 1.5rem;
   text-align: center;
   box-sizing: border-box;
+  color: white;
 }
 
 .about-gymmbuddy, .why-gymmbuddy{

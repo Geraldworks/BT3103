@@ -9,6 +9,8 @@ import RoutinesPage from "../components/views/RoutinesPage.vue";
 import TrainerPage from "../components/views/TrainerPage.vue";
 import TrainerCalendarPage from "../components/views/TrainerCalendarPage.vue";
 import NotFound from "../components/views/NotFound.vue";
+import EditProfilePage from "../components/views/EditProfilePage.vue";
+import GoalsPage from "../components/views/GoalsPage.vue";
 
 import store from "../store";
 
@@ -49,6 +51,16 @@ const routes = [
     component: RoutinesPage,
   },
   {
+    path: "/editprofile",
+    name: "EditProfile",
+    component: EditProfilePage,
+  },
+  {
+    path: "/goals",
+    name: "Goals",
+    component: GoalsPage,
+  },
+  {
     path: "/clients",
     name: "TrainerPage",
     component: TrainerPage,
@@ -82,7 +94,8 @@ router.beforeEach(async (to, from) => {
       to.name == "Routines" ||
       to.name == "SignIn" ||
       to.name == "SignUp" ||
-      to.name == "Landing")
+      to.name == "Landing" ||
+      to.name == "EditProfile")
     ) {
         return { name: "TrainerPage" };
     }
