@@ -20,13 +20,12 @@
         :events="events"
         :on-event-click="onEventClick"
         :editable-events="{
-          title: true,
-          drag: true,
+          title: false,
+          drag: false,
           resize: false,
           delete: false,
-          create: true,
+          create: false,
         }"
-        :snap-to-time="60"
       />
     </div>
   </div>
@@ -48,8 +47,8 @@ export default {
           title: "Gym Session",
         },
         {
-          start: "2023-03-27 15:00",
-          end: "2023-03-27 17:00",
+          start: "2023-03-29 10:00",
+          end: "2023-03-29 12:00",
           title: "Gym Session",
         },
         {
