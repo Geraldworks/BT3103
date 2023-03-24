@@ -28,19 +28,32 @@
         }"
         :snap-to-time="60"
       />
+      <div class="popup">
+        <SmallModal
+          v-show="showModal"
+          :bodyContent="modalBodyContent"
+          :buttonContent="modalButtonContent"
+          @close-modal="showModal = false"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import VueCal from "vue-cal";
+import SmallModal from "../client/SmallModal.vue";
 import "vue-cal/dist/vuecal.css";
 
 export default {
   name: "CalendarPage",
-  components: { VueCal },
+  components: { VueCal, SmallModal },
   data() {
     return {
+      // selectedEvent: {},
+      showModal: false,
+      modalBodyContent: "test",
+      modalButtonContent: "Done",
       events: [
         {
           start: "2023-03-27 14:00",
@@ -68,6 +81,10 @@ export default {
   methods: {
     onEventClick(event, e) {
       console.log("Clicked the event");
+      // this.selectedEvent = event;
+      this.showModal = true;
+
+      e.stopPropagation();
     },
   },
 };
