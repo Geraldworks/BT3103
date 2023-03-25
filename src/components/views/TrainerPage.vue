@@ -14,14 +14,17 @@
         :key="refreshCount"
       >
         <div class="client-card" @click="setEmailToRender(clientEmail)">
+          <div class="profile-pic">
+            <img :src="clientInfo[3]" alt="DP" />
+          </div>
           <div class="Name">
             {{ clientInfo[0] }}
           </div>
           <div class="session-routine">
             <div>
               <h3 class="Session">
-                <div class="red-text upper">Next Session: </div>
-                <div class="red-text lower">Routine: </div>
+                <div class="red-text upper">Next Session:</div>
+                <div class="red-text lower">Routine:</div>
               </h3>
             </div>
             <div class="filler">
@@ -30,8 +33,12 @@
             </div>
             <div>
               <h3 class="Routine">
-                <div class="white-text upper">  {{clientInfo[1] ? clientInfo[1] : "No Upcoming Session" }}</div>
-                <div class="white-text lower">  {{clientInfo[2] ? clientInfo[2] : "No Upcoming Routine"}} </div>
+                <div class="white-text upper">
+                  {{ clientInfo[1] ? clientInfo[1] : "No Upcoming Session" }}
+                </div>
+                <div class="white-text lower">
+                  {{ clientInfo[2] ? clientInfo[2] : "No Upcoming Routine" }}
+                </div>
               </h3>
             </div>
           </div>
@@ -55,8 +62,10 @@
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db, auth } from "../../firebase.js";
 import { mapGetters } from "vuex";
+import { ref, getStorage, getDownloadURL, list } from "@firebase/storage";
 import TrainerNavbar from "../trainer/TrainerNavbar.vue";
 import ClientPerformance from "../trainer/ClientPerformance.vue";
+import defaultPic from "../../assets/images/default_dp.svg";
 
 export default {
   name: "TrainerComponent",
@@ -111,7 +120,6 @@ export default {
         this.clients = clientIds;
       });
 
-      //
       const clientInfo = {};
 
       // Gets the client collection
@@ -127,8 +135,24 @@ export default {
         currClient.push(documentData2.fullName);
         currClient.push(documentData2.emergencyContactNo);
         currClient.push(documentData2.emergencyContactName);
+        currClient.push(defaultPic);
         // putting current client info into the clientInfo object
         clientInfo[documentData2.email] = currClient;
+      });
+
+      // Storing image URLs
+      const storage = getStorage();
+      const listRef = ref(storage);
+
+      list(listRef).then((res) => {
+        res.items.forEach((imageRef) => {
+          const email = imageRef._location.path;
+          if (clientInfo[email]) {
+            getDownloadURL(imageRef).then((url) => {
+              clientInfo[email][3] = url;
+            });
+          }
+        });
       });
 
       // assign all client information to the variable clientInfo
@@ -205,7 +229,7 @@ export default {
 }
 
 .upper {
-  padding-bottom : 20px;
+  padding-bottom: 20px;
 }
 .session-routine {
   font-family: "Source Sanr Pro", sans-serif;
@@ -232,6 +256,12 @@ export default {
   font-size: 1.5rem;
   color: white;
   margin-left: auto;
+}
+
+.profile-pic img {
+  width: auto;
+  height: 120px;
+  border-radius: 50%;
 }
 
 @keyframes client-highlighting {

@@ -6,19 +6,23 @@
         <div>EDIT PROFILE</div>
       </div>
       <div class="row picture">
-          <label for="file-input">
-            <img :src="displayPicture" alt="Image" class="dp" />
-            <div class="overlay">
-              Change
-            </div>
-          </label>
-          <input id="file-input" type="file" @change="onFileSelected" />
+        <label for="file-input">
+          <img :src="displayPicture" alt="Image" class="dp" />
+          <div class="overlay">Change</div>
+        </label>
+        <input id="file-input" type="file" @change="onFileSelected" />
       </div>
       <div class="row justify-content-center">
         <div class="col-md-6">
           <div class="card background-color-change border-0">
             <div class="card-body">
-              <form action="#">
+              <form
+                action="#"
+                @submit.prevent="
+                  update();
+                  onUpload();
+                "
+              >
                 <div class="form-group row py-2">
                   <label
                     for="fullName"
@@ -103,14 +107,7 @@
 
                 <div class="form-group row mb-0">
                   <div class="button-div">
-                    <button
-                      type="submit"
-                      @submit="
-                        update();
-                        onUpload();
-                      "
-                      class="btn btn-primary mt-6"
-                    >
+                    <button type="submit" class="btn btn-primary mt-6">
                       <div
                         v-if="isLoading"
                         class="spinner-border spinner-border-sm"
@@ -213,13 +210,12 @@ export default {
         });
     },
     onFileSelected(event) {
-      let reader = new FileReader;
-      reader.onload = e => {
+      let reader = new FileReader();
+      reader.onload = (e) => {
         this.displayPicture = e.target.result;
-      }
+      };
       reader.readAsDataURL(event.target.files[0]);
       this.profilePicture = event.target.files[0];
-      console.log(this.displayPicture);
     },
     onUpload() {
       // Register three observers:
@@ -228,7 +224,6 @@ export default {
       // 3. Completion observer, called on successful completion
 
       // Ensure that it only uploads the pic when a pic is selected
-      console.log(this.profilePicture);
       if (this.profilePicture) {
         const storage = getStorage();
         const storageRef = ref(storage, `${this.user.data.email}`);
@@ -320,7 +315,7 @@ export default {
   font-size: 20px;
   padding: 20px;
   text-align: center;
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: "Source Sans Pro", sans-serif;
 }
 
 .button-div {
