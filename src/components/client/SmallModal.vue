@@ -30,25 +30,32 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
 .modal-overlay {
   position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  z-index: 500;
+  top: -10px;
+  bottom: -10px;
+  left: -10px;
+  right: -10px;
   display: flex;
   justify-content: center;
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .modal {
   display: flex;
-  justify-content: center;
-  text-align: center;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: auto;
+  position: relative;
+  /* justify-content: center;
+  text-align: center; */
   background-color: white;
   height: 90%;
   width: 90%;
   margin-top: 10%;
   padding: 60px 0;
   border-radius: 20px;
+  max-width: 50%;
+  max-height: 70%;
 }
 .close {
   margin: 10% 0 0 16px;

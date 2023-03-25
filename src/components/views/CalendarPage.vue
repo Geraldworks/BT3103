@@ -20,13 +20,12 @@
         :events="events"
         :on-event-click="onEventClick"
         :editable-events="{
-          title: true,
-          drag: true,
+          title: false,
+          drag: false,
           resize: false,
           delete: false,
-          create: true,
+          create: false,
         }"
-        :snap-to-time="60"
       />
       <div class="popup">
         <SmallModal
@@ -52,8 +51,8 @@ export default {
     return {
       // selectedEvent: {},
       showModal: false,
-      modalBodyContent: "test",
-      modalButtonContent: "Done",
+      modalBodyContent: "Content Text",
+      modalButtonContent: "This Button Does Nothing",
       events: [
         {
           start: "2023-03-27 14:00",
@@ -61,13 +60,13 @@ export default {
           title: "Gym Session",
         },
         {
-          start: "2023-03-27 15:00",
-          end: "2023-03-27 17:00",
+          start: "2023-03-29 10:00",
+          end: "2023-03-29 12:00",
           title: "Gym Session",
         },
         {
-          start: "2023-03-15 10:00",
-          end: "2023-03-15 12:00",
+          start: "2023-03-15 12:00",
+          end: "2023-03-15 14:00",
           title: "Gym Session",
         },
         {
@@ -106,13 +105,19 @@ export default {
 
 <style>
 .vuecal__event {
-  background-color: darkgray;
-  border-color: black;
+  background-color: rgba(169, 169, 169, 0.7);
+  border: solid rgba(0, 0, 0, 0.3);
+  border-width: 0 0 2px 0;
   box-sizing: border-box;
   padding: 5px;
+  cursor: pointer;
 }
 
 .vuecal__cell--has-events {
   background-color: #fffacd;
+}
+
+.vuecal__cell-events-count {
+  display: none;
 }
 </style>
