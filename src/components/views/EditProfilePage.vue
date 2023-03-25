@@ -8,6 +8,9 @@
       <div class="row picture">
           <label for="file-input">
             <img :src="displayPicture" alt="Image" class="dp" />
+            <div class="overlay">
+              Change
+            </div>
           </label>
           <input id="file-input" type="file" @change="onFileSelected" />
       </div>
@@ -298,11 +301,26 @@ export default {
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  position: relative;
 }
 .picture > label {
   width: auto;
   border-radius: 50%;
   cursor: pointer;
+}
+
+.picture .overlay {
+  position: absolute;
+  bottom: 0;
+  background: rgb(0, 0, 0);
+  background: rgba(0, 0, 0, 0.5); /* Black see-through */
+  color: #f1f1f1;
+  color: white;
+  width: 15%;
+  font-size: 20px;
+  padding: 20px;
+  text-align: center;
+  font-family: 'Source Sans Pro', sans-serif;
 }
 
 .button-div {
