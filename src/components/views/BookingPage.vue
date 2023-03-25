@@ -99,16 +99,3 @@ export default {
   font-size: 1.2rem;
 }
 </style>
-
-<style>
-.vuecal__event {
-  background-color: darkgray;
-  border-color: black;
-  box-sizing: border-box;
-  padding: 5px;
-}
-
-.vuecal__cell--has-events {
-  background-color: #fffacd;
-}
-</style>
