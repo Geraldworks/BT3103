@@ -3,8 +3,10 @@
     <div class="modal-overlay" @click="$emit('close-modal')">
       <div class="modal" @click.stop>
         <!-- <img class="check" src="~/assets/check-icon.png" alt="" /> -->
-        <div>{{ bodyContent }}</div>
-        <button>{{ buttonContent }}</button>
+        <div class="modal-title">{{ eventTitle }} {{ eventDate }}</div>
+        <div class="modal-content">
+          Event Details: {{ eventStart }} {{ eventEnd }} {{ eventExerciseType }}
+        </div>
       </div>
       <div class="close" @click="$emit('close-modal')">
         <img class="close-img" src="@/assets/images/cross-icon.png" alt="" />
@@ -15,13 +17,16 @@
 
 <script>
 export default {
-  name: "SmallModal",
+  name: "CalendarDetailModal",
   data() {
     return {};
   },
   props: {
-    bodyContent: String,
-    buttonContent: String,
+    eventTitle: String,
+    eventDate: String,
+    eventStart: String,
+    eventEnd: String,
+    eventExerciseType: String,
   },
 };
 </script>
@@ -48,17 +53,17 @@ export default {
   position: relative;
   /* justify-content: center;
   text-align: center; */
-  background-color: white;
-  height: 90%;
-  width: 90%;
-  margin-top: 10%;
+  background-color: #d9d9d9;
+  height: 30%;
+  width: 30%;
+  margin-top: 15%;
   padding: 60px 0;
   border-radius: 20px;
   max-width: 50%;
   max-height: 70%;
 }
 .close {
-  margin: 10% 0 0 16px;
+  margin: 15% 0 0 5px;
   cursor: pointer;
 }
 
@@ -79,7 +84,7 @@ h6 {
 p {
   font-size: 16px;
   margin: 20px 0;
-} */
+} 
 
 button {
   background-color: #ed1f24;
@@ -90,7 +95,7 @@ button {
   font-size: 14px;
   border-radius: 16px;
   margin-top: 50px;
-}
+} */
 
 .modal-fade-enter,
 .modal-fade-leave-to {

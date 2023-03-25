@@ -4,7 +4,7 @@
     <div
       style="
         height: 700px;
-        width: 75%;
+        width: 85%;
         margin: auto;
         padding: 50px;
         text-align: center;
@@ -26,12 +26,16 @@
           delete: false,
           create: false,
         }"
+        :timeCellHeight="60"
       />
       <div class="popup">
-        <SmallModal
+        <CalendarDetailModal
           v-show="showModal"
-          :bodyContent="modalBodyContent"
-          :buttonContent="modalButtonContent"
+          :eventTitle="eventTitle"
+          :eventDate="eventDate"
+          :eventStart="eventStart"
+          :eventEnd="eventEnd"
+          :eventExerciseType="eventExerciseType"
           @close-modal="showModal = false"
         />
       </div>
@@ -41,38 +45,44 @@
 
 <script>
 import VueCal from "vue-cal";
-import SmallModal from "../client/SmallModal.vue";
+import CalendarDetailModal from "../client/CalendarDetailModal.vue";
 import "vue-cal/dist/vuecal.css";
 
 export default {
   name: "CalendarPage",
-  components: { VueCal, SmallModal },
+  components: { VueCal, CalendarDetailModal },
   data() {
     return {
-      // selectedEvent: {},
       showModal: false,
-      modalBodyContent: "Content Text",
-      modalButtonContent: "This Button Does Nothing",
+      eventTitle: null,
+      eventDate: null,
+      eventStart: null,
+      eventEnd: null,
+      eventExerciseType: null,
       events: [
         {
           start: "2023-03-27 14:00",
-          end: "2023-03-27 16:00",
+          end: "2023-03-27 15:00",
           title: "Gym Session",
+          exerciseType: "Legs",
         },
         {
           start: "2023-03-29 10:00",
           end: "2023-03-29 12:00",
           title: "Gym Session",
+          exerciseType: "Legs, Arms",
         },
         {
           start: "2023-03-15 12:00",
           end: "2023-03-15 14:00",
           title: "Gym Session",
+          exerciseType: "Cardio",
         },
         {
           start: "2023-03-15 14:00",
           end: "2023-03-15 16:00",
           title: "Gym Session",
+          exerciseType: "Back, Shoulders",
         },
       ],
     };
@@ -80,7 +90,12 @@ export default {
   methods: {
     onEventClick(event, e) {
       console.log("Clicked the event");
-      // this.selectedEvent = event;
+      this.eventTitle = event.title;
+      // Convert to Date object for now because not connected to FS yet
+      this.eventDate = new Date(event.start).toLocaleDateString();
+      this.eventStart = new Date(event.start).toLocaleTimeString();
+      this.eventEnd = new Date(event.end).toLocaleTimeString();
+      this.eventExerciseType = event.exerciseType;
       this.showModal = true;
 
       e.stopPropagation();
@@ -114,10 +129,12 @@ export default {
 }
 
 .vuecal__cell--has-events {
+  /* Add background color to cells with events */
   background-color: #fffacd;
 }
 
 .vuecal__cell-events-count {
+  /* Remove the event count number in month view */
   display: none;
 }
 </style>
