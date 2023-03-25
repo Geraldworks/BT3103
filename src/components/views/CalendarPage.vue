@@ -27,19 +27,32 @@
           create: false,
         }"
       />
+      <div class="popup">
+        <SmallModal
+          v-show="showModal"
+          :bodyContent="modalBodyContent"
+          :buttonContent="modalButtonContent"
+          @close-modal="showModal = false"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import VueCal from "vue-cal";
+import SmallModal from "../client/SmallModal.vue";
 import "vue-cal/dist/vuecal.css";
 
 export default {
   name: "CalendarPage",
-  components: { VueCal },
+  components: { VueCal, SmallModal },
   data() {
     return {
+      // selectedEvent: {},
+      showModal: false,
+      modalBodyContent: "Content Text",
+      modalButtonContent: "This Button Does Nothing",
       events: [
         {
           start: "2023-03-27 14:00",
@@ -52,8 +65,8 @@ export default {
           title: "Gym Session",
         },
         {
-          start: "2023-03-15 10:00",
-          end: "2023-03-15 12:00",
+          start: "2023-03-15 12:00",
+          end: "2023-03-15 14:00",
           title: "Gym Session",
         },
         {
@@ -67,6 +80,10 @@ export default {
   methods: {
     onEventClick(event, e) {
       console.log("Clicked the event");
+      // this.selectedEvent = event;
+      this.showModal = true;
+
+      e.stopPropagation();
     },
   },
 };
@@ -88,13 +105,19 @@ export default {
 
 <style>
 .vuecal__event {
-  background-color: darkgray;
-  border-color: black;
+  background-color: rgba(169, 169, 169, 0.7);
+  border: solid rgba(0, 0, 0, 0.3);
+  border-width: 0 0 2px 0;
   box-sizing: border-box;
   padding: 5px;
+  cursor: pointer;
 }
 
 .vuecal__cell--has-events {
   background-color: #fffacd;
+}
+
+.vuecal__cell-events-count {
+  display: none;
 }
 </style>
