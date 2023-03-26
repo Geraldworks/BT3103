@@ -9,11 +9,7 @@
         </div>
         <div class="right-side-items" @click="">Meal plan</div>
         <div class="right-side-items" @click="">Routine</div>
-        <div class="right-side-items" @click=" () => { xlgDemo = true;}">Update Stats</div>
-        <CModal size="xl" :visible="xlgDemo" class="testing" @close=" () => {xlgDemo = false;}">
-          <UpdateForm :clientEmail="email" :clientName ="clientName" class="testing"/>
-        </CModal>
-        <div class="right-side-items" @click="showUpdateForm()">Update Stats testing</div>
+        <div class="right-side-items" @click="showUpdateForm()">Update Stats</div>
         <div class="pop-up">
           <UpdateForm2 v-show="updateForm" :clientEmail="email" :clientName ="clientName" @close-modal="bookModal = false"/>
         </div>
@@ -29,20 +25,17 @@
 import { doc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase.js";
 import { CModal, CFormInput, CFormFeedback, CFormLabel, CFormText } from "@coreui/vue";
-import UpdateForm from "./UpdateForm.vue";
 import UpdateForm2 from "./UpdateForm2.vue";
 
 
 export default {
   name: "TrainerPerformanceHeader",
   components: {
-    UpdateForm,
     UpdateForm2,
   },
   data() {
     return {
       clientName: null,
-      xlgDemo: false,
       updateForm: false,
     };
   },
@@ -125,9 +118,6 @@ export default {
   animation: turn-red;
   animation-duration: 0.3s;
   animation-fill-mode: forwards;
-}
-.testing {
-  background-color: black;
 }
 @keyframes turn-red {
   from {

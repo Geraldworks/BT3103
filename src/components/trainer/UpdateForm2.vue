@@ -13,16 +13,13 @@
                     <input @input="checkFatsInput(fats)" type="number" v-model="fats" id="fats" placeholder="Current Fats %">
                         <div v-if="showFatsError" class="error-message"> The number must be positive and not greater than 100.</div> 
                 <br>
-                <label for="">Weight </label> 
+                <label for="">Weight in KG </label> 
                     <input @input="checkWeightInput(weight)" type="number" v-model="weight" id="weight" placeholder="Current weight"> 
                         <div v-if="showWeightError" class="error-message"> The number must be positive.</div> 
                 <br>
-                <label for="">Muscle Mass </label> 
+                <label for="">Muscle Mass in KG</label> 
                     <input @input="checkMuscleInput(muscle)" type="number" v-model="muscle" id="muscle" placeholder="Current Muscle Mass"> 
                         <div v-if="showMuscleError" class="error-message"> The number must be positive and not greater than the weight.</div> 
-                <br>
-                <label for="">Date</label> 
-                    <input type="text" v-model="date" id="date" placeholder="Fats %"> 
                 <br>
             </form>
 
@@ -44,7 +41,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { auth, db } from "../../firebase";
-import { doc, getDoc, updateDoc } from "@firebase/firestore";
+import { doc, getDoc, updateDoc, Timestamp} from "@firebase/firestore";
 
 export default {
   name: "UpdateForm",
@@ -88,19 +85,20 @@ export default {
       clientFatPercentage.push(this.fats);
       clientWeight.push(this.weight);
       clientMuscleMass.push(this.muscle);
-      clientDate.push(this.date)
-      //Updating the database
-    //   updateDoc(clientRef, {
-    //     fatPercentage: clientFatPercentage,
-    //     weight: clientWeight,
-    //     muscleMass: clientMuscleMass,
-    //     date: clientDate,
-    //   }).then((response) => {
-    //     this.isLoading =false;
-    //     location.reload();
-    //   }).catch((error) => {
-    //     console.log(error);
-    //   });
+      const currentDate = new Date();
+      clientDate.push(Timestamp.fromDate(currentDate))
+      // Updating the database
+      updateDoc(clientRef, {
+        fatPercentage: clientFatPercentage,
+        weight: clientWeight,
+        muscleMass: clientMuscleMass,
+        datetime: clientDate,
+      }).then((response) => {
+        this.isLoading =false;
+        location.reload();
+      }).catch((error) => {
+        console.log(error);
+      });
     },
     checkFatsInput(value) {
       this.showFatsError = value > 100 || value < 0;
