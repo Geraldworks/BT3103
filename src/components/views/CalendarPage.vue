@@ -196,6 +196,9 @@ export default {
   padding: 5px;
   cursor: pointer;
 }
+.unclickable {
+  cursor: default;
+}
 
 .vuecal__event-title {
   font-size: 1.1em;
@@ -213,7 +216,7 @@ export default {
 
 .vuecal__cell-events-count {
   /* Remove the event count number in month view */
-  display: none;
+  /* display: none; */
 }
 
 /* Styles for Min and Max Range vue-cal */
