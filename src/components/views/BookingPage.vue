@@ -7,7 +7,12 @@
       <button @click="showBookModal()">Make Booking</button>
     </div>
     <div class="popup">
-      <CancelModal v-show="cancelModal" @close-modal="cancelModal = false" />
+      <CancelModal
+        v-show="cancelModal"
+        @close-modal="cancelModal = false"
+        @updateCalendar="refreshCalendarData()"
+        :clientBookings="clientBookings"
+      />
     </div>
     <div class="popup">
       <BookModal
@@ -125,12 +130,15 @@ export default {
       this.clientTrainer = doc.data().trainerEmail;
     });
     bookingsFromFirebase.forEach((booking) => {
-      let start = booking.from.toDate();
-      let end = booking.to.toDate();
-      let title = booking.title;
-      clientBookings.push({ start, end, title });
+      /* Quick fix to client cancellation of bookings */
+      // let start = booking.from.toDate();
+      // let end = booking.to.toDate();
+      // let title = booking.title;
+      // clientBookings.push({ start, end, title });
+      clientBookings.push(booking);
     });
     this.clientBookings = clientBookings;
+    // console.log(this.clientBookings);
     // end of client data
 
     // getting all trainer's clients emails
@@ -218,10 +226,12 @@ export default {
         this.clientTrainer = doc.data().trainerEmail;
       });
       bookingsFromFirebase.forEach((booking) => {
-        let start = booking.from.toDate();
-        let end = booking.to.toDate();
-        let title = booking.title;
-        clientBookings.push({ start, end, title });
+        /* Quick fix to client cancellation for now */
+        // let start = booking.from.toDate();
+        // let end = booking.to.toDate();
+        // let title = booking.title;
+        // clientBookings.push({ start, end, title });
+        clientBookings.push(booking)
       });
       this.clientBookings = clientBookings;
       // end of client data
