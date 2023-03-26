@@ -44,6 +44,8 @@
         }"
         :snap-to-time="60"
         :timeCellHeight="70"
+        :min-date="minDate"
+        :max-date="maxDate"
       />
     </div>
   </div>
@@ -58,6 +60,10 @@ import { db, auth } from "../../firebase.js";
 import { mapGetters } from "vuex";
 import "vue-cal/dist/vuecal.css";
 
+const minDate = new Date();
+let maxDate = new Date();
+maxDate.setMonth(maxDate.getMonth() + 3);
+
 export default {
   name: "BookingPage",
   data() {
@@ -69,6 +75,8 @@ export default {
       dateToBookMappings: {},
       cancelModal: false,
       bookModal: false,
+      minDate: minDate,
+      maxDate: maxDate,
       events: [
         {
           start: "2023-03-27 14:00",
@@ -151,7 +159,14 @@ export default {
         let start = doc.from.toDate();
         let end = doc.to.toDate();
         let title = doc.title;
-        allClientBookings.push({ start, end, title });
+        if (client.data().email != this.user.data.email) {
+          let obj = { start, end, title };
+          obj["class"] = "otherClient";
+          obj["title"] = "Other Clients";
+          allClientBookings.push(obj);
+        } else {
+          allClientBookings.push({ start, end, title });
+        }
 
         // data pivoting on each booking
         let month = start.getMonth();
@@ -237,7 +252,14 @@ export default {
           let start = doc.from.toDate();
           let end = doc.to.toDate();
           let title = doc.title;
-          allClientBookings.push({ start, end, title });
+          if (client.data().email != this.user.data.email) {
+            let obj = { start, end, title };
+            obj["class"] = "otherClient";
+            obj["title"] = "Other Clients";
+            allClientBookings.push(obj);
+          } else {
+            allClientBookings.push({ start, end, title });
+          }
 
           // data pivoting on each booking
           let month = start.getMonth();
@@ -254,8 +276,8 @@ export default {
         this.dateToBookMappings = dateToBookMappings;
         this.events = allClientBookings;
       });
-      // update the calendar 
-      this.key++
+      // update the calendar
+      this.key++;
     },
   },
 };
