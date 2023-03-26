@@ -1,6 +1,17 @@
 <template>
+  <Navbar />
   <div class="booking-page">
-    <Navbar />
+    <div class="booking-page-header">
+      Current Bookings
+      <button @click="showCancelModal()">Cancel Booking</button>
+      <button @click="showBookModal()">Make Booking</button>
+    </div>
+    <div class="popup">
+      <CancelModal v-show="cancelModal" @close-modal="cancelModal = false" />
+    </div>
+    <div class="popup">
+      <BookModal v-show="bookModal" @close-modal="bookModal = false" :allBookedSessions="dateToBookMappings"/>
+    </div>
     <div
       style="
         height: 700px;
@@ -16,16 +27,14 @@
         :disable-views="['years', 'year', 'day']"
         :time-from="9 * 60"
         :time-to="23 * 60"
-        :time-step="60"
+        :time-step="30"
         :events="events"
-        :on-event-click="onEventClick"
-        :on-event-create="onEventCreate"
         :editable-events="{
-          title: true,
-          drag: true,
+          title: false,
+          drag: false,
           resize: false,
           delete: false,
-          create: true,
+          create: false,
         }"
         :snap-to-time="60"
       />
@@ -35,14 +44,23 @@
 
 <script>
 import VueCal from "vue-cal";
+import BookModal from "../client/BookModal.vue";
+import CancelModal from "../client/CancelModal.vue";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db, auth } from "../../firebase.js";
+import { mapGetters } from "vuex";
 import "vue-cal/dist/vuecal.css";
+
 export default {
   name: "BookingPage",
-  components: {
-    VueCal,
-  },
   data() {
     return {
+      clientTrainer: "",
+      clientBookings: [],
+      allBookings: [],
+      dateToBookMappings: {},
+      cancelModal: false,
+      bookModal: false,
       events: [
         {
           start: "2023-03-27 14:00",
@@ -51,36 +69,108 @@ export default {
           client: "dbtest@gmail.com",
           routine: "Test Routine 1",
         },
-        {
-          start: "2023-03-29 16:00",
-          end: "2023-03-29 18:00",
-          title: "Gym Session",
-          client: "gtest@gmail.com",
-          routine: "Test Routine 2",
-        },
-        {
-          start: "2023-03-15 10:00",
-          end: "2023-03-15 12:00",
-          title: "Gym Session",
-          client: "gtest@gmail.com",
-          routine: "Test Routine 3",
-        },
-        {
-          start: "2023-03-15 14:00",
-          end: "2023-03-15 16:00",
-          title: "Gym Session",
-          client: "dbtest@gmail.com",
-          routine: "Test Routine 4",
-        },
       ],
     };
   },
+  components: {
+    VueCal,
+    BookModal,
+    CancelModal,
+  },
+  computed: {
+    ...mapGetters(["user"]),
+  },
+  mounted() {
+    auth.onAuthStateChanged((user) => {
+      this.$store.dispatch("fetchUser", user);
+    });
+    //console.log(this.user.data.email)
+  },
+  async created() {
+    // a container to store all bookings of this client
+    let clientBookings = [];
+    // a container to store all bookings of this client's trainer
+    let allClientBookings = [];
+    // track query bookings from firebase
+    let bookingsFromFirebase = [];
+    // track all day -> session slots
+    let dateToBookMappings = {};
+
+    // retrieving this client bookings
+    const clientRef = collection(db, "client");
+    const thisClientQuery = query(
+      clientRef,
+      where("email", "==", this.user.data.email)
+    );
+    const clientQuerySnapshot = await getDocs(thisClientQuery);
+    clientQuerySnapshot.forEach((doc) => {
+      bookingsFromFirebase = doc.data().bookings;
+      // getting the trainer email from this snapshot
+      this.clientTrainer = doc.data().trainerEmail;
+    });
+    bookingsFromFirebase.forEach((booking) => {
+      let start = booking.from.toDate();
+      let end = booking.to.toDate();
+      let title = booking.title;
+      clientBookings.push({ start, end, title });
+    });
+    this.clientBookings = clientBookings;
+    // end of client data
+
+    // getting all trainer's clients emails
+    const trainerRef = collection(db, "trainer");
+    const trainerQuery = query(
+      trainerRef,
+      where("email", "==", this.clientTrainer)
+    );
+    // a storage for all client emails
+    let allClients = [];
+    const trainerQuerySnapshot = await getDocs(trainerQuery);
+    trainerQuerySnapshot.forEach((doc) => {
+      allClients = doc.data().ClientsId;
+    });
+
+    // allOtherClients = allOtherClients.filter((email) => {
+    //   return email !== this.user.data.email;
+    // });
+
+    // getting all bookings for all clients
+    const allClientQuery = query(clientRef, where("email", "in", allClients));
+    const allClientQuerySnapshot = await getDocs(allClientQuery);
+    allClientQuerySnapshot.forEach((client) => {
+      client.data().bookings.forEach((doc) => {
+        // each iteration gets one bookings from all the other clients
+        let start = doc.from.toDate();
+        let end = doc.to.toDate();
+        let title = doc.title;
+        allClientBookings.push({ start, end, title });
+
+        // data pivoting on each booking
+        let month = start.getMonth();
+        let day = start.getDate();
+        let startHour = start.getHours();
+
+        if (dateToBookMappings.hasOwnProperty(`${day}, ${month}`)) {
+          dateToBookMappings[`${day}, ${month}`].push(startHour)
+        } else {
+          dateToBookMappings[`${day}, ${month}`] = [startHour];
+        }
+      });
+      // setting to the component
+      this.dateToBookMappings = dateToBookMappings;
+      this.events = allClientBookings;
+    });
+    // successfully created the necessary data
+    console.log(clientBookings);
+    console.log(dateToBookMappings);
+    console.log(allClientBookings);
+  },
   methods: {
-    onEventClick(event, e) {
-      console.log("Clicked the event");
+    showCancelModal() {
+      this.cancelModal = true;
     },
-    onEventCreate(event, deleteEventFunction) {
-      console.log("Created Event");
+    showBookModal() {
+      this.bookModal = true;
     },
   },
 };
@@ -88,9 +178,20 @@ export default {
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
+
+.booking-page-header {
+  color: white;
+  border-bottom: 5px white solid;
+  font-size: 3rem;
+  text-transform: uppercase;
+  width: 70%;
+  margin: auto;
+  padding-top: 20px;
+}
 .booking-page {
   background-color: black;
   min-height: 100vh;
+  font-family: Teko;
 }
 
 .calendar {
