@@ -46,7 +46,9 @@
         :timeCellHeight="70"
         :min-date="minDate"
         :max-date="maxDate"
-      />
+        events-count-on-year-view
+      >
+      </vue-cal>
     </div>
   </div>
 </template>
@@ -159,13 +161,14 @@ export default {
         let start = doc.from.toDate();
         let end = doc.to.toDate();
         let title = doc.title;
+        let obj = { start, end, title };
         if (client.data().email != this.user.data.email) {
-          let obj = { start, end, title };
-          obj["class"] = "otherClient";
+          obj["class"] = "otherClient unclickable";
           obj["title"] = "Other Clients";
           allClientBookings.push(obj);
         } else {
-          allClientBookings.push({ start, end, title });
+          obj["class"] = "unclickable";
+          allClientBookings.push(obj);
         }
 
         // data pivoting on each booking
