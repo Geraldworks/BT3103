@@ -1,10 +1,11 @@
 <template>
+  <Navbar />
   <div class="calendar-page">
-    <Navbar />
+    <div class="calendar-page-header">Your Schedule</div>
     <div
       style="
-        height: 700px;
-        width: 75%;
+        height: 800px;
+        width: 85%;
         margin: auto;
         padding: 50px;
         text-align: center;
@@ -15,7 +16,7 @@
         active-view="month"
         :disable-views="['years', 'year', 'day']"
         :time-from="9 * 60"
-        :time-to="23 * 60"
+        :time-to="20 * 60"
         :time-step="60"
         :events="events"
         :on-event-click="onEventClick"
@@ -26,12 +27,17 @@
           delete: false,
           create: false,
         }"
+        :timeCellHeight="70"
       />
       <div class="popup">
-        <SmallModal
+        <CalendarDetailModal
           v-show="showModal"
-          :bodyContent="modalBodyContent"
-          :buttonContent="modalButtonContent"
+          :eventTitle="eventTitle"
+          :eventDate="eventDate"
+          :eventStart="eventStart"
+          :eventEnd="eventEnd"
+          :eventExerciseType="eventExerciseType"
+          :eventTrainer="eventTrainer"
           @close-modal="showModal = false"
         />
       </div>
@@ -41,46 +47,112 @@
 
 <script>
 import VueCal from "vue-cal";
-import SmallModal from "../client/SmallModal.vue";
+import CalendarDetailModal from "../client/CalendarDetailModal.vue";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db, auth } from "../../firebase.js";
+import { mapGetters } from "vuex";
 import "vue-cal/dist/vuecal.css";
 
 export default {
   name: "CalendarPage",
-  components: { VueCal, SmallModal },
+  components: { VueCal, CalendarDetailModal },
   data() {
     return {
-      // selectedEvent: {},
       showModal: false,
-      modalBodyContent: "Content Text",
-      modalButtonContent: "This Button Does Nothing",
+      eventTitle: null,
+      eventDate: null,
+      eventStart: null,
+      eventEnd: null,
+      eventExerciseType: null,
+      eventTrainer: null,
       events: [
-        {
-          start: "2023-03-27 14:00",
-          end: "2023-03-27 16:00",
-          title: "Gym Session",
-        },
-        {
-          start: "2023-03-29 10:00",
-          end: "2023-03-29 12:00",
-          title: "Gym Session",
-        },
-        {
-          start: "2023-03-15 12:00",
-          end: "2023-03-15 14:00",
-          title: "Gym Session",
-        },
-        {
-          start: "2023-03-15 14:00",
-          end: "2023-03-15 16:00",
-          title: "Gym Session",
-        },
+        // {
+        //   start: "2023-03-27 14:00",
+        //   end: "2023-03-27 15:00",
+        //   title: "Gym Session",
+        //   exerciseType: "Legs",
+        // },
+        // {
+        //   start: "2023-03-29 10:00",
+        //   end: "2023-03-29 11:00",
+        //   title: "Gym Session",
+        //   exerciseType: "Legs, Arms",
+        // },
+        // {
+        //   start: "2023-03-15 13:00",
+        //   end: "2023-03-15 14:00",
+        //   title: "Gym Session",
+        //   exerciseType: "Cardio",
+        // },
+        // {
+        //   start: "2023-03-15 14:00",
+        //   end: "2023-03-15 15:00",
+        //   title: "Gym Session",
+        //   exerciseType: "Back, Shoulders",
+        // },
       ],
     };
+  },
+  computed: {
+    ...mapGetters(["user"]),
+  },
+  mounted() {
+    auth.onAuthStateChanged((user) => {
+      this.$store.dispatch("fetchUser", user);
+    });
+    //console.log(this.user.data.email)
+  },
+  async created() {
+    // a container to store all bookings of this client
+    let clientBookings = [];
+    // track query bookings from firebase
+    let bookingsFromFirebase = [];
+
+    // retrieving this client bookings
+    const clientRef = collection(db, "client");
+    const thisClientQuery = query(
+      clientRef,
+      where("email", "==", this.user.data.email)
+    );
+    const clientQuerySnapshot = await getDocs(thisClientQuery);
+
+    // Function to capitalize first letter
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    clientQuerySnapshot.forEach((doc) => {
+      bookingsFromFirebase = doc.data().bookings;
+
+      // Get Trainer Name from trainerEmail field & assign to data()
+      let eventTrainerEmail = doc.data().trainerEmail;
+      this.eventTrainer = capitalizeFirstLetter(
+        eventTrainerEmail.substring(0, eventTrainerEmail.lastIndexOf("@"))
+      );
+    });
+
+    // Retrieve the relevant information about booking from FS
+    // Create events Object to link to events property in vue-cal
+    bookingsFromFirebase.forEach((booking) => {
+      let start = booking.from.toDate();
+      let end = booking.to.toDate();
+      let title = booking.title;
+      let exerciseType = booking.focus;
+      clientBookings.push({ start, end, title, exerciseType });
+    });
+
+    // Link vue-cal events property to created events Object
+    this.events = clientBookings;
   },
   methods: {
     onEventClick(event, e) {
       console.log("Clicked the event");
-      // this.selectedEvent = event;
+      this.eventTitle = event.title;
+      // Convert to Date object for now because not connected to FS yet
+      this.eventDate = new Date(event.start).toLocaleDateString();
+      this.eventStart = new Date(event.start).toLocaleTimeString();
+      this.eventEnd = new Date(event.end).toLocaleTimeString();
+      this.eventExerciseType = event.exerciseType;
       this.showModal = true;
 
       e.stopPropagation();
@@ -91,9 +163,21 @@ export default {
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
+.calendar-page-header {
+  color: white;
+  border-bottom: 5px white solid;
+  font-size: 3rem;
+  text-transform: uppercase;
+  width: 80%;
+  margin: auto;
+  padding-top: 20px;
+}
+
 .calendar-page {
   background-color: black;
   min-height: 100vh;
+  font-family: Teko;
+  min-width: 1100px;
 }
 
 .calendar {
@@ -113,11 +197,22 @@ export default {
   cursor: pointer;
 }
 
+.vuecal__event-title {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.vuecal__event-time {
+  font-size: 0.9em;
+}
+
 .vuecal__cell--has-events {
+  /* Add background color to cells with events */
   background-color: #fffacd;
 }
 
 .vuecal__cell-events-count {
+  /* Remove the event count number in month view */
   display: none;
 }
 </style>
