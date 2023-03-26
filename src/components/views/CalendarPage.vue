@@ -215,4 +215,37 @@ export default {
   /* Remove the event count number in month view */
   display: none;
 }
+
+.vuecal__menu,
+.vuecal__cell-events-count {
+  background-color: #ed1f24;
+}
+
+.vuecal__title-bar {
+  background-color: #ff8082;
+}
+
+.vuecal__cell--today,
+.vuecal__cell--current {
+  background-color: #ffd6d7;
+}
+
+.vuecal:not(.vuecal--day-view) .vuecal__cell--selected {
+  background-color: #ff8082;
+}
+
+.vuecal__cell--selected:before {
+  border-color: black;
+}
+
+/* Cells and buttons get highlighted when an event is dragged over it. */
+.vuecal__cell--highlighted:not(.vuecal__cell--has-splits),
+.vuecal__cell-split--highlighted {
+  background-color: rgba(195, 255, 225, 0.5);
+}
+
+.vuecal__arrow.vuecal__arrow--highlighted,
+.vuecal__view-btn.vuecal__view-btn--highlighted {
+  background-color: rgba(136, 236, 191, 0.25);
+}
 </style>

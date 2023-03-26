@@ -1,30 +1,139 @@
 <template>
   <TrainerNavbar />
-  <div style="height: 600px; width: 80%; margin: auto; padding: 1%;text-align: center;">
-    <vue-cal :time="false" active-view="month" :disable-views="['years', 'year', 'week']" />
+  <div class="calendar-page">
+    <div
+      style="
+        height: 800px;
+        width: 85%;
+        margin: auto;
+        padding: 50px;
+        text-align: center;
+      "
+    >
+      <vue-cal
+        class="calendar"
+        active-view="month"
+        :disable-views="['years', 'year', 'day']"
+        :time-from="9 * 60"
+        :time-to="20 * 60"
+        :time-step="60"
+        :events="events"
+        :on-event-click="onEventClick"
+        :editable-events="{
+          title: false,
+          drag: false,
+          resize: false,
+          delete: false,
+          create: false,
+        }"
+        :timeCellHeight="70"
+      />
+      <div class="popup">
+        <TrainerCalendarDetailModal
+          v-show="showModal"
+          :eventTitle="eventTitle"
+          :eventDate="eventDate"
+          :eventStart="eventStart"
+          :eventEnd="eventEnd"
+          :eventExerciseType="eventExerciseType"
+          :eventClient="eventClient"
+          @close-modal="showModal = false"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import TrainerNavbar from '../trainer/TrainerNavbar.vue';
-import VueCal from 'vue-cal'
-import 'vue-cal/dist/vuecal.css'
+import TrainerNavbar from "../trainer/TrainerNavbar.vue";
+import TrainerCalendarDetailModal from "../trainer/TrainerCalendarDetailModal.vue";
+import VueCal from "vue-cal";
+import "vue-cal/dist/vuecal.css";
 
 export default {
   name: "TrainerCalendarPage",
-  components: { TrainerNavbar, VueCal }
+  components: { TrainerNavbar, VueCal, TrainerCalendarDetailModal },
+  data() {
+    return {
+      showModal: false,
+      eventTitle: null,
+      eventDate: null,
+      eventStart: null,
+      eventEnd: null,
+      eventExerciseType: null,
+      eventClient: null,
+      events: [
+        {
+          start: "2023-03-27 14:00",
+          end: "2023-03-27 15:00",
+          title: "Gym Session",
+          exerciseType: "Legs",
+          client: "James Mak",
+        },
+        {
+          start: "2023-03-29 10:00",
+          end: "2023-03-29 11:00",
+          title: "Gym Session",
+          exerciseType: "Legs, Arms",
+          client: "Bryan Wong",
+        },
+        {
+          start: "2023-03-15 13:00",
+          end: "2023-03-15 14:00",
+          title: "Gym Session",
+          exerciseType: "Cardio",
+          client: "Gerald Ho",
+        },
+        {
+          start: "2023-03-15 14:00",
+          end: "2023-03-15 15:00",
+          title: "Gym Session",
+          exerciseType: "Back, Shoulders",
+          client: "Luther Tan",
+        },
+      ],
+    };
+  },
+  methods: {
+    onEventClick(event, e) {
+      console.log("Clicked the event");
+      this.eventTitle = event.title;
+      // Convert to Date object for now because not connected to FS yet
+      this.eventDate = new Date(event.start).toLocaleDateString();
+      this.eventStart = new Date(event.start).toLocaleTimeString();
+      this.eventEnd = new Date(event.end).toLocaleTimeString();
+      this.eventExerciseType = event.exerciseType;
+      this.eventClient = event.client;
+      this.showModal = true;
+
+      e.stopPropagation();
+    },
+  },
 };
 </script>
 
-<style>
-.vuecal__menu, .vuecal__cell-events-count {background-color: #ED1F24;}
-.vuecal__title-bar {background-color: #ff8082;}
-.vuecal__cell--today, .vuecal__cell--current {background-color: #ffd6d7;}
-.vuecal:not(.vuecal--day-view) .vuecal__cell--selected {background-color: #ff8082;}
-.vuecal__cell--selected:before {border-color: black;}
-/* Cells and buttons get highlighted when an event is dragged over it. */
-.vuecal__cell--highlighted:not(.vuecal__cell--has-splits),
-.vuecal__cell-split--highlighted {background-color: rgba(195, 255, 225, 0.5);}
-.vuecal__arrow.vuecal__arrow--highlighted,
-.vuecal__view-btn.vuecal__view-btn--highlighted {background-color: rgba(136, 236, 191, 0.25);}
+<style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
+.calendar-page-header {
+  color: white;
+  border-bottom: 5px white solid;
+  font-size: 3rem;
+  text-transform: uppercase;
+  width: 80%;
+  margin: auto;
+  padding-top: 20px;
+}
+
+.calendar-page {
+  background-color: black;
+  min-height: 100vh;
+  font-family: Teko;
+  min-width: 1100px;
+}
+
+.calendar {
+  background-color: white;
+  font-family: Teko;
+  font-size: 1.2rem;
+}
 </style>
