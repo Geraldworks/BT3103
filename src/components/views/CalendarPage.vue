@@ -216,6 +216,21 @@ export default {
   display: none;
 }
 
+/* Styles for Min and Max Range vue-cal */
+.vuecal__cell--disabled {
+  text-decoration: line-through;
+}
+
+.vuecal__cell--after-max {
+  color: #a8a2a2;
+}
+
+.otherClient {
+  background: black;
+  color: #fff;
+}
+
+/* Other styles */
 .vuecal__menu,
 .vuecal__cell-events-count {
   background-color: #ed1f24;
