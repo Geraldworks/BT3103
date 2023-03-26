@@ -12,6 +12,7 @@
     <div class="popup">
       <BookModal
         v-show="bookModal"
+        @updateCalendar="refreshCalendarData()"
         @close-modal="bookModal = false"
         :allBookedSessions="dateToBookMappings"
       />
@@ -26,6 +27,7 @@
       "
     >
       <vue-cal
+        :key="key"
         class="calendar"
         active-view="month"
         :disable-views="['years', 'year', 'day']"
@@ -60,6 +62,7 @@ export default {
   name: "BookingPage",
   data() {
     return {
+      key: 0,
       clientTrainer: "",
       clientBookings: [],
       allBookings: [],
@@ -166,9 +169,9 @@ export default {
       this.events = allClientBookings;
     });
     // successfully created the necessary data
-    console.log(clientBookings);
-    console.log(dateToBookMappings);
-    console.log(allClientBookings);
+    // console.log(clientBookings);
+    // console.log(dateToBookMappings);
+    // console.log(allClientBookings);
   },
   methods: {
     showCancelModal() {
@@ -176,6 +179,83 @@ export default {
     },
     showBookModal() {
       this.bookModal = true;
+    },
+    async refreshCalendarData() {
+      // a container to store all bookings of this client
+      let clientBookings = [];
+      // a container to store all bookings of this client's trainer
+      let allClientBookings = [];
+      // track query bookings from firebase
+      let bookingsFromFirebase = [];
+      // track all day -> session slots
+      let dateToBookMappings = {};
+
+      // retrieving this client bookings
+      const clientRef = collection(db, "client");
+      const thisClientQuery = query(
+        clientRef,
+        where("email", "==", this.user.data.email)
+      );
+      const clientQuerySnapshot = await getDocs(thisClientQuery);
+      clientQuerySnapshot.forEach((doc) => {
+        bookingsFromFirebase = doc.data().bookings;
+        // getting the trainer email from this snapshot
+        this.clientTrainer = doc.data().trainerEmail;
+      });
+      bookingsFromFirebase.forEach((booking) => {
+        let start = booking.from.toDate();
+        let end = booking.to.toDate();
+        let title = booking.title;
+        clientBookings.push({ start, end, title });
+      });
+      this.clientBookings = clientBookings;
+      // end of client data
+
+      // getting all trainer's clients emails
+      const trainerRef = collection(db, "trainer");
+      const trainerQuery = query(
+        trainerRef,
+        where("email", "==", this.clientTrainer)
+      );
+      // a storage for all client emails
+      let allClients = [];
+      const trainerQuerySnapshot = await getDocs(trainerQuery);
+      trainerQuerySnapshot.forEach((doc) => {
+        allClients = doc.data().ClientsId;
+      });
+
+      // allOtherClients = allOtherClients.filter((email) => {
+      //   return email !== this.user.data.email;
+      // });
+
+      // getting all bookings for all clients
+      const allClientQuery = query(clientRef, where("email", "in", allClients));
+      const allClientQuerySnapshot = await getDocs(allClientQuery);
+      allClientQuerySnapshot.forEach((client) => {
+        client.data().bookings.forEach((doc) => {
+          // each iteration gets one bookings from all the other clients
+          let start = doc.from.toDate();
+          let end = doc.to.toDate();
+          let title = doc.title;
+          allClientBookings.push({ start, end, title });
+
+          // data pivoting on each booking
+          let month = start.getMonth();
+          let day = start.getDate();
+          let startHour = start.getHours();
+
+          if (dateToBookMappings.hasOwnProperty(`${day}, ${month}`)) {
+            dateToBookMappings[`${day}, ${month}`].push(startHour);
+          } else {
+            dateToBookMappings[`${day}, ${month}`] = [startHour];
+          }
+        });
+        // setting to the component
+        this.dateToBookMappings = dateToBookMappings;
+        this.events = allClientBookings;
+      });
+      // update the calendar 
+      this.key++
     },
   },
 };
