@@ -37,6 +37,7 @@
           :eventStart="eventStart"
           :eventEnd="eventEnd"
           :eventExerciseType="eventExerciseType"
+          :eventTrainer="eventTrainer"
           @close-modal="showModal = false"
         />
       </div>
@@ -47,6 +48,9 @@
 <script>
 import VueCal from "vue-cal";
 import CalendarDetailModal from "../client/CalendarDetailModal.vue";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db, auth } from "../../firebase.js";
+import { mapGetters } from "vuex";
 import "vue-cal/dist/vuecal.css";
 
 export default {
@@ -60,33 +64,85 @@ export default {
       eventStart: null,
       eventEnd: null,
       eventExerciseType: null,
+      eventTrainer: null,
       events: [
-        {
-          start: "2023-03-27 14:00",
-          end: "2023-03-27 15:00",
-          title: "Gym Session",
-          exerciseType: "Legs",
-        },
-        {
-          start: "2023-03-29 10:00",
-          end: "2023-03-29 11:00",
-          title: "Gym Session",
-          exerciseType: "Legs, Arms",
-        },
-        {
-          start: "2023-03-15 13:00",
-          end: "2023-03-15 14:00",
-          title: "Gym Session",
-          exerciseType: "Cardio",
-        },
-        {
-          start: "2023-03-15 14:00",
-          end: "2023-03-15 15:00",
-          title: "Gym Session",
-          exerciseType: "Back, Shoulders",
-        },
+        // {
+        //   start: "2023-03-27 14:00",
+        //   end: "2023-03-27 15:00",
+        //   title: "Gym Session",
+        //   exerciseType: "Legs",
+        // },
+        // {
+        //   start: "2023-03-29 10:00",
+        //   end: "2023-03-29 11:00",
+        //   title: "Gym Session",
+        //   exerciseType: "Legs, Arms",
+        // },
+        // {
+        //   start: "2023-03-15 13:00",
+        //   end: "2023-03-15 14:00",
+        //   title: "Gym Session",
+        //   exerciseType: "Cardio",
+        // },
+        // {
+        //   start: "2023-03-15 14:00",
+        //   end: "2023-03-15 15:00",
+        //   title: "Gym Session",
+        //   exerciseType: "Back, Shoulders",
+        // },
       ],
     };
+  },
+  computed: {
+    ...mapGetters(["user"]),
+  },
+  mounted() {
+    auth.onAuthStateChanged((user) => {
+      this.$store.dispatch("fetchUser", user);
+    });
+    //console.log(this.user.data.email)
+  },
+  async created() {
+    // a container to store all bookings of this client
+    let clientBookings = [];
+    // track query bookings from firebase
+    let bookingsFromFirebase = [];
+
+    // retrieving this client bookings
+    const clientRef = collection(db, "client");
+    const thisClientQuery = query(
+      clientRef,
+      where("email", "==", this.user.data.email)
+    );
+    const clientQuerySnapshot = await getDocs(thisClientQuery);
+
+    // Function to capitalize first letter
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    clientQuerySnapshot.forEach((doc) => {
+      bookingsFromFirebase = doc.data().bookings;
+
+      // Get Trainer Name from trainerEmail field & assign to data()
+      let eventTrainerEmail = doc.data().trainerEmail;
+      this.eventTrainer = capitalizeFirstLetter(
+        eventTrainerEmail.substring(0, eventTrainerEmail.lastIndexOf("@"))
+      );
+    });
+
+    // Retrieve the relevant information about booking from FS
+    // Create events Object to link to events property in vue-cal
+    bookingsFromFirebase.forEach((booking) => {
+      let start = booking.from.toDate();
+      let end = booking.to.toDate();
+      let title = booking.title;
+      let exerciseType = booking.focus;
+      clientBookings.push({ start, end, title, exerciseType });
+    });
+
+    // Link vue-cal events property to created events Object
+    this.events = clientBookings;
   },
   methods: {
     onEventClick(event, e) {

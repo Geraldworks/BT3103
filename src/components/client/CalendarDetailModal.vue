@@ -10,6 +10,10 @@
         <div class="modal-content">
           <div class="modal-content-header">Event Details</div>
           <div class="modal-content-normal">
+            Gym Trainer --
+            <span style="color: #ed1f24">{{ eventTrainer }}</span>
+          </div>
+          <div class="modal-content-normal">
             Gym Time Start --
             <span style="color: #ed1f24">{{ eventStart }}</span>
           </div>
@@ -36,6 +40,7 @@ export default {
     return {};
   },
   props: {
+    eventTrainer: String,
     eventTitle: String,
     eventDate: String,
     eventStart: String,
