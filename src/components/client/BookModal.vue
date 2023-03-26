@@ -139,7 +139,7 @@ export default {
   position: relative;
   /* justify-content: center;
   text-align: center; */
-  background-color: white;
+  background-color: #d9d9d9;
   height: 90%;
   width: 90%;
   margin-top: 6%;
@@ -149,6 +149,7 @@ export default {
   font-size: 28px;
   padding: 30px 50px;
   text-align: center;
+  min-width: 550px;
 }
 
 .modal::-webkit-scrollbar {
@@ -187,9 +188,9 @@ button:hover {
 }
 
 select {
-  height: 200px; 
-  border: 0.5px solid black; 
-  padding: 0px 3px; 
+  height: 200px;
+  border: 0.5px solid black;
+  padding: 0px 3px;
   text-align: center;
 }
 

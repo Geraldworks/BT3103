@@ -10,12 +10,16 @@
       <CancelModal v-show="cancelModal" @close-modal="cancelModal = false" />
     </div>
     <div class="popup">
-      <BookModal v-show="bookModal" @close-modal="bookModal = false" :allBookedSessions="dateToBookMappings"/>
+      <BookModal
+        v-show="bookModal"
+        @close-modal="bookModal = false"
+        :allBookedSessions="dateToBookMappings"
+      />
     </div>
     <div
       style="
-        height: 700px;
-        width: 75%;
+        height: 800px;
+        width: 85%;
         margin: auto;
         padding: 50px;
         text-align: center;
@@ -26,8 +30,8 @@
         active-view="month"
         :disable-views="['years', 'year', 'day']"
         :time-from="9 * 60"
-        :time-to="23 * 60"
-        :time-step="30"
+        :time-to="20 * 60"
+        :time-step="60"
         :events="events"
         :editable-events="{
           title: false,
@@ -37,6 +41,7 @@
           create: false,
         }"
         :snap-to-time="60"
+        :timeCellHeight="70"
       />
     </div>
   </div>
@@ -151,7 +156,7 @@ export default {
         let startHour = start.getHours();
 
         if (dateToBookMappings.hasOwnProperty(`${day}, ${month}`)) {
-          dateToBookMappings[`${day}, ${month}`].push(startHour)
+          dateToBookMappings[`${day}, ${month}`].push(startHour);
         } else {
           dateToBookMappings[`${day}, ${month}`] = [startHour];
         }
@@ -184,7 +189,7 @@ export default {
   border-bottom: 5px white solid;
   font-size: 3rem;
   text-transform: uppercase;
-  width: 70%;
+  width: 80%;
   margin: auto;
   padding-top: 20px;
 }
@@ -192,6 +197,7 @@ export default {
   background-color: black;
   min-height: 100vh;
   font-family: Teko;
+  min-width: 1100px;
 }
 
 .calendar {
