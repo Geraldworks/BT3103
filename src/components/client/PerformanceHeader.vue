@@ -3,7 +3,7 @@
     <!--Profile Picture-->
     <img
       class="profile-picture"
-      src="@/assets/images/test.jpeg"
+      :src="displayPicture"
       alt="an image"
     />
     <div class="your-profile">
@@ -11,6 +11,46 @@
     </div>
   </div>
 </template>
+
+<script>
+import defaultPic from "../../assets/images/default_dp.svg";
+import { mapGetters } from "vuex";
+import { getStorage, list, ref, getDownloadURL } from "@firebase/storage";
+import { auth } from "../../firebase";
+
+export default {
+  data() {
+    return {
+      displayPicture: null,
+    }
+  },
+  computed: {
+    ...mapGetters(["user"]),
+  },
+  mounted() {
+    auth.onAuthStateChanged((user) => {
+      this.$store.dispatch("fetchUser", user);
+    });
+
+    const storage = getStorage();
+    const listRef = ref(storage);
+
+    list(listRef).then((res) => {
+      res.items.forEach((imageRef) => {
+        if (imageRef._location.path == this.user.data.email) {
+          getDownloadURL(imageRef).then((url) => {
+            this.displayPicture = url;
+          });
+        }
+      });
+    });
+
+    if (!this.displayPicture) {
+      this.displayPicture = defaultPic;
+    }
+  },
+}
+</script>
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");

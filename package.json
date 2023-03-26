@@ -10,6 +10,7 @@
   "dependencies": {
     "@coreui/coreui": "^4.2.6",
     "@coreui/vue": "^4.7.0",
+    "@vuepic/vue-datepicker": "^4.2.3",
     "chart.js": "^4.2.1",
     "dotenv": "^16.0.3",
     "firebase": "^9.17.2",
