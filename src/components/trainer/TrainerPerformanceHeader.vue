@@ -13,6 +13,10 @@
         <CModal size="xl" :visible="xlgDemo" class="testing" @close=" () => {xlgDemo = false;}">
           <UpdateForm :clientEmail="email" :clientName ="clientName" class="testing"/>
         </CModal>
+        <div class="right-side-items" @click="showUpdateForm()">Update Stats testing</div>
+        <div class="pop-up">
+          <UpdateForm2 v-show="updateForm" :clientEmail="email" :clientName ="clientName" @close-modal="bookModal = false"/>
+        </div>
         <!-- If we detect that the trainer wants to return, we will emit "refresh" to 
           go back to the page with all the client cards-->
         <div class="right-side-items" @click="returnBackToTrainerHomePage()">Return</div>
@@ -26,16 +30,20 @@ import { doc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase.js";
 import { CModal, CFormInput, CFormFeedback, CFormLabel, CFormText } from "@coreui/vue";
 import UpdateForm from "./UpdateForm.vue";
+import UpdateForm2 from "./UpdateForm2.vue";
+
 
 export default {
   name: "TrainerPerformanceHeader",
   components: {
-    UpdateForm
+    UpdateForm,
+    UpdateForm2,
   },
   data() {
     return {
       clientName: null,
       xlgDemo: false,
+      updateForm: false,
     };
   },
   props: {
@@ -45,17 +53,8 @@ export default {
     returnBackToTrainerHomePage() {
       this.$emit("returnToHome");
     },
-    async updateDataBase() {
-      try {
-        const clientData = doc(db,'client', this.email);      
-        const myDoc = await getDocs(clientData);
-        const fatsData = myDoc.data();
-        console.log(fatsData);
-    } catch (error) {
-        console.log(error);
-        console.log("No email observed in database");
-      }
-
+    showUpdateForm() {
+      this.updateForm = true;
     }
   },
   emits: ["returnToHome"],

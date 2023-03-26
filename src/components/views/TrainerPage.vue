@@ -132,6 +132,18 @@ export default {
         let documentData2 = clientEmail.data();
         // array to store required client information
         let currClient = [];
+        //searching for the next booking
+        
+        // const bookings = documentData2.bookings;
+        // const sortedBookings = bookings.sort((a, b) => {
+        //   const aDate = a.from.toDate();
+        //   const bDate = b.from.toDate();
+        //   return bDate - aDate;
+        // })
+        // console.log(documentData2.fullName)
+        // console.log(sortedBookings);
+
+        // pushing the information into the list to store
         currClient.push(documentData2.fullName);
         currClient.push(documentData2.emergencyContactNo);
         currClient.push(documentData2.emergencyContactName);
