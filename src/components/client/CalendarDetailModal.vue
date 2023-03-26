@@ -3,9 +3,23 @@
     <div class="modal-overlay" @click="$emit('close-modal')">
       <div class="modal" @click.stop>
         <!-- <img class="check" src="~/assets/check-icon.png" alt="" /> -->
-        <div class="modal-title">{{ eventTitle }} {{ eventDate }}</div>
+        <div class="modal-title">
+          {{ eventTitle }} on
+          <span style="color: #ed1f24">{{ eventDate }}</span>
+        </div>
         <div class="modal-content">
-          Event Details: {{ eventStart }} {{ eventEnd }} {{ eventExerciseType }}
+          <div class="modal-content-header">Event Details</div>
+          <div class="modal-content-normal">
+            Gym Time Start --
+            <span style="color: #ed1f24">{{ eventStart }}</span>
+          </div>
+          <div class="modal-content-normal">
+            Gym Time End -- <span style="color: #ed1f24">{{ eventEnd }}</span>
+          </div>
+          <div class="modal-content-normal">
+            Workout Focus --
+            <span style="color: #ed1f24">{{ eventExerciseType }}</span>
+          </div>
         </div>
       </div>
       <div class="close" @click="$emit('close-modal')">
@@ -54,16 +68,39 @@ export default {
   /* justify-content: center;
   text-align: center; */
   background-color: #d9d9d9;
-  height: 30%;
+  height: 50%;
   width: 30%;
-  margin-top: 15%;
-  padding: 60px 0;
+  margin-top: 10%;
+  padding: 8vh 0 0 0;
   border-radius: 20px;
   max-width: 50%;
   max-height: 70%;
+  min-width: 550px;
 }
+
+.modal-title {
+  font-size: 3em;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.modal-content {
+  height: 100%;
+  min-height: 300px;
+}
+
+.modal-content-header {
+  font-size: 2.5em;
+  margin-top: 0.09375em;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.modal-content-normal {
+  font-size: 1.5em;
+  margin: 0.3125em;
+}
+
 .close {
-  margin: 15% 0 0 5px;
+  margin: 10% 0 0 5px;
   cursor: pointer;
 }
 

@@ -1,9 +1,10 @@
 <template>
+  <Navbar />
   <div class="calendar-page">
-    <Navbar />
+    <div class="calendar-page-header">Your Schedule</div>
     <div
       style="
-        height: 700px;
+        height: 800px;
         width: 85%;
         margin: auto;
         padding: 50px;
@@ -15,7 +16,7 @@
         active-view="month"
         :disable-views="['years', 'year', 'day']"
         :time-from="9 * 60"
-        :time-to="23 * 60"
+        :time-to="20 * 60"
         :time-step="60"
         :events="events"
         :on-event-click="onEventClick"
@@ -26,7 +27,7 @@
           delete: false,
           create: false,
         }"
-        :timeCellHeight="60"
+        :timeCellHeight="70"
       />
       <div class="popup">
         <CalendarDetailModal
@@ -68,19 +69,19 @@ export default {
         },
         {
           start: "2023-03-29 10:00",
-          end: "2023-03-29 12:00",
+          end: "2023-03-29 11:00",
           title: "Gym Session",
           exerciseType: "Legs, Arms",
         },
         {
-          start: "2023-03-15 12:00",
+          start: "2023-03-15 13:00",
           end: "2023-03-15 14:00",
           title: "Gym Session",
           exerciseType: "Cardio",
         },
         {
           start: "2023-03-15 14:00",
-          end: "2023-03-15 16:00",
+          end: "2023-03-15 15:00",
           title: "Gym Session",
           exerciseType: "Back, Shoulders",
         },
@@ -106,9 +107,21 @@ export default {
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
+.calendar-page-header {
+  color: white;
+  border-bottom: 5px white solid;
+  font-size: 3rem;
+  text-transform: uppercase;
+  width: 80%;
+  margin: auto;
+  padding-top: 20px;
+}
+
 .calendar-page {
   background-color: black;
   min-height: 100vh;
+  font-family: Teko;
+  min-width: 1100px;
 }
 
 .calendar {
@@ -126,6 +139,15 @@ export default {
   box-sizing: border-box;
   padding: 5px;
   cursor: pointer;
+}
+
+.vuecal__event-title {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.vuecal__event-time {
+  font-size: 0.9em;
 }
 
 .vuecal__cell--has-events {
