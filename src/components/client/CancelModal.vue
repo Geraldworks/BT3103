@@ -2,9 +2,29 @@
   <transition name="modal-fade">
     <div class="modal-overlay" @click="$emit('close-modal')">
       <div class="modal" @click.stop>
-        <!-- <img class="check" src="~/assets/check-icon.png" alt="" /> -->
-        <div>{{ bodyContent }}</div>
-        <button>{{ buttonContent }}</button>
+        <div style="font-size: 2.5rem; margin-bottom: 20px">
+          Select your Bookings to Cancel
+        </div>
+        <select v-model="selected" style="padding: 0px 2px" multiple>
+          <option
+            style="padding: 0px 2px 5px 2px"
+            v-for="booking in clientBookings.sort(this.comparatorForTime)"
+            :value="booking"
+          >
+            {{ parseBookingObject(booking) }}
+          </option>
+        </select>
+        <div>
+          <button
+            @click="confirmCancellation()"
+            style="text-align: center"
+            type="submit"
+          >
+            Confirm
+          </button>
+        </div>
+
+        <!-- Parse the array information from the prop-->
       </div>
       <div class="close" @click="$emit('close-modal')">
         <img class="close-img" src="@/assets/images/cross-icon.png" alt="" />
@@ -14,15 +34,75 @@
 </template>
 
 <script>
+import { db, auth } from "../../firebase.js";
+import { doc, updateDoc, arrayRemove } from "firebase/firestore";
+import { mapGetters } from "vuex";
+
 export default {
-  name: "SmallModal",
+  name: "CancelModal",
   data() {
-    return {};
+    return {
+      selected: [],
+    };
+  },
+  methods: {
+    parseBookingObject(bookingObject) {
+      let fromTime = bookingObject["from"].toDate();
+      const month = fromTime.toLocaleString("default", { month: "long" });
+
+      return `${month} ${fromTime.getDate()}, 
+              ${this.createTimeString(fromTime.getHours())} - 
+              ${this.createTimeString(fromTime.getHours() + 1)},
+              ${bookingObject.focus}`;
+    },
+    confirmCancellation() {
+      window.confirm("Confirm your Cancellations")
+        ? this.cancelBookings()
+        : window.alert("Please review your selections");
+    },
+    createTimeString(time) {
+      let pm = false;
+      if (time >= 12) {
+        pm = true;
+      }
+      return pm
+        ? String(time === 12 ? 12 : time % 12) + "pm"
+        : String(time) + "am";
+    },
+    comparatorForTime(bookingOne, bookingTwo) {
+      if (bookingOne.from < bookingTwo.from) {
+        return -1;
+      } else if (bookingOne.from > bookingTwo.from) {
+        return 1;
+      }
+      return 0;
+    },
+    async cancelBookings() {
+      const clientRef = doc(db, "client", this.user.data.email);
+      this.selected.forEach(async (cancelledBooking) => {
+        await updateDoc(clientRef, {
+          bookings: arrayRemove(cancelledBooking),
+        });
+      });
+      this.$emit("updateCalendar");
+      window.alert("Cancellations Done!");
+      this.$emit("close-modal");
+      // cleaning up the components
+      this.selected = [];
+    },
   },
   props: {
-    bodyContent: String,
-    buttonContent: String,
+    clientBookings: Array,
   },
+  computed: {
+    ...mapGetters(["user"]),
+  },
+  mounted() {
+    auth.onAuthStateChanged((user) => {
+      this.$store.dispatch("fetchUser", user);
+    });
+  },
+  emits: ["close-modal", "updateCalendar"],
 };
 </script>
 
@@ -48,17 +128,20 @@ export default {
   position: relative;
   /* justify-content: center;
   text-align: center; */
-  background-color: white;
-  height: 90%;
+  background-color: #d9d9d9;
   width: 90%;
   margin-top: 6%;
-  padding: 60px 0;
   border-radius: 20px;
   max-width: 50%;
-  max-height: 70%;
+  max-height: 50%;
   font-size: 28px;
-  padding: 50px;
+  padding: 30px 50px;
   text-align: center;
+  min-width: 550px;
+}
+
+.modal::-webkit-scrollbar {
+  display: none;
 }
 .close {
   margin: 6% 0 0 10px;
@@ -77,7 +160,6 @@ button {
   border: none;
   outline: none;
   cursor: pointer;
-  margin: 5px;
   margin-top: 30px;
   font-size: 1.5rem;
   text-align: center;
@@ -92,12 +174,24 @@ button:hover {
   box-sizing: border-box;
 }
 
+select {
+  min-height: 200px;
+}
+
+.slots {
+  min-height: 200px;
+  border: 0.5px solid black;
+  padding: 0px 3px;
+  text-align: center;
+}
+
 @keyframes pill-button-highlight {
   from {
     border: 0px white solid;
   }
   to {
-    border: 2.5px black solid;
+    border: 2px white solid;
+    background-color: #5041e0;
   }
 }
 

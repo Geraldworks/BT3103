@@ -7,7 +7,12 @@
       <button @click="showBookModal()">Make Booking</button>
     </div>
     <div class="popup">
-      <CancelModal v-show="cancelModal" @close-modal="cancelModal = false" />
+      <CancelModal
+        v-show="cancelModal"
+        @close-modal="cancelModal = false"
+        @updateCalendar="refreshCalendarData()"
+        :clientBookings="clientBookings"
+      />
     </div>
     <div class="popup">
       <BookModal
@@ -44,6 +49,8 @@
         }"
         :snap-to-time="60"
         :timeCellHeight="70"
+        :min-date="minDate"
+        :max-date="maxDate"
       />
     </div>
   </div>
@@ -58,6 +65,10 @@ import { db, auth } from "../../firebase.js";
 import { mapGetters } from "vuex";
 import "vue-cal/dist/vuecal.css";
 
+const minDate = new Date();
+let maxDate = new Date();
+maxDate.setMonth(maxDate.getMonth() + 3);
+
 export default {
   name: "BookingPage",
   data() {
@@ -69,6 +80,8 @@ export default {
       dateToBookMappings: {},
       cancelModal: false,
       bookModal: false,
+      minDate: minDate,
+      maxDate: maxDate,
       events: [
         {
           start: "2023-03-27 14:00",
@@ -117,12 +130,15 @@ export default {
       this.clientTrainer = doc.data().trainerEmail;
     });
     bookingsFromFirebase.forEach((booking) => {
-      let start = booking.from.toDate();
-      let end = booking.to.toDate();
-      let title = booking.title;
-      clientBookings.push({ start, end, title });
+      /* Quick fix to client cancellation of bookings */
+      // let start = booking.from.toDate();
+      // let end = booking.to.toDate();
+      // let title = booking.title;
+      // clientBookings.push({ start, end, title });
+      clientBookings.push(booking);
     });
     this.clientBookings = clientBookings;
+    // console.log(this.clientBookings);
     // end of client data
 
     // getting all trainer's clients emails
@@ -151,7 +167,14 @@ export default {
         let start = doc.from.toDate();
         let end = doc.to.toDate();
         let title = doc.title;
-        allClientBookings.push({ start, end, title });
+        if (client.data().email != this.user.data.email) {
+          let obj = { start, end, title };
+          obj["class"] = "otherClient";
+          obj["title"] = "Other Clients";
+          allClientBookings.push(obj);
+        } else {
+          allClientBookings.push({ start, end, title });
+        }
 
         // data pivoting on each booking
         let month = start.getMonth();
@@ -203,10 +226,12 @@ export default {
         this.clientTrainer = doc.data().trainerEmail;
       });
       bookingsFromFirebase.forEach((booking) => {
-        let start = booking.from.toDate();
-        let end = booking.to.toDate();
-        let title = booking.title;
-        clientBookings.push({ start, end, title });
+        /* Quick fix to client cancellation for now */
+        // let start = booking.from.toDate();
+        // let end = booking.to.toDate();
+        // let title = booking.title;
+        // clientBookings.push({ start, end, title });
+        clientBookings.push(booking)
       });
       this.clientBookings = clientBookings;
       // end of client data
@@ -237,7 +262,14 @@ export default {
           let start = doc.from.toDate();
           let end = doc.to.toDate();
           let title = doc.title;
-          allClientBookings.push({ start, end, title });
+          if (client.data().email != this.user.data.email) {
+            let obj = { start, end, title };
+            obj["class"] = "otherClient";
+            obj["title"] = "Other Clients";
+            allClientBookings.push(obj);
+          } else {
+            allClientBookings.push({ start, end, title });
+          }
 
           // data pivoting on each booking
           let month = start.getMonth();
@@ -254,8 +286,8 @@ export default {
         this.dateToBookMappings = dateToBookMappings;
         this.events = allClientBookings;
       });
-      // update the calendar 
-      this.key++
+      // update the calendar
+      this.key++;
     },
   },
 };

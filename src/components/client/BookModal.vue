@@ -3,7 +3,7 @@
     <div class="modal-overlay" @click="$emit('close-modal')">
       <div class="modal" @click.stop>
         <!-- <img class="check" src="~/assets/check-icon.png" alt="" /> -->
-        <div style="font-size: 2.5rem">Select a Date</div>
+        <div style="font-size: 2.5rem">Select a Date to Book</div>
         <div>
           <Datepicker
             v-model="date"
@@ -75,7 +75,7 @@
             style="text-align: center"
             type="submit"
           >
-            Save
+            Book
           </button>
         </div>
       </div>
@@ -110,7 +110,7 @@ let maxDate = new Date();
 maxDate.setMonth(maxDate.getMonth() + 3);
 
 export default {
-  name: "SmallModal",
+  name: "BookModal",
   data() {
     return {
       date: null,
@@ -301,7 +301,7 @@ button:hover {
 
 .slots {
   min-height: 200px;
-  border: 0.5px solid black;
+  border: 0.1px solid black;
   padding: 0px 3px;
   text-align: center;
 }
