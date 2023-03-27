@@ -45,12 +45,13 @@
         </div>
       </div>
     </div>
-    <div v-if="user.clientEmail">
+    <div v-else>
       <!-- ClientPerformance listens for the returnToHome event
              when this occurs, we remove the current client email that is rendered 
              we then render everything again using the :key attribute -->
       <ClientPerformance
         :clientEmail="user.clientEmail"
+        :profilePicURL="clientInfo[user.clientEmail][3]"
         :key="refreshCount"
         @returnToHome="removeEmailToRender()"
       />

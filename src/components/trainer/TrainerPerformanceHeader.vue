@@ -3,7 +3,7 @@
     <!--Profile Picture-->
     <img
       class="profile-picture"
-      src="@/assets/images/test.jpeg"
+      :src="profilePic"
       alt="profile picture"
     />
     <div class="your-profile">
@@ -34,6 +34,7 @@ export default {
   },
   props: {
     email: String,
+    profilePic: String,
   },
   methods: {
     returnBackToTrainerHomePage() {
