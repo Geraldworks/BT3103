@@ -98,7 +98,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 @import url("https://fonts.googleapis.com/css?family=Source Sans Pro");
 
 nav {

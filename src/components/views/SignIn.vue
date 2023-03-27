@@ -12,8 +12,7 @@ button {
   border: none;
   outline: none;
   cursor: pointer;
-  margin: 5px;
-  margin-top: 30px;
+  margin: 30px;
   font-size: 1.5rem;
   text-align: center;
   box-sizing: border-box;
@@ -57,10 +56,16 @@ button:hover {
   top: 20px;
   text-align: center;
   text-decoration: underline;
+  font-family: "Source Sans Pro", sans-serif;
 }
 
 .no-account:hover {
   cursor: pointer;
+}
+
+form {
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: larger;
 }
 </style>
 
@@ -115,7 +120,7 @@ button:hover {
 
                 <div class="form-group row mb-0">
                   <div class="button-div">
-                    <button type="submit" class="btn btn-primary mt-2">
+                    <button type="submit">
                       <div
                         v-if="isLoading"
                         class="spinner-border spinner-border-sm"
@@ -160,7 +165,7 @@ export default {
   },
   methods: {
     goToSignUp() {
-      this.$router.push("/signUp")
+      this.$router.push("/signup")
     },
     async SignIn() {
       this.isLoading = true;

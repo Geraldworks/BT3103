@@ -312,7 +312,7 @@ export default {
   background-color: black;
   min-height: 100vh;
   font-family: Teko;
-  min-width: 1100px;
+  min-width: 100vh;
 }
 
 .calendar {

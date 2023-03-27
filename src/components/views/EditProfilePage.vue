@@ -181,7 +181,8 @@ export default {
         const listRef = ref(storage);
         list(listRef).then((res) => {
             res.items.forEach((imageRef) => {
-                if (imageRef._location.path == this.user.data.email) {
+              const email = imageRef._location.path.slice(0, -4);
+                if (email == this.user.data.email) {
                     getDownloadURL(imageRef).then((url) => {
                         this.displayPicture = url;
                     });
@@ -229,7 +230,7 @@ export default {
             // Ensure that it only uploads the pic when a pic is selected
             if (this.profilePicture) {
                 const storage = getStorage();
-                const storageRef = ref(storage, `${this.user.data.email}`);
+                const storageRef = ref(storage, `${this.user.data.email}.jpg`);
                 const uploadTask = uploadBytesResumable(storageRef, this.profilePicture); // will replace old pic if already there
                 uploadTask.on("state_changed", (snapshot) => {
                     // Observe state change events such as progress, pause, and resume

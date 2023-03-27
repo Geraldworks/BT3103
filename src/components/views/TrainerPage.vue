@@ -146,7 +146,7 @@ export default {
 
       list(listRef).then((res) => {
         res.items.forEach((imageRef) => {
-          const email = imageRef._location.path;
+          const email = imageRef._location.path.slice(0, -4);
           if (clientInfo[email]) {
             getDownloadURL(imageRef).then((url) => {
               clientInfo[email][3] = url;
