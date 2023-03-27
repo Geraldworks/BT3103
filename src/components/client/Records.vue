@@ -4,15 +4,15 @@
     <table class="record-info">
       <tbody>
         <tr>
-          <td>Deadlift</td>
+          <td style="padding-left: 50px">Deadlift</td>
           <td>{{ deadliftData }} kg</td>
         </tr>
         <tr>
-          <td>Bench Press</td>
+          <td style="padding-left: 50px">Bench Press</td>
           <td>{{ benchPressData }} kg</td>
         </tr>
         <tr>
-          <td>Squat</td>
+          <td style="padding-left: 50px">Squat</td>
           <td>{{ squatData }} kg</td>
         </tr>
       </tbody>
