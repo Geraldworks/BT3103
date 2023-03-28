@@ -19,6 +19,7 @@
           :exerciseTypes="routine.exerciseTypes"
           :routineDate="routine.routineDate"
           :updateBool="routine.updateBool"
+          @show-routine-view-modal="showRoutineViewModal"
         >
         </RoutineBlock>
       </div>
@@ -36,6 +37,12 @@
           @close-modal="routineModal = false"
         />
       </div>
+      <div class="viewModal">
+        <RoutineViewModal
+          v-show="routineViewModal"
+          @close-modal="routineViewModal = false"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -44,6 +51,7 @@
 import { mapGetters, useStore } from "vuex";
 import { db, auth } from "../../firebase.js";
 import RoutineModal from "../client/RoutineModal.vue";
+import RoutineViewModal from "../client/RoutineViewModal.vue";
 import RoutineBlock from "../client/RoutineBlock.vue";
 
 export default {
@@ -71,6 +79,7 @@ export default {
         },
       ],
       routineModal: false,
+      routineViewModal: false,
     };
   },
   mounted() {
@@ -84,6 +93,7 @@ export default {
   },
   components: {
     RoutineModal,
+    RoutineViewModal,
     RoutineBlock,
   },
   watch: {
@@ -94,6 +104,9 @@ export default {
   methods: {
     showRoutineModal() {
       this.routineModal = true;
+    },
+    showRoutineViewModal() {
+      this.routineViewModal = true;
     },
   },
 };

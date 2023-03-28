@@ -1,5 +1,5 @@
 <template>
-  <div class="content-area">
+  <div class="content-area" @click="showRoutineViewModal">
     <div class="item-container">
       <div class="item-text routinecreator-text">{{ routineCreator }}</div>
       <div class="item-text routinename-text">{{ routineName }}</div>
@@ -29,6 +29,11 @@ export default {
     exerciseTypes: String,
     routineDate: String,
     updateBool: Boolean,
+  },
+  methods: {
+    showRoutineViewModal() {
+      this.$emit("show-routine-view-modal");
+    },
   },
 };
 </script>
