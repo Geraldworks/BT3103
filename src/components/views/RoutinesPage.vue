@@ -12,7 +12,16 @@
       </div>
 
       <div class="routine-list">
-        <RoutineBlock v-for="routine in numRoutines"> </RoutineBlock>
+        <RoutineBlock
+          v-for="routine in routineArr"
+          :routineCreator="routine.routineCreator"
+          :routineName="routine.routineName"
+          :exerciseTypes="routine.exerciseTypes"
+          :routineDate="routine.routineDate"
+          :updateBool="routine.updateBool"
+          @show-routine-view-modal="showRoutineViewModal"
+        >
+        </RoutineBlock>
       </div>
       <!-- <div style="padding-top: 2em">
         <tr>
@@ -28,6 +37,12 @@
           @close-modal="routineModal = false"
         />
       </div>
+      <div class="viewModal">
+        <RoutineViewModal
+          v-show="routineViewModal"
+          @close-modal="routineViewModal = false"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -36,6 +51,7 @@
 import { mapGetters, useStore } from "vuex";
 import { db, auth } from "../../firebase.js";
 import RoutineModal from "../client/RoutineModal.vue";
+import RoutineViewModal from "../client/RoutineViewModal.vue";
 import RoutineBlock from "../client/RoutineBlock.vue";
 
 export default {
@@ -46,8 +62,24 @@ export default {
   data() {
     return {
       email: "",
-      numRoutines: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], // Placeholder only
+      routineArr: [
+        {
+          routineCreator: "Trainer Joe",
+          routineName: "Saturday Chest Ripper",
+          exerciseTypes: "Chest",
+          routineDate: "12/3/2023",
+          updateBool: true,
+        },
+        {
+          routineCreator: "Client Gerald",
+          routineName: "Monday Morning Back Workout",
+          exerciseTypes: "Back, Shoulders",
+          routineDate: "27/3/2023",
+          updateBool: false,
+        },
+      ],
       routineModal: false,
+      routineViewModal: false,
     };
   },
   mounted() {
@@ -61,6 +93,7 @@ export default {
   },
   components: {
     RoutineModal,
+    RoutineViewModal,
     RoutineBlock,
   },
   watch: {
@@ -71,6 +104,9 @@ export default {
   methods: {
     showRoutineModal() {
       this.routineModal = true;
+    },
+    showRoutineViewModal() {
+      this.routineViewModal = true;
     },
   },
 };
@@ -104,7 +140,7 @@ export default {
   padding: 30px 60px;
   margin-top: 22px;
   max-height: 59vh;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .interactive-top-area {
@@ -116,7 +152,8 @@ export default {
   border-radius: 25px;
   background-color: #ed1f24;
   color: white;
-  padding: 0.5em 1em;
+  font-size: 24px;
+  padding: 5px 10px;
   border: none;
 }
 
