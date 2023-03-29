@@ -49,6 +49,7 @@ export default {
   width: 100%;
   border-radius: 25px;
   margin-top: 1vh;
+  cursor: pointer;
 }
 
 .item-container {
