@@ -2,6 +2,7 @@
 <div>
   <!-- Whats left is that the type for the input has to be number and need to be required
   Front end has to be improved -->
+  <!-- requried is not working -->
 <transition name="modal-fade">
     <div class="modal-overlay" @click="$emit('close-modal')">
       <div class="modal" @click.stop>
@@ -10,15 +11,15 @@
           <div id="update-form">
             <form action="">
                 <label for="">Fats percentage </label> 
-                    <input @input="checkFatsInput(fats)" type="number" v-model="fats" id="fats" placeholder="Current Fats %">
+                    <input @input="checkFatsInput(fats)" type="number" v-model="fats" required id="fats"  placeholder="Current Fats %" />
                         <div v-if="showFatsError" class="error-message"> The number must be positive and not greater than 100.</div> 
                 <br>
                 <label for="">Weight in KG </label> 
-                    <input @input="checkWeightInput(weight)" type="number" v-model="weight" id="weight" placeholder="Current weight"> 
+                    <input @input="checkWeightInput(weight)" type="number" v-model="weight" required id="weight"  placeholder="Current weight" /> 
                         <div v-if="showWeightError" class="error-message"> The number must be positive.</div> 
                 <br>
                 <label for="">Muscle Mass in KG</label> 
-                    <input @input="checkMuscleInput(muscle)" type="number" v-model="muscle" id="muscle" placeholder="Current Muscle Mass"> 
+                    <input @input="checkMuscleInput(muscle)" type="number" v-model="muscle" required id="muscle"  placeholder="Current Muscle Mass" /> 
                         <div v-if="showMuscleError" class="error-message"> The number must be positive and not greater than the weight.</div> 
                 <br>
             </form>
@@ -154,11 +155,13 @@ export default {
     background-color: white;
     border-radius: 25px;
     padding: 1em 2em;
+    text-align: center;
 }
 input {
     border-radius: 25px;
     margin: 0.2em 1em;
     padding: 0em 0.5em;
+    text-align: center;
 }
 label {
     color: black

@@ -34,10 +34,10 @@
             <div>
               <h3 class="Routine">
                 <div class="white-text upper">
-                  {{ clientInfo[1] ? clientInfo[1] : "No Upcoming Session" }}
+                  {{ clientInfo[4][0] ? formatDate(clientInfo[4][0]["from"]) : "No Upcoming Session" }}
                 </div>
                 <div class="white-text lower">
-                  {{ clientInfo[2] ? clientInfo[2] : "No Upcoming Routine" }}
+                  {{ clientInfo[4][0] ? clientInfo[4][0]["focus"] : "No Upcoming Routine" }}
                 </div>
               </h3>
             </div>
@@ -95,6 +95,28 @@ export default {
       this.$store.dispatch("setClientEmail", null);
       this.refreshPage();
     },
+    // this comparator method helps to compare the date for the bookings
+    comparatorForTime(bookingOne, bookingTwo) {
+      if (bookingOne.from < bookingTwo.from) {
+        return -1;
+      } else if (bookingOne.from > bookingTwo.from) {
+        return 1;
+      }
+      return 0;
+    },
+    formatDate(timestamp) {
+      const date = timestamp.toDate()
+      const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false
+      }
+      return date.toLocaleString('en-US', options)
+    }
   },
   props: {
     email: String,
@@ -132,15 +154,10 @@ export default {
         let documentData2 = clientEmail.data();
         // array to store required client information
         let currClient = [];
-        //searching for the next booking
-        
-        // const bookings = documentData2.bookings;
-        // const sortedBookings = bookings.sort((a, b) => {
-        //   const aDate = a.from.toDate();
-        //   const bDate = b.from.toDate();
-        //   return bDate - aDate;
-        // })
-        // console.log(documentData2.fullName)
+        //searching for the next session
+        const bookings = documentData2.bookings;
+        const sortedBookings = bookings.sort(this.comparatorForTime);
+        // console.log(documentData2)
         // console.log(sortedBookings);
 
         // pushing the information into the list to store
@@ -148,6 +165,7 @@ export default {
         currClient.push(documentData2.emergencyContactNo);
         currClient.push(documentData2.emergencyContactName);
         currClient.push(defaultPic);
+        currClient.push(sortedBookings);
         // putting current client info into the clientInfo object
         clientInfo[documentData2.email] = currClient;
       });

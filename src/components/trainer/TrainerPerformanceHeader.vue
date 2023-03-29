@@ -11,7 +11,7 @@
         <div class="right-side-items" @click="">Routine</div>
         <div class="right-side-items" @click="showUpdateForm()">Update Stats</div>
         <div class="pop-up">
-          <UpdateForm2 v-show="updateForm" :clientEmail="email" :clientName ="clientName" @close-modal="bookModal = false"/>
+          <UpdateForm2 v-show="updateForm" :clientEmail="email" :clientName ="clientName" @close-modal="updateForm = false"/>
         </div>
         <!-- If we detect that the trainer wants to return, we will emit "refresh" to 
           go back to the page with all the client cards-->
