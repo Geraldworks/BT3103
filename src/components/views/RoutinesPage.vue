@@ -39,6 +39,8 @@
       </div>
       <div class="viewModal">
         <RoutineViewModal
+          :action="viewingAction"
+          :showUpdate="showUpdateInViewing"
           v-show="routineViewModal"
           @close-modal="routineViewModal = false"
         />
@@ -62,6 +64,8 @@ export default {
   data() {
     return {
       email: "",
+      viewingAction: "Viewing",
+      showUpdateInViewing: true,
       routineArr: [
         {
           routineCreator: "Trainer Joe",
