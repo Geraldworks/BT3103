@@ -16,18 +16,13 @@
           Available Slots
         </div>
         <select
+          key="key"
           class="slots"
           name="slots"
           v-if="date"
           v-model="selected"
           multiple
         >
-          <!--
-          <input :id="session" type="checkbox" style="margin-right: 10px" />
-          <label :for="session"
-            >{{ createTimeString(session) }} -
-            {{ createTimeString(session + 1) }}</label
-          > -->
           <option v-for="session in availableSessions" :value="session">
             {{ createTimeString(session) }} -
             {{ createTimeString(session + 1) }}
@@ -113,8 +108,10 @@ export default {
   name: "BookModal",
   data() {
     return {
+      key: 0,
       date: null,
       enableTime: false,
+      newBookings: [],
       selected: [],
       availableSessions: [],
       routineOptions: routineOptions,
@@ -158,20 +155,27 @@ export default {
           startTime + 1
         );
         let newBooking = { focus, from, title, to };
-        console.log(newBooking);
+        // console.log(newBooking);
+        // pushing into new Boookings to fit the style of CancelModal
+        this.newBookings.push(newBooking);
+        // adding to the booked session for this component
+        this.addBookedSession(newBooking);
         await updateDoc(clientRef, {
           bookings: arrayUnion(newBooking),
         });
       });
       // refresh page
-      this.$emit("updateCalendar");
+      this.$emit("addBookings", this.newBookings);
+      // parse new bookings
+      // add to booked sessions in this component
       window.alert("Booking Done!");
       this.$emit("close-modal");
       // cleaning up the components
       this.date = null;
+      this.newBookings = [];
       this.selected = [];
-      this.routineOne = ""
-      this.routineTwo = ""
+      this.routineOne = "";
+      this.routineTwo = "";
     },
     listOfPossibleBookings(stringDate) {
       let output = [];
@@ -199,14 +203,26 @@ export default {
     parseRoutines(routineOne, routineTwo) {
       return routineTwo === "" ? routineOne : `${routineOne}, ${routineTwo}`;
     },
+    addBookedSession(booking) {
+      let month = booking.from.getMonth();
+      let day = booking.from.getDate();
+      let startHour = booking.from.getHours();
+
+      if (this.allBookedSessions.hasOwnProperty(`${day}, ${month}`)) {
+        this.allBookedSessions[`${day}, ${month}`].push(startHour);
+      } else {
+        this.allBookedSessions[`${day}, ${month}`] = [startHour];
+      }
+    },
   },
   components: {
     Datepicker,
   },
   props: {
     allBookedSessions: Object,
+    cancelledBookings: Array,
   },
-  emits: ["close-modal", "updateCalendar"],
+  emits: ["close-modal", "addBookings"],
   watch: {
     date(newDate) {
       if (!newDate) {
@@ -216,6 +232,26 @@ export default {
       let month = newDate.getMonth();
       let newAvailability = this.listOfPossibleBookings(`${day}, ${month}`);
       this.availableSessions = newAvailability;
+    },
+    cancelledBookings(cancelled) {
+      cancelled.forEach((x) => {
+        let startTime = x["from"];
+        let startHour = startTime.getHours();
+        let day = startTime.getDate();
+        let month = startTime.getMonth();
+        this.allBookedSessions[`${day}, ${month}`] = this.allBookedSessions[
+          `${day}, ${month}`
+        ].filter((y) => {
+          return y !== startHour;
+        });
+      });
+      if (this.date) {
+        let newAvailability = this.listOfPossibleBookings(
+          `${this.date.getDate()}, ${this.date.getMonth()}`
+        );
+        this.availableSessions = newAvailability;
+      }
+      this.key++;
     },
   },
   computed: {

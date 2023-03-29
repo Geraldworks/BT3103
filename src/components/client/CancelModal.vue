@@ -35,7 +35,7 @@
 
 <script>
 import { db, auth } from "../../firebase.js";
-import { doc, updateDoc, arrayRemove } from "firebase/firestore";
+import { updateDoc, doc, getDoc } from "firebase/firestore";
 import { mapGetters } from "vuex";
 
 export default {
@@ -43,11 +43,12 @@ export default {
   data() {
     return {
       selected: [],
+      oldBookings: [],
     };
   },
   methods: {
     parseBookingObject(bookingObject) {
-      let fromTime = bookingObject["from"].toDate();
+      let fromTime = bookingObject["from"];
       const month = fromTime.toLocaleString("default", { month: "long" });
 
       return `${month} ${fromTime.getDate()}, 
@@ -78,21 +79,46 @@ export default {
       return 0;
     },
     async cancelBookings() {
-      const clientRef = doc(db, "client", this.user.data.email);
-      this.selected.forEach(async (cancelledBooking) => {
-        await updateDoc(clientRef, {
-          bookings: arrayRemove(cancelledBooking),
+      this.oldBookings = this.selected;
+      let bookingsFromFirebase = [];
+
+      const clientDoc = doc(db, "client", this.user.data.email);
+      const clientSnap = await getDoc(clientDoc);
+
+      bookingsFromFirebase = clientSnap.data().bookings;
+
+      this.selected.forEach((x) => {
+        bookingsFromFirebase = bookingsFromFirebase.filter((y) => {
+          return x["from"].getTime() !== y.from.toDate().getTime();
         });
       });
-      this.$emit("updateCalendar");
+
+      await updateDoc(clientDoc, { bookings: bookingsFromFirebase });
+      let newClientBookings = bookingsFromFirebase;
+
+      newClientBookings = newClientBookings.map((x) => {
+        return {
+          title: x.title,
+          focus: x.focus,
+          from: x.from.toDate(),
+          to: x.to.toDate(),
+        };
+      });
+
+      // console.log(newClientBookings)
+      console.log(this.oldBookings)
+      this.$emit("setNewClientBookings", newClientBookings);
+      this.$emit("removeBookings", this.oldBookings);
       window.alert("Cancellations Done!");
       this.$emit("close-modal");
-      // cleaning up the components
+
+      this.oldBookings = [];
       this.selected = [];
     },
   },
   props: {
     clientBookings: Array,
+    newBookings: Array,
   },
   computed: {
     ...mapGetters(["user"]),
@@ -102,7 +128,17 @@ export default {
       this.$store.dispatch("fetchUser", user);
     });
   },
-  emits: ["close-modal", "updateCalendar"],
+  emits: ["close-modal", "removeBookings", "setNewClientBookings"],
+  watch: {
+    newBookings(newThings) {
+      // console.log(newThings)
+      newThings.forEach((x) => this.clientBookings.push(x));
+      console.log(this.clientBookings);
+      // this.newBookings = [];
+      this.$forceUpdate();
+      // might need to watch for the change in clientBookings
+    },
+  },
 };
 </script>
 

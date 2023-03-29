@@ -214,11 +214,6 @@ export default {
   background-color: #fffacd;
 }
 
-.vuecal__cell-events-count {
-  /* Remove the event count number in month view */
-  /* display: none; */
-}
-
 /* Styles for Min and Max Range vue-cal */
 .vuecal__cell--disabled {
   text-decoration: line-through;
