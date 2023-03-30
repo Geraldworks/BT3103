@@ -275,7 +275,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
 
 .booking-page-header {
@@ -299,7 +299,9 @@ export default {
   font-family: Teko;
   font-size: 1.2rem;
 }
+</style>
 
+<style>
 .vuecal__event {
   background-color: rgba(169, 169, 169, 0.7);
   border: solid rgba(0, 0, 0, 0.3);

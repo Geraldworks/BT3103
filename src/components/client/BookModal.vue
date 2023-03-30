@@ -84,6 +84,7 @@
 
 <script>
 import Datepicker from "@vuepic/vue-datepicker";
+import Swal from "sweetalert2";
 import { db, auth } from "../../firebase.js";
 import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { mapGetters } from "vuex";
@@ -100,9 +101,10 @@ const routineOptions = [
   "Legs",
   "Cardio",
 ];
+
 let minDate = new Date();
 let maxDate = new Date();
-minDate.setDate(minDate.getDate() + 1)
+minDate.setDate(minDate.getDate() + 1);
 maxDate.setMonth(minDate.getMonth() + 3);
 
 export default {
@@ -124,9 +126,32 @@ export default {
   },
   methods: {
     confirmBooking() {
-      window.confirm("Confirm your booking")
-        ? this.submitBooking()
-        : window.alert("Booking Not Done!");
+      Swal.fire({
+        title: "Confirm Your Bookings",
+        html: this.displayBookings(this.selected),
+        content: "hello",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#28a745",
+        cancelButtonColor: "#ed1f24",
+        confirmButtonText: "Confirm",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.submitBooking();
+          Swal.fire({
+            icon: "success",
+            title: "Bookings Successful",
+            confirmButtonText: "OK",
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Please Review Your Bookings",
+            confirmButtonText: "OK",
+          });
+        }
+      });
     },
     async submitBooking() {
       // get the document we need to update the bookings for
@@ -209,6 +234,30 @@ export default {
       } else {
         this.allBookedSessions[`${day}, ${month}`] = [startHour];
       }
+    },
+    displayBookings(bookings) {
+      let output = `
+      ${this.date.getDate()} 
+      ${this.date.toLocaleString("default", { month: "long" })} 
+      ${this.date.getFullYear()}, 
+      ${this.parseRoutines(this.routineOne, this.routineTwo)}`;
+      bookings.forEach((startTime) => {
+        output += "<div>";
+        output += this.createTimeString(startTime);
+        output += " - ";
+        output += this.createTimeString(startTime + 1);
+        output += "</div>";
+      });
+      return output;
+    },
+    createTimeString(time) {
+      let pm = false;
+      if (time >= 12) {
+        pm = true;
+      }
+      return pm
+        ? String(time === 12 ? 12 : time % 12) + "pm"
+        : String(time) + "am";
     },
   },
   components: {
@@ -331,6 +380,7 @@ button:hover {
   animation-duration: 0.15s;
   animation-fill-mode: forwards;
   box-sizing: border-box;
+  border: 2px solid white;
 }
 
 .slots {
@@ -340,7 +390,11 @@ button:hover {
   text-align: center;
 }
 
-@keyframes pill-button-highlight {
+.list-styling {
+  list-style-type: none;
+}
+
+/* @keyframes pill-button-highlight {
   from {
     border: 0px white solid;
   }
@@ -348,7 +402,7 @@ button:hover {
     border: 2px white solid;
     background-color: #5041e0;
   }
-}
+} */
 
 .modal-fade-enter,
 .modal-fade-leave-to {
@@ -357,5 +411,12 @@ button:hover {
 .modal-fade-enter-active,
 .modal-fade-leave-active {
   transition: opacity 0.5s ease;
+}
+</style>
+
+<style>
+.swal2-popup {
+  font-size: 1.35rem !important;
+  font-family: Teko !important;
 }
 </style>

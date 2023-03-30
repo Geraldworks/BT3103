@@ -84,6 +84,9 @@ import { mapGetters } from "vuex";
 import { auth, db } from "../../firebase";
 import { doc, getDoc, updateDoc } from "@firebase/firestore";
 import LoadingSpinner from "../LoadingSpinner.vue";
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+
+import 'sweetalert2/src/sweetalert2.scss'
 
 export default {
   name: "GoalsPage",
