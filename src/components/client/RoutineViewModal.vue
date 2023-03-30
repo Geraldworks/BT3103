@@ -40,7 +40,10 @@
             <div class="top-right">
               <!-- showUpdate is false for Creating, true for Viewing -->
               <div class="top-right-top" v-show="showUpdate">
-                <i>Last Updated By {{ userName }} at {{ updateTime }}</i>
+                <i
+                  >Last Updated By {{ lastUpdatedName }} at
+                  {{ lastUpdatedTimestamp }}</i
+                >
               </div>
               <div class="top-right-btm">
                 <button @click="showAddActivity()">Add Activity</button>
@@ -134,8 +137,8 @@ export default {
       action: "",
       routineName: "",
       routineDate: "",
-      userName: "Sarah" /* Placeholder */,
-      updateTime: "31-03-2023 16:00:00" /* Placeholder */,
+      lastUpdatedName: "Sarah" /* Placeholder */,
+      lastUpdatedTimestamp: "31-03-2023 16:00:00" /* Placeholder */,
       activityType: "Chest" /* Placeholder */,
       activityName: "Chest Fly" /* Placeholder */,
       activityDescription:

@@ -23,14 +23,6 @@
         >
         </RoutineBlock>
       </div>
-      <!-- <div style="padding-top: 2em">
-        <tr>
-          <th style="padding-right: 5em; padding-left: 1em">ROUTINE CREATOR</th>
-          <th style="padding-right: 30em">ROUTINE NAME</th>
-          <th style="padding-right: 10em">EXERCISE TYPE</th>
-          <th>ROUTINE DATE</th>
-        </tr>
-      </div> -->
       <div class="viewModal">
         <RoutineViewModal
           :action="viewingAction"
@@ -44,9 +36,9 @@
 </template>
 
 <script>
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { mapGetters, useStore } from "vuex";
 import { db, auth } from "../../firebase.js";
-import RoutineModal from "../client/RoutineModal.vue";
 import RoutineViewModal from "../client/RoutineViewModal.vue";
 import RoutineBlock from "../client/RoutineBlock.vue";
 
@@ -58,38 +50,65 @@ export default {
   data() {
     return {
       email: "",
-      viewingAction: "Viewing",
+      viewingAction: "",
       showUpdateInViewing: true,
       routineArr: [
-        {
-          routineCreator: "Trainer Joe",
-          routineName: "Saturday Chest Ripper",
-          exerciseTypes: "Chest",
-          routineDate: "12/3/2023",
-          updateBool: true,
-        },
-        {
-          routineCreator: "Client Gerald",
-          routineName: "Monday Morning Back Workout",
-          exerciseTypes: "Back, Shoulders",
-          routineDate: "27/3/2023",
-          updateBool: false,
-        },
+        // {
+        //   routineCreator: "Trainer Joe",
+        //   routineName: "Saturday Chest Ripper",
+        //   exerciseTypes: "Chest",
+        //   routineDate: "12/3/2023",
+        //   updateBool: true,
+        // },
+        // {
+        //   routineCreator: "Client Gerald",
+        //   routineName: "Monday Morning Back Workout",
+        //   exerciseTypes: "Back, Shoulders",
+        //   routineDate: "27/3/2023",
+        //   updateBool: false,
+        // },
       ],
       routineViewModal: false,
     };
   },
   mounted() {
-    const store = useStore();
     auth.onAuthStateChanged((user) => {
       store.dispatch("fetchUser", user);
-    }); // whenever page refreshes, the auth will have a short buffer from unknown to signed in / signed out
+    });
   },
   async created() {
-    this.email = this.user.data.email;
+    // Container to store routines from firebase (raw)
+    let routinesFromFirebase = [];
+    // Container to store routines (formatted for RoutineBlock)
+    let routineList = [];
+
+    // Retrieve client's document
+    const clientRef = collection(db, "client");
+    const thisClientQuery = query(
+      clientRef,
+      where("email", "==", this.user.data.email)
+    );
+    const clientQuerySnapshot = await getDocs(thisClientQuery);
+
+    // Access routines field
+    clientQuerySnapshot.forEach((doc) => {
+      routinesFromFirebase = doc.data().routines;
+      // access clientTrainer here if needed
+    });
+
+    // After getting all routines, create object to parse into RoutineBlock
+    routinesFromFirebase.forEach((routine) => {
+      routineList.push({
+        routineCreator: routine.creatorName,
+        routineName: routine.routineName,
+        exerciseTypes: routine.exerciseTypes,
+        routineDate: routine.routineDate.toDate().toLocaleDateString(),
+        updateBool: routine.updatedBool,
+      });
+    });
+    this.routineArr = routineList;
   },
   components: {
-    RoutineModal,
     RoutineViewModal,
     RoutineBlock,
   },
@@ -101,7 +120,7 @@ export default {
   methods: {
     showRoutineViewModal() {
       this.routineViewModal = true;
-      this.viewingAction = "Viewing"
+      this.viewingAction = "Viewing";
       this.showUpdateInViewing = true;
     },
     showRoutineCreateModal() {
