@@ -299,6 +299,8 @@ export default {
   height: 200px;
   width: 200px;
   object-fit: cover;
+  border-radius: 50%;
+  border: 2px white solid;
 }
 .picture > label {
   width: auto;
