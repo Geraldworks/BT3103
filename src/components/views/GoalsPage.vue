@@ -61,7 +61,7 @@
 
                 <div class="form-group row mb-0">
                   <div class="button-div">
-                    <button type="submit" class="btn btn-primary mt-6">
+                    <button type="submit">
                       <div
                         v-if="isLoading"
                         class="spinner-border spinner-border-sm"
@@ -138,7 +138,6 @@ export default {
             // some sort of feedback to show that it's done here
             this.isLoading = false;
             this.errorMessage = "";
-            location.reload();
           })
           .catch((err) => {
             console.log(err);
@@ -158,12 +157,6 @@ export default {
   min-height: 100vh;
 }
 
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 10%;
-}
 .display-words {
   padding: 20px 10vw;
   margin: 0;
@@ -236,11 +229,3 @@ input {
 }
 </style>
 
-<style>
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 10%;
-}
-</style>

@@ -109,7 +109,7 @@
 
                 <div class="form-group row mb-0">
                   <div class="button-div">
-                    <button type="submit" class="btn btn-primary mt-6">
+                    <button type="submit">
                       <div
                         v-if="isLoading"
                         class="spinner-border spinner-border-sm"
@@ -208,7 +208,6 @@ export default {
                 .then((response) => {
                 // some sort of feedback to show that it's done here
                 this.isLoading = false;
-                location.reload();
             })
                 .catch((err) => {
                 console.log(err);
@@ -292,9 +291,16 @@ export default {
   overflow: hidden;
   position: relative;
 }
+
+.picture img {
+  height: 200px;
+  width: 200px;
+  object-fit: cover;
+}
 .picture > label {
   width: auto;
-  border-radius: 50%;
+  /* so that it can only be clicked in the circle */
+  border-radius: 50%; 
   cursor: pointer;
 }
 
@@ -305,7 +311,7 @@ export default {
   background: rgba(0, 0, 0, 0.5); /* Black see-through */
   color: #f1f1f1;
   color: white;
-  width: 15%;
+  width: 200px;
   font-size: 20px;
   padding: 20px;
   text-align: center;
