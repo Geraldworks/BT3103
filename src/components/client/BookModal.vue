@@ -90,6 +90,14 @@ import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { mapGetters } from "vuex";
 import "@vuepic/vue-datepicker/dist/main.css";
 
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
+
 const gymStartingTimes = [9, 11, 13, 15, 17, 19];
 const routineOptions = [
   "", // in case a user misclicks
@@ -129,7 +137,6 @@ export default {
       Swal.fire({
         title: "Confirm Your Bookings",
         html: this.displayBookings(this.selected),
-        content: "hello",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#28a745",
@@ -139,16 +146,14 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           this.submitBooking();
-          Swal.fire({
+          Toast.fire({
             icon: "success",
-            title: "Bookings Successful",
-            confirmButtonText: "OK",
+            title: "Bookings successful",
           });
         } else {
-          Swal.fire({
+          Toast.fire({
             icon: "error",
-            title: "Please Review Your Bookings",
-            confirmButtonText: "OK",
+            title: "Bookings cancelled",
           });
         }
       });
@@ -238,8 +243,7 @@ export default {
     displayBookings(bookings) {
       let output = `
       ${this.date.getDate()} 
-      ${this.date.toLocaleString("default", { month: "long" })} 
-      ${this.date.getFullYear()}, 
+      ${this.date.toLocaleString("default", { month: "long" })}, 
       ${this.parseRoutines(this.routineOne, this.routineTwo)}`;
       bookings.forEach((startTime) => {
         output += "<div>";
@@ -416,9 +420,11 @@ button:hover {
 
 <style>
 .swal2-popup {
-  font-size: 1.1rem  !important;
+  font-size: 1.1rem !important;
   font-family: Teko !important;
   width: auto !important;
   padding: 10px !important;
 }
 </style>
+
+<!-- Global styling for popups is here -->
