@@ -5,7 +5,7 @@
 
     <div class="content-container">
       <div class="interactive-top-area">
-        <button @click="showRoutineModal()" id="new-routine">
+        <button @click="showRoutineCreateModal()" id="new-routine">
           Create New Routine
         </button>
         <!-- Include filter here if we decide to do it -->
@@ -31,12 +31,6 @@
           <th>ROUTINE DATE</th>
         </tr>
       </div> -->
-      <div class="popup">
-        <RoutineModal
-          v-show="routineModal"
-          @close-modal="routineModal = false"
-        />
-      </div>
       <div class="viewModal">
         <RoutineViewModal
           :action="viewingAction"
@@ -82,7 +76,6 @@ export default {
           updateBool: false,
         },
       ],
-      routineModal: false,
       routineViewModal: false,
     };
   },
@@ -106,11 +99,15 @@ export default {
     },
   },
   methods: {
-    showRoutineModal() {
-      this.routineModal = true;
-    },
     showRoutineViewModal() {
       this.routineViewModal = true;
+      this.viewingAction = "Viewing"
+      this.showUpdateInViewing = true;
+    },
+    showRoutineCreateModal() {
+      this.routineViewModal = true;
+      this.viewingAction = "Creating";
+      this.showUpdateInViewing = false;
     },
   },
 };
@@ -118,6 +115,7 @@ export default {
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
+
 .routine-page-header {
   color: white;
   border-bottom: 5px white solid;

@@ -1,6 +1,6 @@
 <template>
   <transition name="modal-fade">
-    <div class="modal-overlay" @click="$emit('close-modal')">
+    <div class="modal-overlay" @click="$emit('close-modal'),  closeAddActivity()">
       <div class="modal" @click.stop>
         <div class="modal-header">
           <!-- action is "Creating" for Creating, "Viewing" for Viewing -->
@@ -40,12 +40,44 @@
                 <i>Last Updated By {{ userName }} at {{ updateTime }}</i>
               </div>
               <div class="top-right-btm">
-                <button>Add Activity</button>
+                <button @click="showAddActivity()">Add Activity</button>
               </div>
             </div>
           </div>
           <!-- ADD (EDIT) ACTIVITY (Red color box) SECTION -->
-          <!-- Toggle the form using v-show -->
+          <div class="add-activity" v-show="addActivity">
+            <form action="" style="display: flex;">
+              <div class="activity-left">
+                <label for="">ACTIVITY TYPE</label>
+                <select name="muscles" id="muscles">
+                  <option value="chest">Chest</option>
+                  <option value="shoulders">Shoulders</option>
+                  <option value="back">Back</option>
+                  <option value="arms">Arms</option>
+                  <option value="legs">Legs</option>
+                  <option value="core">Core</option>
+                  <option value="cardio">Cardio</option>
+                  <option value="fat-burner">Fat Burner</option>
+                </select> <br>
+                <label for="">ACTIVITY NAME</label> <input type="text" name="" id=""> <br>
+                <label for="">SETS</label> <input type="text" name="" id=""> <br>
+                <div class="activity-set">
+                  <label for="">SET 1 DETAILS</label> <input type="text" name="" id="">KG <input type="text" name="" id="">REPS <br>
+                  <label for="">SET 2 DETAILS</label> <input type="text" name="" id="">KG <input type="text" name="" id="">REPS <br>
+                  <label for="">SET 3 DETAILS</label> <input type="text" name="" id="">KG <input type="text" name="" id="">REPS
+                </div>
+              </div>
+              <div class="activity-right" style="margin-left: 1em;">
+                <label for="">DESCRIPTION</label> <br>
+                <textarea name="" id="" cols="30" rows="10"></textarea>
+              </div>
+            </form>
+            <div style="text-align: right;">
+              <button @click="closeAddActivity()" style="background-color: white; color: #ED1F24; border: #ED1F24 solid 2px; margin-right: 1em;">Cancle</button>
+              <button>Add</button>
+            </div>
+          </div>
+
           <div class="routine-form"></div>
           <!-- LIST ACTIVITIES (Gray color box) SECTION -->
           <!-- Use v-for loop to show the list of RoutineActivity component -->
@@ -59,7 +91,7 @@
         </div>
       </div>
       <!-- SAVE BUTTON (To be created) -->
-      <div class="close" @click="$emit('close-modal')">
+      <div class="close" @click="$emit('close-modal'), closeAddActivity()">
         <img class="close-img" src="@/assets/images/cross-icon.png" alt="" />
       </div>
     </div>
@@ -79,6 +111,7 @@ export default {
       userName: "Sarah" /* Placeholder */,
       updateTime: "31-03-2023 16:00:00" /* Placeholder */,
       activityType: "Chest" /* Placeholder */,
+      addActivity: false,
     };
   },
   components: {
@@ -88,6 +121,14 @@ export default {
     action: String,
     showUpdate: Boolean,
   },
+  methods: {
+    showAddActivity() {
+      this.addActivity = true;
+    },
+    closeAddActivity() {
+      this.addActivity = false;
+    }
+  }
 };
 </script>
 
@@ -116,7 +157,7 @@ export default {
   height: 90%;
   width: 90%;
   margin-top: 6%;
-  border-radius: 20px;
+  border-radius: 25px;
   max-width: 85%;
   max-height: 80%;
   font-size: 28px;
@@ -157,7 +198,7 @@ export default {
   display: flex;
   flex-direction: row;
   padding-bottom: 10px;
-  border-bottom: 2px red solid;
+  border-bottom: 2px #ED1F24 solid;
 }
 
 .top-left {
@@ -195,7 +236,7 @@ export default {
 /* Button CSS */
 button {
   border-radius: 25px; /* half of height */
-  background-color: rgb(237, 31, 36);
+  background-color: #ED1F24;
   border: none;
   outline: none;
   cursor: pointer;
@@ -204,6 +245,7 @@ button {
   text-align: center;
   box-sizing: border-box;
   color: white;
+  min-width: 5em;
 }
 
 button:hover {
@@ -226,6 +268,44 @@ button:hover {
 .routine-activities {
   margin-top: 10px;
 }
+
+.add-activity {
+  border-style: solid;
+  border-radius: 25px;
+  border-color: #ED1F24;
+  border-width: 0.1em;
+  margin-top: 1em;
+  padding: 0.4em;
+}
+
+.activity-left input, select {
+  width: 30% ;
+
+}
+
+.activity-left label, .routine label{
+  display: inline-block;
+  text-align: right;
+  width: 5em;
+  margin-left: 0em;
+}
+
+input, select{
+  border-radius: 25px;
+  margin: 0.2em;
+  margin-left: 0.5em;
+  padding: 0em 0.5em;
+  height: 1.5em;
+}
+
+textarea {
+  border-width: 0.075em;
+  border-radius: 25px;
+  width: 15em;
+  height: 8em;
+  padding: 0.25em;
+}
+
 
 /* Close Modal CSS */
 .close {
