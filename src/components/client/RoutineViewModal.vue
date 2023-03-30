@@ -67,7 +67,7 @@
                   <label for="">SET 3 DETAILS</label> <input type="text" name="" id="">KG <input type="text" name="" id="">REPS
                 </div>
               </div>
-              <div class="activity-right" style="margin-left: 1em;">
+              <div class="activity-right">
                 <label for="">DESCRIPTION</label> <br>
                 <textarea name="" id="" cols="30" rows="10"></textarea>
               </div>
@@ -154,15 +154,13 @@ export default {
   position: relative;
   background-color: black;
   border: 2px solid #ed1f24;
-  height: 90%;
-  width: 90%;
   margin-top: 6%;
   border-radius: 25px;
-  max-width: 85%;
+  max-width: 75%;
   max-height: 80%;
   font-size: 28px;
   padding: 20px 50px;
-  min-width: 550px;
+
 }
 
 /* Heading CSS */
@@ -279,15 +277,17 @@ button:hover {
 }
 
 .activity-left input, select {
-  width: 30% ;
-
+  width: 25%;
 }
 
 .activity-left label, .routine label{
   display: inline-block;
   text-align: right;
   width: 5em;
-  margin-left: 0em;
+}
+
+.activity-right {
+  width: 50%;
 }
 
 input, select{
@@ -301,7 +301,7 @@ input, select{
 textarea {
   border-width: 0.075em;
   border-radius: 25px;
-  width: 15em;
+  width: 100%;
   height: 8em;
   padding: 0.25em;
 }
