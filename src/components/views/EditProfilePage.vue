@@ -255,6 +255,9 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  margin: auto;
+}
 .dp {
   width: auto;
   height: 200px;

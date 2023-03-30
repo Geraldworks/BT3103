@@ -72,6 +72,7 @@ export default {
   width: 100px;
   height: 100px;
   border: 2px solid white;
+  object-fit: cover;
 }
 
 .your-profile {
