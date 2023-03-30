@@ -1,6 +1,9 @@
 <template>
   <transition name="modal-fade">
-    <div class="modal-overlay" @click="$emit('close-modal'),  closeAddActivity()">
+    <div
+      class="modal-overlay"
+      @click="$emit('close-modal'), closeAddActivity()"
+    >
       <div class="modal" @click.stop>
         <div class="modal-header">
           <!-- action is "Creating" for Creating, "Viewing" for Viewing -->
@@ -46,7 +49,7 @@
           </div>
           <!-- ADD (EDIT) ACTIVITY (Red color box) SECTION -->
           <div class="add-activity" v-show="addActivity">
-            <form action="" style="display: flex;">
+            <form action="" style="display: flex">
               <div class="activity-left">
                 <label for="">ACTIVITY TYPE</label>
                 <select name="muscles" id="muscles">
@@ -58,22 +61,41 @@
                   <option value="core">Core</option>
                   <option value="cardio">Cardio</option>
                   <option value="fat-burner">Fat Burner</option>
-                </select> <br>
-                <label for="">ACTIVITY NAME</label> <input type="text" name="" id=""> <br>
-                <label for="">SETS</label> <input type="text" name="" id=""> <br>
+                </select>
+                <br />
+                <label for="">ACTIVITY NAME</label>
+                <input type="text" name="" id="" /> <br />
+                <label for="">SETS</label> <input type="text" name="" id="" />
+                <br />
                 <div class="activity-set">
-                  <label for="">SET 1 DETAILS</label> <input type="text" name="" id="">KG <input type="text" name="" id="">REPS <br>
-                  <label for="">SET 2 DETAILS</label> <input type="text" name="" id="">KG <input type="text" name="" id="">REPS <br>
-                  <label for="">SET 3 DETAILS</label> <input type="text" name="" id="">KG <input type="text" name="" id="">REPS
+                  <label for="">SET 1 DETAILS</label>
+                  <input type="text" name="" id="" />KG
+                  <input type="text" name="" id="" />REPS <br />
+                  <label for="">SET 2 DETAILS</label>
+                  <input type="text" name="" id="" />KG
+                  <input type="text" name="" id="" />REPS <br />
+                  <label for="">SET 3 DETAILS</label>
+                  <input type="text" name="" id="" />KG
+                  <input type="text" name="" id="" />REPS
                 </div>
               </div>
               <div class="activity-right">
-                <label for="">DESCRIPTION</label> <br>
+                <label for="">DESCRIPTION</label> <br />
                 <textarea name="" id="" cols="30" rows="10"></textarea>
               </div>
             </form>
-            <div style="text-align: right;">
-              <button @click="closeAddActivity()" style="background-color: white; color: #ED1F24; border: #ED1F24 solid 2px; margin-right: 1em;">Cancle</button>
+            <div style="text-align: right">
+              <button
+                @click="closeAddActivity()"
+                style="
+                  background-color: white;
+                  color: #ed1f24;
+                  border: #ed1f24 solid 2px;
+                  margin-right: 1em;
+                "
+              >
+                Cancel
+              </button>
               <button>Add</button>
             </div>
           </div>
@@ -83,7 +105,11 @@
           <!-- Use v-for loop to show the list of RoutineActivity component -->
           <div class="routine-activities">
             <!-- Just put 1 for testing purpose -->
-            <RoutineActivity :muscleGroup="activityType" />
+            <RoutineActivity
+              :activityType="activityType"
+              :activityName="activityName"
+              :activityDescription="activityDescription"
+            />
           </div>
           <!-- WORKOUT COMMENTS SECTION -->
           <!-- Toggle the form using v-show -->
@@ -111,6 +137,9 @@ export default {
       userName: "Sarah" /* Placeholder */,
       updateTime: "31-03-2023 16:00:00" /* Placeholder */,
       activityType: "Chest" /* Placeholder */,
+      activityName: "Chest Fly" /* Placeholder */,
+      activityDescription:
+        "Carry 20kg weights and make flying action. Do not rest. Breathe properly. Blah blah blah. Fly fly" /* Placeholder */,
       addActivity: false,
     };
   },
@@ -127,8 +156,8 @@ export default {
     },
     closeAddActivity() {
       this.addActivity = false;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -160,7 +189,6 @@ export default {
   max-height: 80%;
   font-size: 28px;
   padding: 20px 50px;
-
 }
 
 /* Heading CSS */
@@ -196,7 +224,7 @@ export default {
   display: flex;
   flex-direction: row;
   padding-bottom: 10px;
-  border-bottom: 2px #ED1F24 solid;
+  border-bottom: 2px #ed1f24 solid;
 }
 
 .top-left {
@@ -234,7 +262,7 @@ export default {
 /* Button CSS */
 button {
   border-radius: 25px; /* half of height */
-  background-color: #ED1F24;
+  background-color: #ed1f24;
   border: none;
   outline: none;
   cursor: pointer;
@@ -270,17 +298,19 @@ button:hover {
 .add-activity {
   border-style: solid;
   border-radius: 25px;
-  border-color: #ED1F24;
+  border-color: #ed1f24;
   border-width: 0.1em;
   margin-top: 1em;
   padding: 0.4em;
 }
 
-.activity-left input, select {
+.activity-left input,
+select {
   width: 25%;
 }
 
-.activity-left label, .routine label{
+.activity-left label,
+.routine label {
   display: inline-block;
   text-align: right;
   width: 5em;
@@ -290,7 +320,8 @@ button:hover {
   width: 50%;
 }
 
-input, select{
+input,
+select {
   border-radius: 25px;
   margin: 0.2em;
   margin-left: 0.5em;
@@ -305,7 +336,6 @@ textarea {
   height: 8em;
   padding: 0.25em;
 }
-
 
 /* Close Modal CSS */
 .close {

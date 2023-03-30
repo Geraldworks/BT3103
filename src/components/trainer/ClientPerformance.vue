@@ -1,6 +1,6 @@
 <template>
   <div class="performance-page">
-    <TrainerPerformanceHeader :email= "clientEmail" @returnToHome="returnBackToTrainerHomePage()"/>
+    <TrainerPerformanceHeader :email= "clientEmail" :profilePic="profilePicURL" @returnToHome="returnBackToTrainerHomePage()"/>
     <div class="content-container">
       <AllCharts :email= "clientEmail" />
       <PerformanceBottom class="bottom" :email= "clientEmail" />
@@ -16,7 +16,7 @@ import TrainerNavbar from './TrainerNavbar.vue';
 
 export default {
   name: "ClientPerformancePage",
-  props:["clientEmail"],
+  props:["clientEmail", "profilePicURL"],
   components: {
     AllCharts,
     PerformanceBottom,

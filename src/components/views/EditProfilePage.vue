@@ -1,7 +1,9 @@
 <template>
   <div class="edit-page">
     <Navbar />
-    <div class="container">
+    <LoadingSpinner v-if="pageLoading" :pageLoading="pageLoading"/>
+
+    <div v-else class="container">
       <div class="row display-words">
         <div>EDIT PROFILE</div>
       </div>
@@ -137,127 +139,119 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import defaultPic from "../../assets/images/default_dp.svg";
+import LoadingSpinner from "../LoadingSpinner.vue";
 
 export default {
-  name: "EditProfilePage",
-  data() {
-    return {
-      fullName: "",
-      contactNo: "",
-      emergencyContactName: "",
-      emergencyContactNo: "",
-      isLoading: false,
-      errorMessage: "",
-      displayPicture: null, // Picture to be displayed
-      profilePicture: null, // Picture to be uploaded
-    };
-  },
-  computed: {
-    ...mapGetters(["user"]),
-  },
-  mounted() {
-    auth.onAuthStateChanged((user) => {
-      this.$store.dispatch("fetchUser", user);
-    });
-
-    const clientRef = doc(db, "client", this.user.data.email);
-    getDoc(clientRef)
-      .then((docSnap) => {
-        const data = docSnap.data();
-        this.fullName = data.fullName;
-        this.contactNo = data.contactNo;
-        this.emergencyContactName = data.emergencyContactName;
-        this.emergencyContactNo = data.emergencyContactNo;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    const storage = getStorage();
-    const listRef = ref(storage);
-
-    list(listRef).then((res) => {
-      res.items.forEach((imageRef) => {
-        if (imageRef._location.path == this.user.data.email) {
-          getDownloadURL(imageRef).then((url) => {
-            this.displayPicture = url;
-          });
-        }
-      });
-    });
-
-    if (!this.displayPicture) {
-      this.displayPicture = defaultPic;
-    }
-  },
-  methods: {
-    async update() {
-      const clientRef = doc(db, "client", this.user.data.email);
-      this.isLoading = true;
-      updateDoc(clientRef, {
-        fullName: this.fullName,
-        contactNo: this.contactNo,
-        emergencyContactName: this.emergencyContactName,
-        emergencyContactNo: this.emergencyContactNo,
-      })
-        .then((response) => {
-          // some sort of feedback to show that it's done here
-          this.isLoading = false;
-          location.reload();
+    name: "EditProfilePage",
+    data() {
+        return {
+            fullName: "",
+            contactNo: "",
+            emergencyContactName: "",
+            emergencyContactNo: "",
+            isLoading: false,
+            errorMessage: "",
+            displayPicture: null,
+            profilePicture: null,
+            pageLoading: false,
+        };
+    },
+    components: { LoadingSpinner },
+    computed: {
+        ...mapGetters(["user"]),
+    },
+    mounted() {
+        this.pageLoading = true;
+        auth.onAuthStateChanged((user) => {
+            this.$store.dispatch("fetchUser", user);
+        });
+        const clientRef = doc(db, "client", this.user.data.email);
+        getDoc(clientRef)
+            .then((docSnap) => {
+            const data = docSnap.data();
+            this.fullName = data.fullName;
+            this.contactNo = data.contactNo;
+            this.emergencyContactName = data.emergencyContactName;
+            this.emergencyContactNo = data.emergencyContactNo;
         })
-        .catch((err) => {
-          console.log(err);
+            .catch((err) => {
+            console.log(err);
+        });
+        const storage = getStorage();
+        const listRef = ref(storage);
+        list(listRef).then((res) => {
+            res.items.forEach((imageRef) => {
+              const email = imageRef._location.path.slice(0, -4);
+                if (email == this.user.data.email) {
+                    getDownloadURL(imageRef).then((url) => {
+                        this.displayPicture = url;
+                    });
+                }
+            });
+        }).finally(() => {
+            if (!this.displayPicture) {
+              this.displayPicture = defaultPic;
+            }
+            this.pageLoading = false;
         });
     },
-    onFileSelected(event) {
-      let reader = new FileReader();
-      reader.onload = (e) => {
-        this.displayPicture = e.target.result;
-      };
-      reader.readAsDataURL(event.target.files[0]);
-      this.profilePicture = event.target.files[0];
-    },
-    onUpload() {
-      // Register three observers:
-      // 1. 'state_changed' observer, called any time the state changes
-      // 2. Error observer, called on failure
-      // 3. Completion observer, called on successful completion
-
-      // Ensure that it only uploads the pic when a pic is selected
-      if (this.profilePicture) {
-        const storage = getStorage();
-        const storageRef = ref(storage, `${this.user.data.email}`);
-
-        const uploadTask = uploadBytesResumable(
-          storageRef,
-          this.profilePicture
-        ); // will replace old pic if already there
-
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            // Observe state change events such as progress, pause, and resume
-            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-            const progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log("Upload is " + progress + "% done");
-            switch (snapshot.state) {
-              case "paused":
-                console.log("Upload is paused");
-                break;
-              case "running":
-                console.log("Upload is running");
-                break;
+    methods: {
+        async update() {
+            const clientRef = doc(db, "client", this.user.data.email);
+            this.isLoading = true;
+            updateDoc(clientRef, {
+                fullName: this.fullName,
+                contactNo: this.contactNo,
+                emergencyContactName: this.emergencyContactName,
+                emergencyContactNo: this.emergencyContactNo,
+            })
+                .then((response) => {
+                // some sort of feedback to show that it's done here
+                this.isLoading = false;
+                location.reload();
+            })
+                .catch((err) => {
+                console.log(err);
+            });
+        },
+        onFileSelected(event) {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                this.displayPicture = e.target.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+            this.profilePicture = event.target.files[0];
+        },
+        onUpload() {
+            // Register three observers:
+            // 1. 'state_changed' observer, called any time the state changes
+            // 2. Error observer, called on failure
+            // 3. Completion observer, called on successful completion
+            // Ensure that it only uploads the pic when a pic is selected
+            if (this.profilePicture) {
+                const storage = getStorage();
+                const storageRef = ref(storage, `${this.user.data.email}.jpg`);
+                const uploadTask = uploadBytesResumable(storageRef, this.profilePicture); // will replace old pic if already there
+                uploadTask.on("state_changed", (snapshot) => {
+                    // Observe state change events such as progress, pause, and resume
+                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log("Upload is " + progress + "% done");
+                    switch (snapshot.state) {
+                        case "paused":
+                            console.log("Upload is paused");
+                            break;
+                        case "running":
+                            console.log("Upload is running");
+                            break;
+                    }
+                }, (error) => {
+                    // Handle unsuccessful uploads
+                    console.log("Unsuccessful upload!");
+                });
             }
-          },
-          (error) => {
-            // Handle unsuccessful uploads
-            console.log("Unsuccessful upload!");
-          }
-        );
-      }
-    },
-  },
+        },
+    }
 };
 </script>
 
