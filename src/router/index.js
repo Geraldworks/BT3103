@@ -40,11 +40,11 @@ const routes = [
     name: "Booking",
     component: BookingPage,
   },
-  {
-    path: "/calendar",
-    name: "Calendar",
-    component: CalendarPage,
-  },
+  // {
+  //   path: "/calendar",
+  //   name: "Calendar",
+  //   component: CalendarPage,
+  // },
   {
     path: "/routines",
     name: "Routines",

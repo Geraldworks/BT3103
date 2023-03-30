@@ -16,6 +16,7 @@
         </select>
         <div>
           <button
+            v-if="this.selected.length !== 0"
             @click="confirmCancellation()"
             style="text-align: center"
             type="submit"
@@ -35,7 +36,7 @@
 
 <script>
 import { db, auth } from "../../firebase.js";
-import { doc, updateDoc, arrayRemove } from "firebase/firestore";
+import { updateDoc, doc, getDoc } from "firebase/firestore";
 import { mapGetters } from "vuex";
 
 export default {
@@ -47,7 +48,7 @@ export default {
   },
   methods: {
     parseBookingObject(bookingObject) {
-      let fromTime = bookingObject["from"].toDate();
+      let fromTime = bookingObject["from"];
       const month = fromTime.toLocaleString("default", { month: "long" });
 
       return `${month} ${fromTime.getDate()}, 
@@ -78,21 +79,49 @@ export default {
       return 0;
     },
     async cancelBookings() {
-      const clientRef = doc(db, "client", this.user.data.email);
-      this.selected.forEach(async (cancelledBooking) => {
-        await updateDoc(clientRef, {
-          bookings: arrayRemove(cancelledBooking),
+      // retrieving the document to update to
+      const clientDoc = doc(db, "client", this.user.data.email);
+      const clientSnap = await getDoc(clientDoc);
+
+      // retrieving the current set of bookings from firebase
+      let bookingsFromFirebase = [];
+      bookingsFromFirebase = clientSnap.data().bookings;
+
+      // filtering down the bookings to keep
+      this.selected.forEach((x) => {
+        bookingsFromFirebase = bookingsFromFirebase.filter((y) => {
+          return x["from"].getTime() !== y.from.toDate().getTime();
         });
       });
-      this.$emit("updateCalendar");
+
+      // update the net set of bookings to firebase
+      await updateDoc(clientDoc, { bookings: bookingsFromFirebase });
+
+      // creating a new array of bookings to be set to the client's new set of bookings
+      let newClientBookings = bookingsFromFirebase;
+      newClientBookings = newClientBookings.map((x) => {
+        return {
+          title: x.title,
+          focus: x.focus,
+          from: x.from.toDate(),
+          to: x.to.toDate(),
+        };
+      });
+
+      // emitting the event to parent component to set it for cancel modal
+      this.$emit("setNewClientBookings", newClientBookings);
+      // emit the set of made cancellations to book modal to open up the slot again
+      this.$emit("removeBookings", this.selected);
       window.alert("Cancellations Done!");
       this.$emit("close-modal");
-      // cleaning up the components
+
+      // resetting the bookings that have been selected
       this.selected = [];
     },
   },
   props: {
     clientBookings: Array,
+    newBookings: Array,
   },
   computed: {
     ...mapGetters(["user"]),
@@ -102,7 +131,14 @@ export default {
       this.$store.dispatch("fetchUser", user);
     });
   },
-  emits: ["close-modal", "updateCalendar"],
+  emits: ["close-modal", "removeBookings", "setNewClientBookings"],
+  watch: {
+    // if there are new bookings, we must add it to the client's set of bookings
+    newBookings(newThings) {
+      newThings.forEach((x) => this.clientBookings.push(x));
+      this.$forceUpdate();
+    },
+  },
 };
 </script>
 
