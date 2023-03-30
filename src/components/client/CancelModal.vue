@@ -123,7 +123,7 @@ export default {
         });
       });
 
-      console.log(this.selected);
+
       // update the new set of bookings to firebase
       await updateDoc(clientDoc, { bookings: bookingsFromFirebase });
 
@@ -142,7 +142,6 @@ export default {
       this.$emit("setNewClientBookings", newClientBookings);
       // emit the set of made cancellations to book modal to open up the slot again
       this.$emit("removeBookings", this.selected);
-      // window.alert("Cancellations Done!");
       this.$emit("close-modal");
 
       // resetting the bookings that have been selected

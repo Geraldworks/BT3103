@@ -193,7 +193,6 @@ export default {
       // pass the set of new bookings to the parent component
       this.$emit("addBookings", this.newBookings);
       // emit booking done and close the modal
-      // window.alert("Booking Done!");
       this.$emit("close-modal");
 
       // cleaning up the components
