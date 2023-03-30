@@ -187,7 +187,7 @@ export default {
 }
 </style>
 
-<style>
+<style scoped>
 .vuecal__event {
   background-color: rgba(169, 169, 169, 0.7);
   border: solid rgba(0, 0, 0, 0.3);
@@ -212,11 +212,6 @@ export default {
 .vuecal__cell--has-events {
   /* Add background color to cells with events */
   background-color: #fffacd;
-}
-
-.vuecal__cell-events-count {
-  /* Remove the event count number in month view */
-  /* display: none; */
 }
 
 /* Styles for Min and Max Range vue-cal */
