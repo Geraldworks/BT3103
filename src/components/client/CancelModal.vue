@@ -16,6 +16,7 @@
         </select>
         <div>
           <button
+            v-if="this.selected.length !== 0"
             @click="confirmCancellation()"
             style="text-align: center"
             type="submit"

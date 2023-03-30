@@ -24,7 +24,7 @@
           <p>BOOKING</p>
         </router-link>
       </div>
-      <div class="col">
+      <!-- <div class="col">
         <router-link
           class="nav-link"
           to="/calendar"
@@ -32,7 +32,7 @@
         >
           <p>CALENDAR</p>
         </router-link>
-      </div>
+      </div> -->
       <div class="col">
         <router-link
           class="nav-link"

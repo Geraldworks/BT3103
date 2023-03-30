@@ -187,7 +187,7 @@ export default {
 }
 </style>
 
-<style>
+<style scoped>
 .vuecal__event {
   background-color: rgba(169, 169, 169, 0.7);
   border: solid rgba(0, 0, 0, 0.3);

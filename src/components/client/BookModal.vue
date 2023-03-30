@@ -100,9 +100,10 @@ const routineOptions = [
   "Legs",
   "Cardio",
 ];
-const minDate = new Date();
+let minDate = new Date();
 let maxDate = new Date();
-maxDate.setMonth(maxDate.getMonth() + 3);
+minDate.setDate(minDate.getDate() + 1)
+maxDate.setMonth(minDate.getMonth() + 3);
 
 export default {
   name: "BookModal",

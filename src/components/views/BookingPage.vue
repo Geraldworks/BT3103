@@ -43,6 +43,7 @@
         :time-to="20 * 60"
         :time-step="60"
         :events="events"
+        :on-event-click="onEventClick"
         :editable-events="{
           title: false,
           drag: false,
@@ -55,8 +56,19 @@
         :min-date="minDate"
         :max-date="maxDate"
         events-count-on-year-view
-      >
-      </vue-cal>
+      />
+      <div class="popup">
+        <CalendarDetailModal
+          v-show="showModal"
+          :eventTitle="eventTitle"
+          :eventDate="eventDate"
+          :eventStart="eventStart"
+          :eventEnd="eventEnd"
+          :eventExerciseType="eventExerciseType"
+          :eventTrainer="eventTrainer"
+          @close-modal="showModal = false"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -65,14 +77,16 @@
 import VueCal from "vue-cal";
 import BookModal from "../client/BookModal.vue";
 import CancelModal from "../client/CancelModal.vue";
+import CalendarDetailModal from "../client/CalendarDetailModal.vue";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db, auth } from "../../firebase.js";
 import { mapGetters } from "vuex";
 import "vue-cal/dist/vuecal.css";
 
-const minDate = new Date();
+let minDate = new Date();
 let maxDate = new Date();
-maxDate.setMonth(maxDate.getMonth() + 3);
+minDate.setDate(minDate.getDate() + 1)
+maxDate.setMonth(minDate.getMonth() + 3);
 
 export default {
   name: "BookingPage",
@@ -90,12 +104,21 @@ export default {
       minDate: minDate,
       maxDate: maxDate,
       events: [],
+      // data related to popup
+      showModal: false,
+      eventTitle: null,
+      eventDate: null,
+      eventStart: null,
+      eventEnd: null,
+      eventExerciseType: null,
+      eventTrainer: null,
     };
   },
   components: {
     VueCal,
     BookModal,
     CancelModal,
+    CalendarDetailModal,
   },
   computed: {
     ...mapGetters(["user"]),
@@ -153,6 +176,7 @@ export default {
     const trainerQuerySnapshot = await getDocs(trainerQuery);
     trainerQuerySnapshot.forEach((doc) => {
       allClients = doc.data().ClientsId;
+      this.eventTrainer = doc.data().fullName;
     });
 
     // getting all bookings for all clients
@@ -164,7 +188,8 @@ export default {
         let start = doc.from.toDate();
         let end = doc.to.toDate();
         let title = doc.title;
-        let obj = { start, end, title };
+        let focus = doc.focus; // added stuff here
+        let obj = { start, end, title, focus };
         // setting the class attribute for each booking
         if (client.data().email != this.user.data.email) {
           obj["class"] = "otherClient unclickable";
@@ -199,6 +224,7 @@ export default {
           start: x.from,
           end: x.to,
           title: x.title,
+          focus: x.focus,
           class: "unclickable",
         });
       });
@@ -208,7 +234,7 @@ export default {
     cancelledBookingsFromCancelModal(cancelledBookings) {
       cancelledBookings.forEach((x) => {
         this.events = this.events.filter((y) => {
-          return (x["from"].getTime() !== y["start"].getTime());
+          return x["from"].getTime() !== y["start"].getTime();
         });
       });
       this.key++;
@@ -232,12 +258,24 @@ export default {
     // pass the client bookings over to cancel modal to be able to make more bookings
     updateClientBookings(newClientBookings) {
       this.clientBookings = newClientBookings;
-    }
+    },
+    onEventClick(event, e) {
+      console.log("Clicked the event");
+      this.eventTitle = event.title;
+      // Convert to Date object for now because not connected to FS yet
+      this.eventDate = new Date(event.start).toLocaleDateString();
+      this.eventStart = new Date(event.start).toLocaleTimeString();
+      this.eventEnd = new Date(event.end).toLocaleTimeString();
+      this.eventExerciseType = event.focus;
+      this.showModal = true;
+
+      e.stopPropagation();
+    },
   },
 };
 </script>
 
-<style scoped>
+<style>
 @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
 
 .booking-page-header {
@@ -260,5 +298,79 @@ export default {
   background-color: white;
   font-family: Teko;
   font-size: 1.2rem;
+}
+
+.vuecal__event {
+  background-color: rgba(169, 169, 169, 0.7);
+  border: solid rgba(0, 0, 0, 0.3);
+  border-width: 0 0 2px 0;
+  box-sizing: border-box;
+  padding: 5px;
+  cursor: pointer;
+}
+.unclickable {
+  cursor: pointer;
+}
+
+.vuecal__event-title {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.vuecal__event-time {
+  font-size: 0.9em;
+}
+
+.vuecal__cell--has-events {
+  /* Add background color to cells with events */
+  background-color: #fffacd;
+}
+
+/* Styles for Min and Max Range vue-cal */
+.vuecal__cell--disabled {
+  text-decoration: line-through;
+}
+
+.vuecal__cell--after-max {
+  color: #a8a2a2;
+}
+
+.otherClient {
+  background: black;
+  color: #fff;
+}
+
+/* Other styles */
+.vuecal__menu,
+.vuecal__cell-events-count {
+  background-color: #ed1f24;
+}
+
+.vuecal__title-bar {
+  background-color: #ff8082;
+}
+
+.vuecal__cell--today,
+.vuecal__cell--current {
+  background-color: #ffd6d7;
+}
+
+.vuecal:not(.vuecal--day-view) .vuecal__cell--selected {
+  background-color: #ff8082;
+}
+
+.vuecal__cell--selected:before {
+  border-color: black;
+}
+
+/* Cells and buttons get highlighted when an event is dragged over it. */
+.vuecal__cell--highlighted:not(.vuecal__cell--has-splits),
+.vuecal__cell-split--highlighted {
+  background-color: rgba(195, 255, 225, 0.5);
+}
+
+.vuecal__arrow.vuecal__arrow--highlighted,
+.vuecal__view-btn.vuecal__view-btn--highlighted {
+  background-color: rgba(136, 236, 191, 0.25);
 }
 </style>
