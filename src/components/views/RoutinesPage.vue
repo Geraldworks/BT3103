@@ -19,6 +19,7 @@
           :exerciseTypes="routine.exerciseTypes"
           :routineDate="routine.routineDate"
           :updateBool="routine.updateBool"
+          :hiddenInfo="routine"
           @show-routine-view-modal="showRoutineViewModal"
         >
         </RoutineBlock>
@@ -27,6 +28,7 @@
         <RoutineViewModal
           :action="viewingAction"
           :showUpdate="showUpdateInViewing"
+          :routineInfo="selectedRoutineInfo"
           v-show="routineViewModal"
           @close-modal="routineViewModal = false"
         />
@@ -68,10 +70,12 @@ export default {
         //   updateBool: false,
         // },
       ],
+      selectedRoutineInfo: {},
       routineViewModal: false,
     };
   },
   mounted() {
+    const store = useStore();
     auth.onAuthStateChanged((user) => {
       store.dispatch("fetchUser", user);
     });
@@ -96,14 +100,39 @@ export default {
       // access clientTrainer here if needed
     });
 
+    // function to convert dates to nicer format
+    function convertDateFormat(dateString) {
+      // Split the input string into date and time components, if applicable
+      const dateComponents = dateString.split(",")[0].split("/");
+      const timeComponents = dateString.split(",")[1];
+      // Check whether a time component is present
+      if (timeComponents) {
+        // Format with time component: "mm/dd/yyyy, hh:mm:ss am" -> "dd/mm/yyyy, hh:mm:ss am"
+        const [month, day, year] = dateComponents;
+        return `${day}/${month}/${year}, ${timeComponents.trim()}`;
+      } else {
+        // Format without time component: "mm/dd/yyyy" -> "dd/mm/yyyy"
+        const [month, day, year] = dateComponents;
+        return `${day}/${month}/${year}`;
+      }
+    }
+
     // After getting all routines, create object to parse into RoutineBlock
     routinesFromFirebase.forEach((routine) => {
       routineList.push({
         routineCreator: routine.creatorName,
         routineName: routine.routineName,
         exerciseTypes: routine.exerciseTypes,
-        routineDate: routine.routineDate.toDate().toLocaleDateString(),
+        routineDate: convertDateFormat(
+          routine.routineDate.toDate().toLocaleDateString()
+        ),
         updateBool: routine.updatedBool,
+        lastUpdatedName: routine.lastUpdatedName,
+        lastUpdatedTimestamp: convertDateFormat(
+          routine.lastUpdatedTimestamp.toDate().toLocaleString()
+        ),
+        activities: routine.activities,
+        routineComments: routine.routineComments,
       });
     });
     this.routineArr = routineList;
@@ -118,12 +147,15 @@ export default {
     },
   },
   methods: {
-    showRoutineViewModal() {
+    showRoutineViewModal(hiddenRoutineInfo) {
+      // console.log(hiddenRoutineInfo);
+      this.selectedRoutineInfo = hiddenRoutineInfo;
       this.routineViewModal = true;
       this.viewingAction = "Viewing";
       this.showUpdateInViewing = true;
     },
     showRoutineCreateModal() {
+      this.selectedRoutineInfo = {};
       this.routineViewModal = true;
       this.viewingAction = "Creating";
       this.showUpdateInViewing = false;

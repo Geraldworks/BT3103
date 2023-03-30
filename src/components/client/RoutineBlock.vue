@@ -29,10 +29,11 @@ export default {
     exerciseTypes: String,
     routineDate: String,
     updateBool: Boolean,
+    hiddenInfo: Object,
   },
   methods: {
     showRoutineViewModal() {
-      this.$emit("show-routine-view-modal");
+      this.$emit("show-routine-view-modal", this.hiddenInfo);
     },
   },
 };
