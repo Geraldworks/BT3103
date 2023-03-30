@@ -338,13 +338,13 @@ export default {
 }
 
 .otherClient {
-  background: black;
+  background: #ed1f24;
   color: #fff;
   pointer-events: none;
 }
 
 .thisClient {
-  background: #ed1f24;
+  background: #000;
   color: #fff;
   border: 1px solid transparent;
 }

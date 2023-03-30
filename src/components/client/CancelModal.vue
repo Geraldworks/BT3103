@@ -149,14 +149,14 @@ export default {
       this.selected = [];
     },
     displayCancellations(cancellations) {
-      let output = ""
+      let output = "";
       cancellations.forEach((cancel) => {
         output += "<div>";
-        output += this.parseBookingObject(cancel)
+        output += this.parseBookingObject(cancel);
         output += "</div>";
       });
       return output;
-    }
+    },
   },
   props: {
     clientBookings: Array,
