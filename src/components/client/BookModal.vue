@@ -188,7 +188,7 @@ export default {
       // pass the set of new bookings to the parent component
       this.$emit("addBookings", this.newBookings);
       // emit booking done and close the modal
-      window.alert("Booking Done!");
+      // window.alert("Booking Done!");
       this.$emit("close-modal");
 
       // cleaning up the components
@@ -416,7 +416,9 @@ button:hover {
 
 <style>
 .swal2-popup {
-  font-size: 1.35rem !important;
+  font-size: 1.1rem  !important;
   font-family: Teko !important;
+  width: auto !important;
+  padding: 10px !important;
 }
 </style>

@@ -4,7 +4,7 @@
       <Navbar />
     </div>
 
-    <LoadingSpinner v-if="pageLoading" :pageLoading="pageLoading"/>
+    <LoadingSpinner v-if="pageLoading" :pageLoading="pageLoading" />
 
     <div v-else class="container">
       <div class="row display-words">
@@ -61,7 +61,7 @@
 
                 <div class="form-group row mb-0">
                   <div class="button-div">
-                    <button type="submit" class="btn btn-primary mt-6">
+                    <button type="submit">
                       <div
                         v-if="isLoading"
                         class="spinner-border spinner-border-sm"
@@ -84,9 +84,16 @@ import { mapGetters } from "vuex";
 import { auth, db } from "../../firebase";
 import { doc, getDoc, updateDoc } from "@firebase/firestore";
 import LoadingSpinner from "../LoadingSpinner.vue";
-import Swal from 'sweetalert2/dist/sweetalert2.js'
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import "sweetalert2/src/sweetalert2.scss";
 
-import 'sweetalert2/src/sweetalert2.scss'
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
 
 export default {
   name: "GoalsPage",
@@ -141,7 +148,11 @@ export default {
             // some sort of feedback to show that it's done here
             this.isLoading = false;
             this.errorMessage = "";
-            location.reload();
+            // location.reload();
+            Toast.fire({
+              icon: "success",
+              title: "Goals Saved",
+            });
           })
           .catch((err) => {
             console.log(err);
