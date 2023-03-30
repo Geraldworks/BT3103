@@ -36,7 +36,9 @@
             />
           </CDropdownToggle>
           <CDropdownMenu>
-            <CDropdownItem @click="signOut">Sign Out</CDropdownItem>
+            <CDropdownItem style="cursor: pointer" @click="signOut"
+              >Sign Out</CDropdownItem
+            >
           </CDropdownMenu>
         </CDropdown>
       </div>
@@ -53,6 +55,15 @@ import {
 } from "@coreui/vue";
 import { mapGetters } from "vuex";
 import { auth } from "@/firebase.js";
+import Swal from "sweetalert2";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
 
 export default {
   name: "TrainerNavbar",
@@ -73,6 +84,10 @@ export default {
     async signOut() {
       await this.$store.dispatch("logOut");
       this.$router.push("/");
+      Toast.fire({
+        icon: "success",
+        title: "Signed out successfully",
+      });
       sessionStorage.clear();
     },
     removeEmailToRender() {

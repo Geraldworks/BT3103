@@ -193,10 +193,10 @@ export default {
         // setting the class attribute for each booking
         if (client.data().email != this.user.data.email) {
           obj["class"] = "otherClient unclickable";
-          obj["title"] = "Other Clients";
+          obj["title"] = "Unavailable";
           allClientBookings.push(obj);
         } else {
-          obj["class"] = "unclickable";
+          obj["class"] = "thisClient unclickable";
           allClientBookings.push(obj);
         }
 
@@ -225,7 +225,7 @@ export default {
           end: x.to,
           title: x.title,
           focus: x.focus,
-          class: "unclickable",
+          class: "thisClient unclickable",
         });
       });
       this.key++;
@@ -340,6 +340,92 @@ export default {
   color: #fff;
 }
 
+/* Other styles */
+.vuecal__menu,
+.vuecal__cell-events-count {
+  background-color: #ed1f24;
+}
+
+.vuecal__title-bar {
+  background-color: #ff8082;
+}
+
+.vuecal__cell--today,
+.vuecal__cell--current {
+  background-color: #ffd6d7;
+}
+
+.vuecal:not(.vuecal--day-view) .vuecal__cell--selected {
+  background-color: #ff8082;
+}
+
+.vuecal__cell--selected:before {
+  border-color: black;
+}
+
+/* Cells and buttons get highlighted when an event is dragged over it. */
+.vuecal__cell--highlighted:not(.vuecal__cell--has-splits),
+.vuecal__cell-split--highlighted {
+  background-color: rgba(195, 255, 225, 0.5);
+}
+
+.vuecal__arrow.vuecal__arrow--highlighted,
+.vuecal__view-btn.vuecal__view-btn--highlighted {
+  background-color: rgba(136, 236, 191, 0.25);
+}
+</style>
+
+<style>
+.vuecal__event {
+  background-color: rgba(169, 169, 169, 0.7);
+  border: solid rgba(0, 0, 0, 0.3);
+  border-width: 0 0 2px 0;
+  box-sizing: border-box;
+  padding: 5px;
+  cursor: pointer;
+}
+/* .unclickable {
+  cursor: pointer;
+} */
+
+.vuecal__event-title {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.vuecal__event-time {
+  font-size: 0.9em;
+}
+
+.vuecal__cell--has-events {
+  /* Add background color to cells with events */
+  background-color: #fffacd;
+}
+
+/* Styles for Min and Max Range vue-cal */
+.vuecal__cell--disabled {
+  text-decoration: line-through;
+}
+
+.vuecal__cell--after-max {
+  color: #a8a2a2;
+}
+
+.otherClient {
+  background: #ed1f24;
+  color: #fff;
+  pointer-events: none;
+}
+
+.thisClient {
+  background: #000;
+  color: #fff;
+  border: 1px solid transparent;
+}
+
+.thisClient:hover {
+  border: 1px white solid;
+}
 /* Other styles */
 .vuecal__menu,
 .vuecal__cell-events-count {

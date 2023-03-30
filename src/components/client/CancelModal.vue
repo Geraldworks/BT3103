@@ -38,6 +38,15 @@
 import { db, auth } from "../../firebase.js";
 import { updateDoc, doc, getDoc } from "firebase/firestore";
 import { mapGetters } from "vuex";
+import Swal from "sweetalert2";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
 
 export default {
   name: "CancelModal",
@@ -57,9 +66,29 @@ export default {
               ${bookingObject.focus}`;
     },
     confirmCancellation() {
-      window.confirm("Confirm your Cancellations")
-        ? this.cancelBookings()
-        : window.alert("Please review your selections");
+      Swal.fire({
+        title: "Confirm Your Cancellations",
+        html: this.displayCancellations(this.selected),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#28a745",
+        cancelButtonColor: "#ed1f24",
+        confirmButtonText: "Confirm",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.cancelBookings();
+          Toast.fire({
+            icon: "success",
+            title: "Cancellations successful",
+          });
+        } else {
+          Toast.fire({
+            icon: "error",
+            title: "bookings cancelled",
+          });
+        }
+      });
     },
     createTimeString(time) {
       let pm = false;
@@ -94,7 +123,8 @@ export default {
         });
       });
 
-      // update the net set of bookings to firebase
+
+      // update the new set of bookings to firebase
       await updateDoc(clientDoc, { bookings: bookingsFromFirebase });
 
       // creating a new array of bookings to be set to the client's new set of bookings
@@ -112,11 +142,19 @@ export default {
       this.$emit("setNewClientBookings", newClientBookings);
       // emit the set of made cancellations to book modal to open up the slot again
       this.$emit("removeBookings", this.selected);
-      window.alert("Cancellations Done!");
       this.$emit("close-modal");
 
       // resetting the bookings that have been selected
       this.selected = [];
+    },
+    displayCancellations(cancellations) {
+      let output = "";
+      cancellations.forEach((cancel) => {
+        output += "<div>";
+        output += this.parseBookingObject(cancel);
+        output += "</div>";
+      });
+      return output;
     },
   },
   props: {
@@ -208,6 +246,7 @@ button:hover {
   animation-duration: 0.15s;
   animation-fill-mode: forwards;
   box-sizing: border-box;
+  border: 2px solid white;
 }
 
 select {
@@ -219,16 +258,6 @@ select {
   border: 0.5px solid black;
   padding: 0px 3px;
   text-align: center;
-}
-
-@keyframes pill-button-highlight {
-  from {
-    border: 0px white solid;
-  }
-  to {
-    border: 2px white solid;
-    background-color: #5041e0;
-  }
 }
 
 .modal-fade-enter,
