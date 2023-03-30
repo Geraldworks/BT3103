@@ -193,10 +193,10 @@ export default {
         // setting the class attribute for each booking
         if (client.data().email != this.user.data.email) {
           obj["class"] = "otherClient unclickable";
-          obj["title"] = "Other Clients";
+          obj["title"] = "Unavailable";
           allClientBookings.push(obj);
         } else {
-          obj["class"] = "unclickable";
+          obj["class"] = "thisClient unclickable";
           allClientBookings.push(obj);
         }
 
@@ -225,7 +225,7 @@ export default {
           end: x.to,
           title: x.title,
           focus: x.focus,
-          class: "unclickable",
+          class: "thisClient unclickable",
         });
       });
       this.key++;
@@ -308,9 +308,9 @@ export default {
   padding: 5px;
   cursor: pointer;
 }
-.unclickable {
+/* .unclickable {
   cursor: pointer;
-}
+} */
 
 .vuecal__event-title {
   font-size: 1.1em;
@@ -338,8 +338,18 @@ export default {
 .otherClient {
   background: black;
   color: #fff;
+  pointer-events: none;
 }
 
+.thisClient {
+  background: #ed1f24;
+  color: #fff;
+  border: 1px solid transparent;
+}
+
+.thisClient:hover {
+  border: 1px white solid;
+}
 /* Other styles */
 .vuecal__menu,
 .vuecal__cell-events-count {
