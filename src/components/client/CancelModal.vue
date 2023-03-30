@@ -43,7 +43,6 @@ export default {
   data() {
     return {
       selected: [],
-      oldBookings: [],
     };
   },
   methods: {
@@ -79,23 +78,26 @@ export default {
       return 0;
     },
     async cancelBookings() {
-      this.oldBookings = this.selected;
-      let bookingsFromFirebase = [];
-
+      // retrieving the document to update to
       const clientDoc = doc(db, "client", this.user.data.email);
       const clientSnap = await getDoc(clientDoc);
 
+      // retrieving the current set of bookings from firebase
+      let bookingsFromFirebase = [];
       bookingsFromFirebase = clientSnap.data().bookings;
 
+      // filtering down the bookings to keep
       this.selected.forEach((x) => {
         bookingsFromFirebase = bookingsFromFirebase.filter((y) => {
           return x["from"].getTime() !== y.from.toDate().getTime();
         });
       });
 
+      // update the net set of bookings to firebase
       await updateDoc(clientDoc, { bookings: bookingsFromFirebase });
-      let newClientBookings = bookingsFromFirebase;
 
+      // creating a new array of bookings to be set to the client's new set of bookings
+      let newClientBookings = bookingsFromFirebase;
       newClientBookings = newClientBookings.map((x) => {
         return {
           title: x.title,
@@ -105,14 +107,14 @@ export default {
         };
       });
 
-      // console.log(newClientBookings)
-      console.log(this.oldBookings)
+      // emitting the event to parent component to set it for cancel modal
       this.$emit("setNewClientBookings", newClientBookings);
-      this.$emit("removeBookings", this.oldBookings);
+      // emit the set of made cancellations to book modal to open up the slot again
+      this.$emit("removeBookings", this.selected);
       window.alert("Cancellations Done!");
       this.$emit("close-modal");
 
-      this.oldBookings = [];
+      // resetting the bookings that have been selected
       this.selected = [];
     },
   },
@@ -130,13 +132,10 @@ export default {
   },
   emits: ["close-modal", "removeBookings", "setNewClientBookings"],
   watch: {
+    // if there are new bookings, we must add it to the client's set of bookings
     newBookings(newThings) {
-      // console.log(newThings)
       newThings.forEach((x) => this.clientBookings.push(x));
-      console.log(this.clientBookings);
-      // this.newBookings = [];
       this.$forceUpdate();
-      // might need to watch for the change in clientBookings
     },
   },
 };

@@ -67,7 +67,7 @@ const store = createStore({
         await setDoc(doc(db, "client", email), {
           gymmboxxid: gymmboxxid,
           email: email,
-          bookingIds: [],
+          bookings: [],
           contactNo: contactNo,
           datetime: [],
           emergencyContactName: emergencyContactName,

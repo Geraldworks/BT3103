@@ -128,20 +128,15 @@ export default {
         : window.alert("Booking Not Done!");
     },
     async submitBooking() {
-      // get the focus (routineParser)
-      // get the title (gym session)
-      // get the start time (selected)
-      // get the end time (selected + 1)
-      // refresh calendar after submitting
+      // get the document we need to update the bookings for
       const clientRef = doc(db, "client", this.user.data.email);
-
       // get focus
       let focus = this.parseRoutines(this.routineOne, this.routineTwo);
       // get title
       let title = "Gym Session";
 
+      // for every selected timeslot, we will create an object to be updated into firebase
       this.selected.forEach(async (startTime) => {
-        // get start time
         let from = new Date(
           this.date.getFullYear(),
           this.date.getMonth(),
@@ -155,21 +150,21 @@ export default {
           startTime + 1
         );
         let newBooking = { focus, from, title, to };
-        // console.log(newBooking);
-        // pushing into new Boookings to fit the style of CancelModal
+        // bookings to be passed to cancel modal and booking page
         this.newBookings.push(newBooking);
         // adding to the booked session for this component
         this.addBookedSession(newBooking);
+        // updating the bookings field on firebase with a new booking
         await updateDoc(clientRef, {
           bookings: arrayUnion(newBooking),
         });
       });
-      // refresh page
+      // pass the set of new bookings to the parent component
       this.$emit("addBookings", this.newBookings);
-      // parse new bookings
-      // add to booked sessions in this component
+      // emit booking done and close the modal
       window.alert("Booking Done!");
       this.$emit("close-modal");
+
       // cleaning up the components
       this.date = null;
       this.newBookings = [];
@@ -180,7 +175,6 @@ export default {
     listOfPossibleBookings(stringDate) {
       let output = [];
       let bookedSessions = this.allBookedSessions[stringDate];
-      // console.log(bookedSessions);
       if (!bookedSessions) {
         return gymStartingTimes;
       }
@@ -204,6 +198,7 @@ export default {
       return routineTwo === "" ? routineOne : `${routineOne}, ${routineTwo}`;
     },
     addBookedSession(booking) {
+      // helps to add the new booking to the current set of all booked sessions
       let month = booking.from.getMonth();
       let day = booking.from.getDate();
       let startHour = booking.from.getHours();
@@ -224,6 +219,7 @@ export default {
   },
   emits: ["close-modal", "addBookings"],
   watch: {
+    // if the date has been selected, we will need to show all the available session that can be booked on this day
     date(newDate) {
       if (!newDate) {
         return;
@@ -233,6 +229,7 @@ export default {
       let newAvailability = this.listOfPossibleBookings(`${day}, ${month}`);
       this.availableSessions = newAvailability;
     },
+    // if there are bookings that have been cancelled, we will need to remove it from the set of all booked sessions
     cancelledBookings(cancelled) {
       cancelled.forEach((x) => {
         let startTime = x["from"];
