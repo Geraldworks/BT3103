@@ -293,7 +293,7 @@ export default {
             trainerEmail: this.selectedTrainer,
           })
           .then((response) => {
-            this.$router.push("/signIn");
+            this.$router.push("/signin");
             Toast.fire({
               icon: "success",
               title: "Sign up successful"
