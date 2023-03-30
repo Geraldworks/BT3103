@@ -28,7 +28,7 @@
                 <br />
                 <label for="rdate">Routine Date</label>
                 <input
-                  type="date"
+                  type="text"
                   id="rdate"
                   name="rdate"
                   placeholder="DD/MM/YYYY"
@@ -40,7 +40,10 @@
             <div class="top-right">
               <!-- showUpdate is false for Creating, true for Viewing -->
               <div class="top-right-top" v-show="showUpdate">
-                <i>Last Updated By {{ userName }} at {{ updateTime }}</i>
+                <i
+                  >Last Updated By {{ lastUpdatedName }} at
+                  {{ lastUpdatedTimestamp }}</i
+                >
               </div>
               <div class="top-right-btm">
                 <button @click="showAddActivity()">Add Activity</button>
@@ -134,8 +137,8 @@ export default {
       action: "",
       routineName: "",
       routineDate: "",
-      userName: "Sarah" /* Placeholder */,
-      updateTime: "31-03-2023 16:00:00" /* Placeholder */,
+      lastUpdatedName: "",
+      lastUpdatedTimestamp: "",
       activityType: "Chest" /* Placeholder */,
       activityName: "Chest Fly" /* Placeholder */,
       activityDescription:
@@ -149,6 +152,7 @@ export default {
   props: {
     action: String,
     showUpdate: Boolean,
+    routineInfo: Object,
   },
   methods: {
     showAddActivity() {
@@ -156,6 +160,18 @@ export default {
     },
     closeAddActivity() {
       this.addActivity = false;
+    },
+  },
+  watch: {
+    routineInfo() {
+      // console.log(this.routineInfo);
+      this.routineName = this.routineInfo.routineName;
+      this.routineDate = this.routineInfo.routineDate;
+      this.lastUpdatedName = this.routineInfo.lastUpdatedName;
+      this.lastUpdatedTimestamp = this.routineInfo.lastUpdatedTimestamp;
+      // this.activityType = this.routineInfo.activityType;
+      // this.activityName = this.routineInfo.activityName;
+      // this.activityDescription = this.routineInfo.activityDescription;
     },
   },
 };

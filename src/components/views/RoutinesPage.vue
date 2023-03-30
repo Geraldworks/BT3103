@@ -19,22 +19,16 @@
           :exerciseTypes="routine.exerciseTypes"
           :routineDate="routine.routineDate"
           :updateBool="routine.updateBool"
+          :hiddenInfo="routine"
           @show-routine-view-modal="showRoutineViewModal"
         >
         </RoutineBlock>
       </div>
-      <!-- <div style="padding-top: 2em">
-        <tr>
-          <th style="padding-right: 5em; padding-left: 1em">ROUTINE CREATOR</th>
-          <th style="padding-right: 30em">ROUTINE NAME</th>
-          <th style="padding-right: 10em">EXERCISE TYPE</th>
-          <th>ROUTINE DATE</th>
-        </tr>
-      </div> -->
       <div class="viewModal">
         <RoutineViewModal
           :action="viewingAction"
           :showUpdate="showUpdateInViewing"
+          :routineInfo="selectedRoutineInfo"
           v-show="routineViewModal"
           @close-modal="routineViewModal = false"
         />
@@ -44,9 +38,9 @@
 </template>
 
 <script>
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { mapGetters, useStore } from "vuex";
 import { db, auth } from "../../firebase.js";
-import RoutineModal from "../client/RoutineModal.vue";
 import RoutineViewModal from "../client/RoutineViewModal.vue";
 import RoutineBlock from "../client/RoutineBlock.vue";
 
@@ -58,24 +52,25 @@ export default {
   data() {
     return {
       email: "",
-      viewingAction: "Viewing",
+      viewingAction: "",
       showUpdateInViewing: true,
       routineArr: [
-        {
-          routineCreator: "Trainer Joe",
-          routineName: "Saturday Chest Ripper",
-          exerciseTypes: "Chest",
-          routineDate: "12/3/2023",
-          updateBool: true,
-        },
-        {
-          routineCreator: "Client Gerald",
-          routineName: "Monday Morning Back Workout",
-          exerciseTypes: "Back, Shoulders",
-          routineDate: "27/3/2023",
-          updateBool: false,
-        },
+        // {
+        //   routineCreator: "Trainer Joe",
+        //   routineName: "Saturday Chest Ripper",
+        //   exerciseTypes: "Chest",
+        //   routineDate: "12/3/2023",
+        //   updateBool: true,
+        // },
+        // {
+        //   routineCreator: "Client Gerald",
+        //   routineName: "Monday Morning Back Workout",
+        //   exerciseTypes: "Back, Shoulders",
+        //   routineDate: "27/3/2023",
+        //   updateBool: false,
+        // },
       ],
+      selectedRoutineInfo: {},
       routineViewModal: false,
     };
   },
@@ -83,13 +78,66 @@ export default {
     const store = useStore();
     auth.onAuthStateChanged((user) => {
       store.dispatch("fetchUser", user);
-    }); // whenever page refreshes, the auth will have a short buffer from unknown to signed in / signed out
+    });
   },
   async created() {
-    this.email = this.user.data.email;
+    // Container to store routines from firebase (raw)
+    let routinesFromFirebase = [];
+    // Container to store routines (formatted for RoutineBlock)
+    let routineList = [];
+
+    // Retrieve client's document
+    const clientRef = collection(db, "client");
+    const thisClientQuery = query(
+      clientRef,
+      where("email", "==", this.user.data.email)
+    );
+    const clientQuerySnapshot = await getDocs(thisClientQuery);
+
+    // Access routines field
+    clientQuerySnapshot.forEach((doc) => {
+      routinesFromFirebase = doc.data().routines;
+      // access clientTrainer here if needed
+    });
+
+    // function to convert dates to nicer format
+    function convertDateFormat(dateString) {
+      // Split the input string into date and time components, if applicable
+      const dateComponents = dateString.split(",")[0].split("/");
+      const timeComponents = dateString.split(",")[1];
+      // Check whether a time component is present
+      if (timeComponents) {
+        // Format with time component: "mm/dd/yyyy, hh:mm:ss am" -> "dd/mm/yyyy, hh:mm:ss am"
+        const [month, day, year] = dateComponents;
+        return `${day}/${month}/${year}, ${timeComponents.trim()}`;
+      } else {
+        // Format without time component: "mm/dd/yyyy" -> "dd/mm/yyyy"
+        const [month, day, year] = dateComponents;
+        return `${day}/${month}/${year}`;
+      }
+    }
+
+    // After getting all routines, create object to parse into RoutineBlock
+    routinesFromFirebase.forEach((routine) => {
+      routineList.push({
+        routineCreator: routine.creatorName,
+        routineName: routine.routineName,
+        exerciseTypes: routine.exerciseTypes,
+        routineDate: convertDateFormat(
+          routine.routineDate.toDate().toLocaleDateString()
+        ),
+        updateBool: routine.updatedBool,
+        lastUpdatedName: routine.lastUpdatedName,
+        lastUpdatedTimestamp: convertDateFormat(
+          routine.lastUpdatedTimestamp.toDate().toLocaleString()
+        ),
+        activities: routine.activities,
+        routineComments: routine.routineComments,
+      });
+    });
+    this.routineArr = routineList;
   },
   components: {
-    RoutineModal,
     RoutineViewModal,
     RoutineBlock,
   },
@@ -99,12 +147,15 @@ export default {
     },
   },
   methods: {
-    showRoutineViewModal() {
+    showRoutineViewModal(hiddenRoutineInfo) {
+      // console.log(hiddenRoutineInfo);
+      this.selectedRoutineInfo = hiddenRoutineInfo;
       this.routineViewModal = true;
-      this.viewingAction = "Viewing"
+      this.viewingAction = "Viewing";
       this.showUpdateInViewing = true;
     },
     showRoutineCreateModal() {
+      this.selectedRoutineInfo = {};
       this.routineViewModal = true;
       this.viewingAction = "Creating";
       this.showUpdateInViewing = false;
