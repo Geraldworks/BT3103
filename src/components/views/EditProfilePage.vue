@@ -306,7 +306,6 @@ export default {
   width: auto;
   /* so that it can only be clicked in the circle */
   border-radius: 50%; 
-  cursor: pointer;
 }
 
 .picture .overlay {
@@ -321,6 +320,11 @@ export default {
   padding: 20px;
   text-align: center;
   font-family: "Source Sans Pro", sans-serif;
+  cursor: pointer;
+}
+
+.picture .overlay:hover {
+  color: #ed1f24;
 }
 
 .button-div {
