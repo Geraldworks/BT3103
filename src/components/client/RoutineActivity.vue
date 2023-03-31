@@ -11,18 +11,12 @@
       </div>
     </div>
     <div class="setDetails">
-      <table class="setTable" style="width: 100%">
+      <table class="setTable" :id="'setTable-' + uniqueId" style="width: 100%">
         <tr>
           <th style="width: 25%">Set</th>
           <th style="width: 25%">Kg</th>
           <th style="width: 25%">Reps</th>
           <th style="width: 25%">Done?</th>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>16</td>
-          <td>12</td>
-          <td><input type="checkbox" /></td>
         </tr>
       </table>
     </div>
@@ -40,9 +34,29 @@ export default {
     return {};
   },
   props: {
+    uniqueId: String,
     activityType: String,
     activityName: String,
     activityDescription: String,
+    numSets: Number,
+    setInfo: Array,
+  },
+  mounted() {
+    let index = 1;
+    // access the table element & create row reference
+    let table = document.getElementById("setTable-" + this.uniqueId);
+    this.setInfo.forEach((set) => {
+      let row = table.insertRow(index);
+      // populate the cells
+      row.insertCell(0).innerHTML = set.setNum;
+      row.insertCell(1).innerHTML = set.weight;
+      row.insertCell(2).innerHTML = set.reps;
+
+      row.insertCell(3).innerHTML = set.done
+        ? '<input type="checkbox" checked/>'
+        : '<input type="checkbox"/>';
+      index++;
+    });
   },
 };
 </script>
@@ -72,7 +86,7 @@ export default {
 }
 
 .desc-area {
-  flex: 3;
+  flex: 2;
   display: flex;
   flex-direction: column;
 }

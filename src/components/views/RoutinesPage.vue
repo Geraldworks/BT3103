@@ -120,6 +120,7 @@ export default {
     // After getting all routines, create object to parse into RoutineBlock
     routinesFromFirebase.forEach((routine) => {
       routineList.push({
+        routineId: routine.routineId,
         routineCreator: routine.creatorName,
         routineName: routine.routineName,
         exerciseTypes: routine.exerciseTypes,
