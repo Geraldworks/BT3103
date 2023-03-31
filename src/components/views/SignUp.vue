@@ -241,7 +241,7 @@ export default {
       password: "",
       confirmPassword: "",
       errorMessage: "",
-      selectedTrainer: "btrainer@gmail.com",
+      selectedTrainer: "",
       trainerInfo: null,
     };
   },
@@ -409,6 +409,7 @@ form {
   border-radius: 50%;
   width: 200px;
   height: 200px;
+  object-fit: cover;
 }
 
 .active {
