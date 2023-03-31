@@ -28,7 +28,7 @@
                 <br />
                 <label for="rdate">Routine Date</label>
                 <input
-                  type="text"
+                  type="date"
                   id="rdate"
                   name="rdate"
                   placeholder="DD/MM/YYYY"
@@ -109,9 +109,14 @@
           <div class="routine-activities">
             <!-- Just put 1 for testing purpose -->
             <RoutineActivity
-              :activityType="activityType"
-              :activityName="activityName"
-              :activityDescription="activityDescription"
+              v-for="activity in activityArr"
+              :key="activity.uniqueId"
+              :activityType="activity.activityType"
+              :activityName="activity.activityName"
+              :activityDescription="activity.activityDescription"
+              :numSets="activity.numSets"
+              :setInfo="activity.setInfo"
+              :uniqueId="activity.uniqueId"
             />
           </div>
           <!-- WORKOUT COMMENTS SECTION -->
@@ -135,14 +140,12 @@ export default {
   data() {
     return {
       action: "",
+      routineId: "",
       routineName: "",
       routineDate: "",
       lastUpdatedName: "",
       lastUpdatedTimestamp: "",
-      activityType: "Chest" /* Placeholder */,
-      activityName: "Chest Fly" /* Placeholder */,
-      activityDescription:
-        "Carry 20kg weights and make flying action. Do not rest. Breathe properly. Blah blah blah. Fly fly" /* Placeholder */,
+      activityArr: [],
       addActivity: false,
     };
   },
@@ -161,17 +164,51 @@ export default {
     closeAddActivity() {
       this.addActivity = false;
     },
+    formatDateForDatePicker(dateString) {
+      if (dateString == null) {
+        return;
+      }
+      var dateParts = dateString.split("/");
+      var day = dateParts[0].padStart(2, "0");
+      var month = dateParts[1].padStart(2, "0");
+      var year = dateParts[2];
+      return year + "-" + month + "-" + day;
+    },
   },
   watch: {
     routineInfo() {
-      // console.log(this.routineInfo);
-      this.routineName = this.routineInfo.routineName;
-      this.routineDate = this.routineInfo.routineDate;
-      this.lastUpdatedName = this.routineInfo.lastUpdatedName;
-      this.lastUpdatedTimestamp = this.routineInfo.lastUpdatedTimestamp;
-      // this.activityType = this.routineInfo.activityType;
-      // this.activityName = this.routineInfo.activityName;
-      // this.activityDescription = this.routineInfo.activityDescription;
+      console.log("Change in routine info");
+      console.log(this.routineInfo);
+      if (this.routineInfo !== undefined) {
+        this.routineId = this.routineInfo.routineId;
+        this.routineName = this.routineInfo.routineName;
+        // format the date accordingly for html datepicker
+        this.routineDate = this.formatDateForDatePicker(
+          this.routineInfo.routineDate
+        );
+        this.lastUpdatedName = this.routineInfo.lastUpdatedName;
+        this.lastUpdatedTimestamp = this.routineInfo.lastUpdatedTimestamp;
+
+        // Container to store activities (formatted for RoutineActivity)
+        let activityInfo = [];
+        // Create object to parse into RoutineActivity
+        if (this.routineInfo.activities !== undefined) {
+          this.routineInfo.activities.forEach((activity) => {
+            activityInfo.push({
+              uniqueId: this.routineInfo.routineId + "-" + activity.activityId,
+              activityType: activity.activityType,
+              activityName: activity.activityName,
+              activityDescription: activity.activityDescription,
+              numSets: activity.numSets,
+              setInfo: activity.setInfo,
+            });
+          });
+          this.activityArr = activityInfo;
+          console.log(this.activityArr);
+        } else {
+          this.activityArr = [];
+        }
+      }
     },
   },
 };
