@@ -7,7 +7,7 @@
       <div class="modal" @click.stop>
         <div class="modal-header">
           <!-- action is "Creating" for Creating, "Viewing" for Viewing -->
-          <span class="view-text">{{ action }}</span>
+          <span class="view-text">{{ modalAction }}</span>
           <span class="routine-text">Routine</span>
         </div>
 
@@ -56,13 +56,13 @@
               <div class="activity-left">
                 <label for="muscles">ACTIVITY TYPE</label>
                 <select name="muscles" id="muscles" v-model="activityType">
-                  <option value="chest">Chest</option>
-                  <option value="arms">Arms</option>
-                  <option value="shoulders">Shoulders</option>
-                  <option value="back">Back</option>
-                  <option value="abs">Abs</option>
-                  <option value="legs">Legs</option>
-                  <option value="cardio">Cardio</option>
+                  <option value="Chest">Chest</option>
+                  <option value="Arms">Arms</option>
+                  <option value="Shoulders">Shoulders</option>
+                  <option value="Back">Back</option>
+                  <option value="Abs">Abs</option>
+                  <option value="Legs">Legs</option>
+                  <option value="Cardio">Cardio</option>
                 </select>
                 <br />
                 <label for="aName">ACTIVITY NAME</label>
@@ -73,40 +73,89 @@
                   v-model="activityName"
                 />
                 <br />
-                <label for="aSetNum">SETS</label>
+                <!-- <label for="aSetNum">SETS</label>
                 <input
                   type="number"
                   name="aSetNum"
                   id="aSetNum"
                   v-model="numSets"
-                />
+                /> -->
+                <label for="aSetNum">SETS</label>
+                <select name="aSetNum" id="aSetNum" v-model="numSets">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
                 <br />
-                <div
-                  v-for="setNum in numSets"
-                  :key="setNum"
-                  class="activity-set"
-                >
-                  <label for="">SET {{ setNum }} DETAILS</label>
-                  <input
-                    type="number"
-                    :name="'weight-' + setNum"
-                    :id="'weight-' + setNum"
-                    :v-model="'weight' + setNum"
-                  />KG
-                  <input
-                    type="number"
-                    :name="'reps-' + setNum"
-                    :id="'reps-' + setNum"
-                    :v-model="'reps' + setNum"
-                  />REPS
-                  <label
-                    ><input
-                      type="checkbox"
-                      :id="'done-' + setNum"
-                      :v-model="'done' + setNum"
-                    />Done?</label
-                  >
+                <div class="activity-set">
+                  <div>
+                    <label for="">SET 1 DETAILS</label>
+                    <input
+                      type="number"
+                      name="weight-1"
+                      id="weight-1"
+                      v-model="weight1"
+                    />KG
+                    <input
+                      type="number"
+                      name="reps-1"
+                      id="reps-1"
+                      v-model="reps1"
+                    />REPS
+                    <label
+                      ><input
+                        type="checkbox"
+                        id="done-1"
+                        v-model="done1"
+                      />Done?</label
+                    >
+                  </div>
                   <br />
+                  <div v-if="numSets >= 2">
+                    <label for="">SET 2 DETAILS</label>
+                    <input
+                      type="number"
+                      name="weight-2"
+                      id="weight-2"
+                      v-model="weight2"
+                    />KG
+                    <input
+                      type="number"
+                      name="reps-2"
+                      id="reps-2"
+                      v-model="reps2"
+                    />REPS
+                    <label
+                      ><input
+                        type="checkbox"
+                        id="done-2"
+                        v-model="done2"
+                      />Done?</label
+                    >
+                  </div>
+                  <br />
+                  <div v-if="numSets == 3">
+                    <label for="">SET 3 DETAILS</label>
+                    <input
+                      type="number"
+                      name="weight-3"
+                      id="weight-3"
+                      v-model="weight3"
+                    />KG
+                    <input
+                      type="number"
+                      name="reps-3"
+                      id="reps-3"
+                      v-model="reps3"
+                    />REPS
+                    <label
+                      ><input
+                        type="checkbox"
+                        id="done-3"
+                        v-model="done3"
+                      />Done?</label
+                    >
+                  </div>
                 </div>
               </div>
               <div class="activity-right">
@@ -132,7 +181,7 @@
               >
                 Cancel
               </button>
-              <button>Add</button>
+              <button @click="confirmAddActivity()">Add</button>
             </div>
           </div>
 
@@ -140,9 +189,20 @@
           <!-- LIST ACTIVITIES (Gray color box) SECTION -->
           <!-- Use v-for loop to show the list of RoutineActivity component -->
           <div class="routine-activities">
-            <!-- Just put 1 for testing purpose -->
+            <!-- Activities from FireStore -->
             <RoutineActivity
               v-for="activity in activityArr"
+              :key="activity.uniqueId"
+              :activityType="activity.activityType"
+              :activityName="activity.activityName"
+              :activityDescription="activity.activityDescription"
+              :numSets="activity.numSets"
+              :setInfo="activity.setInfo"
+              :uniqueId="activity.uniqueId"
+            />
+            <!-- New Activities Created using Button -->
+            <RoutineActivity
+              v-for="activity in newActivitiesArr"
               :key="activity.uniqueId"
               :activityType="activity.activityType"
               :activityName="activity.activityName"
@@ -167,33 +227,41 @@
 
 <script>
 import RoutineActivity from "./RoutineActivity.vue";
+import { db, auth } from "../../firebase.js";
+import { doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { mapGetters } from "vuex";
 
 export default {
   name: "RoutineViewModal",
   data() {
     return {
-      action: "",
-      routineId: "",
+      modalAction: "", // Title of Modal
+      routineId: 0, // For Creation of Routine Activity uniqueId
+      /* Top Part of Modal */
       routineName: "",
       routineDate: "",
       lastUpdatedName: "",
       lastUpdatedTimestamp: "",
-      activityArr: [],
+      /* Activity - General */
+      activityArr: [], // Pass each object in this for each RoutineActivity
       addActivity: false,
+      newActivitiesArr: [], // All activity objs from "Add Activity" go here
+      /* Add Activity Information */
       activityType: "",
       activityName: "",
-      numSets: "",
-      setsArr: [],
       activityDescription: "",
+      /* Set Info */
+      numSets: "",
+      weight1: "",
+      weight2: "",
+      weight3: "",
+      reps1: "",
+      reps2: "",
+      reps3: "",
+      done1: "",
+      done2: "",
+      done3: "",
     };
-  },
-  components: {
-    RoutineActivity,
-  },
-  props: {
-    action: String,
-    showUpdate: Boolean,
-    routineInfo: Object,
   },
   methods: {
     showAddActivity() {
@@ -211,6 +279,68 @@ export default {
       var month = dateParts[1].padStart(2, "0");
       var year = dateParts[2];
       return year + "-" + month + "-" + day;
+    },
+    confirmAddActivity() {
+      let newActivityObj = {};
+      newActivityObj["activityId"] =
+        this.activityArr.length + this.newActivitiesArr.length + 1;
+      newActivityObj["uniqueId"] =
+        this.routineId + "-" + newActivityObj["activityId"];
+      newActivityObj["activityType"] = this.activityType;
+      newActivityObj["activityName"] = this.activityName;
+      newActivityObj["activityDescription"] = this.activityDescription;
+      newActivityObj["numSets"] = this.numSets;
+
+      /* Fill up set */
+      let setsArr = [];
+      if (this.numSets >= 1) {
+        setsArr.push({
+          setNum: 1,
+          weight: this.weight1,
+          reps: this.reps1,
+          done: this.done1 ? true : false,
+        });
+      }
+      if (this.numSets >= 2) {
+        setsArr.push({
+          setNum: 2,
+          weight: this.weight2,
+          reps: this.reps2,
+          done: this.done2 ? true : false,
+        });
+      }
+      if (this.numSets == 3) {
+        setsArr.push({
+          setNum: 3,
+          weight: this.weight3,
+          reps: this.reps3,
+          done: this.done3 ? true : false,
+        });
+      }
+      newActivityObj["setInfo"] = setsArr;
+
+      console.log(newActivityObj);
+      // Assign the new activities to data property
+      this.newActivitiesArr.push(newActivityObj);
+      console.log(this.newActivities);
+
+      // Reset values
+      this.activityType = "";
+      this.activityName = "";
+      this.activityDescription = "";
+      this.numSets = "";
+      this.weight1 = "";
+      this.weight2 = "";
+      this.weight3 = "";
+      this.reps1 = "";
+      this.reps2 = "";
+      this.reps3 = "";
+      this.done1 = "";
+      this.done2 = "";
+      this.done3 = "";
+
+      // close the add activity portion
+      this.closeAddActivity();
     },
   },
   watch: {
@@ -248,6 +378,14 @@ export default {
         }
       }
     },
+  },
+  components: {
+    RoutineActivity,
+  },
+  props: {
+    action: String,
+    showUpdate: Boolean,
+    routineInfo: Object, // All information related to routines (from RoutinesPage)
   },
 };
 </script>
