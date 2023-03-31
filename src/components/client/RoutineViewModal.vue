@@ -54,37 +54,70 @@
           <div class="add-activity" v-show="addActivity">
             <form action="" style="display: flex">
               <div class="activity-left">
-                <label for="">ACTIVITY TYPE</label>
-                <select name="muscles" id="muscles">
+                <label for="muscles">ACTIVITY TYPE</label>
+                <select name="muscles" id="muscles" v-model="activityType">
                   <option value="chest">Chest</option>
+                  <option value="arms">Arms</option>
                   <option value="shoulders">Shoulders</option>
                   <option value="back">Back</option>
-                  <option value="arms">Arms</option>
+                  <option value="abs">Abs</option>
                   <option value="legs">Legs</option>
-                  <option value="core">Core</option>
                   <option value="cardio">Cardio</option>
-                  <option value="fat-burner">Fat Burner</option>
                 </select>
                 <br />
-                <label for="">ACTIVITY NAME</label>
-                <input type="text" name="" id="" /> <br />
-                <label for="">SETS</label> <input type="text" name="" id="" />
+                <label for="aName">ACTIVITY NAME</label>
+                <input
+                  type="text"
+                  name="aName"
+                  id="aName"
+                  v-model="activityName"
+                />
                 <br />
-                <div class="activity-set">
-                  <label for="">SET 1 DETAILS</label>
-                  <input type="text" name="" id="" />KG
-                  <input type="text" name="" id="" />REPS <br />
-                  <label for="">SET 2 DETAILS</label>
-                  <input type="text" name="" id="" />KG
-                  <input type="text" name="" id="" />REPS <br />
-                  <label for="">SET 3 DETAILS</label>
-                  <input type="text" name="" id="" />KG
-                  <input type="text" name="" id="" />REPS
+                <label for="aSetNum">SETS</label>
+                <input
+                  type="number"
+                  name="aSetNum"
+                  id="aSetNum"
+                  v-model="numSets"
+                />
+                <br />
+                <div
+                  v-for="setNum in numSets"
+                  :key="setNum"
+                  class="activity-set"
+                >
+                  <label for="">SET {{ setNum }} DETAILS</label>
+                  <input
+                    type="number"
+                    :name="'weight-' + setNum"
+                    :id="'weight-' + setNum"
+                    :v-model="'weight' + setNum"
+                  />KG
+                  <input
+                    type="number"
+                    :name="'reps-' + setNum"
+                    :id="'reps-' + setNum"
+                    :v-model="'reps' + setNum"
+                  />REPS
+                  <label
+                    ><input
+                      type="checkbox"
+                      :id="'done-' + setNum"
+                      :v-model="'done' + setNum"
+                    />Done?</label
+                  >
+                  <br />
                 </div>
               </div>
               <div class="activity-right">
-                <label for="">DESCRIPTION</label> <br />
-                <textarea name="" id="" cols="30" rows="10"></textarea>
+                <label for="aDescription">DESCRIPTION</label> <br />
+                <textarea
+                  name="aDescription"
+                  id="aDescription"
+                  cols="30"
+                  rows="10"
+                  v-model="activityDescription"
+                ></textarea>
               </div>
             </form>
             <div style="text-align: right">
@@ -147,6 +180,11 @@ export default {
       lastUpdatedTimestamp: "",
       activityArr: [],
       addActivity: false,
+      activityType: "",
+      activityName: "",
+      numSets: "",
+      setsArr: [],
+      activityDescription: "",
     };
   },
   components: {
