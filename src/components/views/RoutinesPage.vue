@@ -38,7 +38,13 @@
 </template>
 
 <script>
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  onSnapshot,
+} from "firebase/firestore";
 import { mapGetters, useStore } from "vuex";
 import { db, auth } from "../../firebase.js";
 import RoutineViewModal from "../client/RoutineViewModal.vue";
@@ -85,6 +91,8 @@ export default {
     let routinesFromFirebase = [];
     // Container to store routines (formatted for RoutineBlock)
     let routineList = [];
+    // Declare Other variables from firebase
+    let routineNextAvailId;
 
     // Retrieve client's document
     const clientRef = collection(db, "client");
@@ -97,6 +105,7 @@ export default {
     // Access routines field
     clientQuerySnapshot.forEach((doc) => {
       routinesFromFirebase = doc.data().routines;
+      routineNextAvailId = doc.data().routineNextId;
       // access clientTrainer here if needed
     });
 
@@ -120,6 +129,7 @@ export default {
     // After getting all routines, create object to parse into RoutineBlock
     routinesFromFirebase.forEach((routine) => {
       routineList.push({
+        routineNextId: routineNextAvailId,
         routineId: routine.routineId,
         routineCreator: routine.creatorName,
         routineName: routine.routineName,
@@ -132,6 +142,7 @@ export default {
         lastUpdatedTimestamp: convertDateFormat(
           routine.lastUpdatedTimestamp.toDate().toLocaleString()
         ),
+        activityNextId: routine.activityNextId,
         activities: routine.activities,
         routineComments: routine.routineComments,
       });

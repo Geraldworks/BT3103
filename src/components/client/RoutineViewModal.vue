@@ -231,13 +231,19 @@
 <script>
 import RoutineActivity from "./RoutineActivity.vue";
 import { db, auth } from "../../firebase.js";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
+import * as firebase from "firebase/app";
+import { doc, updateDoc, getDoc, Timestamp } from "firebase/firestore";
 import { mapGetters } from "vuex";
 
 export default {
   name: "RoutineViewModal",
   data() {
     return {
+      /* Unique Identifier for Routines & Activites -- Change ONLY when add */
+      routineNextId: 0,
+      activityNextId: 0,
+      /* Permanent creator */
+      creatorName: "",
       routineId: 0, // For Creation of Routine Activity uniqueId
       /* Top Part of Modal */
       routineName: "",
@@ -249,7 +255,6 @@ export default {
       addActivity: false,
       newActivitiesArr: [], // All activity objs from "Add Activity" go here
       delActivitiesArr: [], // If we delete activity, remove from activityArr & add it here
-      updateActivitiesArr: [], // If we update activity, remove from activityArr & add it here
       /* Add Activity Information */
       activityType: "",
       activityName: "",
@@ -299,15 +304,23 @@ export default {
       var year = dateParts[2];
       return year + "-" + month + "-" + day;
     },
+    // "Add" Button (Red Section)
+    // CASE 1: NEW activities (freshly created) <==> Add Activity Button
+    // 1) Add to newActivitiesArr
+    //
+    // CASE 2: UPDATED activities (modified) <==> Edit Icon/Button
+    // 1) Add old version to delActivitiesArr
+    // 2) Add new version to newActivitiesArr
+    // 3) Del from activityArr
+    //
+    // CASE 3: DELETED activities <==> Delete Icon/Button
+    // 1) Add to delActivitiesArr
+    // 2) Del from activityArr
     confirmAddActivity() {
       let newActivityObj = {};
-      // I may need to rethink how to assign activityId
-      newActivityObj["activityId"] =
-        this.activityArr.length +
-        this.newActivitiesArr.length +
-        this.delActivitiesArr.length +
-        this.updateActivitiesArr.length +
-        1;
+      // Assign & update the activityNextId
+      newActivityObj["activityId"] = this.activityNextId;
+      this.activityNextId += 1;
       newActivityObj["uniqueId"] =
         this.routineId + "-" + newActivityObj["activityId"];
       newActivityObj["activityType"] = this.activityType;
@@ -348,25 +361,127 @@ export default {
       this.newActivitiesArr.push(newActivityObj);
       console.log(this.newActivities);
 
-      // close the add activity portion
+      // close the add activity portion --> Also resets section values
       this.closeAddActivity();
     },
+    getCurrentDateTime() {
+      let currentDate = new Date();
+      let day = currentDate.getDate();
+      let month = currentDate.getMonth() + 1;
+      let year = currentDate.getFullYear();
+      let hours = currentDate.getHours();
+      let minutes = currentDate.getMinutes();
+      let seconds = currentDate.getSeconds();
+      let ampm = hours >= 12 ? "PM" : "AM";
+
+      // Adjust hours to 12-hour format
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+
+      // Pad single-digit day, month, hour, minute, and second values with leading zeroes
+      day = day < 10 ? "0" + day : day;
+      month = month < 10 ? "0" + month : month;
+      hours = hours < 10 ? "0" + hours : hours;
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+
+      // Combine the formatted date and time values into a string
+      let formattedDateTime = `${month}/${day}/${year}, ${hours}:${minutes}:${seconds} ${ampm}`;
+
+      // Return the formatted date and time string
+      return formattedDateTime;
+    },
+    convertToFirestoreTimestamp(dateString) {
+      const dateParts = dateString.split(",");
+      const dateStr = dateParts[0].trim();
+      const timeStr = dateParts[1] ? dateParts[1].trim() : "00:00:00 am";
+      const dateTimeStr = `${dateStr} ${timeStr}`;
+      const timestamp = Timestamp.fromDate(new Date(dateTimeStr));
+      return timestamp;
+    },
+    // Constructs the String for exerciseTypes
+    constructExerciseString() {
+      let typeArr = [];
+
+      // Go through all activities & extract type
+      this.activityArr.forEach((activity) => {
+        typeArr.push(activity.activityType);
+      });
+      this.newActivitiesArr.forEach((activity) => {
+        typeArr.push(activity.activityType);
+      });
+
+      // Output string without duplicate, sorted
+      const output = [...new Set(typeArr)].sort().join(", ");
+      return output;
+    },
+    // Constructs an object containing all Activities
+    compileActivites() {
+      let newArr = this.activityArr.concat(this.newActivitiesArr);
+      return newArr;
+    },
+    // On click to "Save" at bottom of Modal
     async saveRoutineToFS() {
-      // navigate to the correct document
+      // navigate to the correct document & access routines
       const clientRef = doc(db, "client", this.user.data.email);
       const clientSnap = await getDoc(clientRef);
-      let routinesFromFirebase = clientSnap.data().routines;
+      let routinesFromFirebase = [];
+      routinesFromFirebase = clientSnap.data().routines;
       console.log(routinesFromFirebase);
-      // await updateDoc(clientRef, {
-      //   routines:
-      // })
+
+      // Create a new Routine based off current Modal
+      let newRoutine = {};
+      newRoutine["routineId"] = this.routineNextId;
+      this.routineNextId += 1; // Increment
+      newRoutine["creatorName"] = this.creatorName
+        ? this.creatorName
+        : clientSnap.data().fullName;
+      newRoutine["routineName"] = this.routineName;
+      newRoutine["routineDate"] = this.convertToFirestoreTimestamp(
+        this.routineDate
+      );
+      newRoutine["exerciseTypes"] = this.constructExerciseString();
+      newRoutine["updatedBool"] = true;
+      newRoutine["lastUpdatedName"] = clientSnap.data().fullName; // WHAT IF TRAINER???
+      newRoutine["lastUpdatedTimestamp"] = this.convertToFirestoreTimestamp(
+        this.getCurrentDateTime()
+      );
+      newRoutine["activityNextId"] = this.activityNextId;
+      newRoutine["activities"] = this.compileActivites();
+      newRoutine["routineComments"] = this.activityDescription;
+
+      // Delete Existing (old) version of current routine in FS (if applicable)
+      let newRoutinesToFirebase = [];
+
+      routinesFromFirebase.forEach((routine) => {
+        // Skip the current routine
+        if (this.routineId != routine.routineId) {
+          newRoutinesToFirebase.push(routine);
+        }
+      });
+      newRoutinesToFirebase.push(newRoutine);
+
+      console.log(newRoutinesToFirebase);
+
+      // Update new Array of Routines & routineNextId to FireStore
+      await updateDoc(clientRef, {
+        routineNextId: this.routineNextId,
+        routines: newRoutinesToFirebase,
+      });
+
+      // reset data
+      this.newActivitiesArr = [];
     },
   },
   watch: {
     routineInfo() {
       console.log("Change in routine info");
       console.log(this.routineInfo);
-      if (this.routineInfo !== undefined) {
+      // If routineInfo is not empty (the case for Creating)
+      if (this.action == "Viewing") {
+        console.log("Viewing");
+        this.creatorName = this.routineInfo.routineCreator;
+        this.routineNextId = this.routineInfo.routineNextId;
         this.routineId = this.routineInfo.routineId;
         this.routineName = this.routineInfo.routineName;
         // format the date accordingly for html datepicker
@@ -383,19 +498,32 @@ export default {
           this.routineInfo.activities.forEach((activity) => {
             activityInfo.push({
               uniqueId: this.routineInfo.routineId + "-" + activity.activityId,
+              activityId: activity.activityId,
               activityType: activity.activityType,
               activityName: activity.activityName,
               activityDescription: activity.activityDescription,
-              numSets: activity.numSets,
+              numSets: parseInt(activity.numSets),
               setInfo: activity.setInfo,
             });
           });
           this.activityArr = activityInfo;
-          console.log(this.activityArr);
-        } else {
-          this.activityArr = [];
-          this.newActivitiesArr = [];
+          this.activityNextId = this.routineInfo.activityNextId;
+          // console.log(this.activityArr);
         }
+      } else {
+        // Creating
+        console.log("Creating");
+        // No Data
+        this.creatorName = "";
+        this.routineId = 0;
+        this.routineName = "";
+        this.routineDate = "";
+        this.lastUpdatedName = "";
+        this.lastUpdatedTimestamp = "";
+        this.activityArr = [];
+        this.newActivitiesArr = [];
+        this.routineNextId = 1;
+        this.activityNextId = 1;
       }
     },
   },
