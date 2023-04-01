@@ -268,6 +268,21 @@ export default {
       this.addActivity = true;
     },
     closeAddActivity() {
+      // Reset values
+      this.activityType = "";
+      this.activityName = "";
+      this.activityDescription = "";
+      this.numSets = "";
+      this.weight1 = "";
+      this.weight2 = "";
+      this.weight3 = "";
+      this.reps1 = "";
+      this.reps2 = "";
+      this.reps3 = "";
+      this.done1 = "";
+      this.done2 = "";
+      this.done3 = "";
+      // Toggle addActivity section
       this.addActivity = false;
     },
     formatDateForDatePicker(dateString) {
@@ -323,21 +338,6 @@ export default {
       // Assign the new activities to data property
       this.newActivitiesArr.push(newActivityObj);
       console.log(this.newActivities);
-
-      // Reset values
-      this.activityType = "";
-      this.activityName = "";
-      this.activityDescription = "";
-      this.numSets = "";
-      this.weight1 = "";
-      this.weight2 = "";
-      this.weight3 = "";
-      this.reps1 = "";
-      this.reps2 = "";
-      this.reps3 = "";
-      this.done1 = "";
-      this.done2 = "";
-      this.done3 = "";
 
       // close the add activity portion
       this.closeAddActivity();
