@@ -7,7 +7,7 @@
       <div class="modal" @click.stop>
         <div class="modal-header">
           <!-- action is "Creating" for Creating, "Viewing" for Viewing -->
-          <span class="view-text">{{ modalAction }}</span>
+          <span class="view-text">{{ action }}</span>
           <span class="routine-text">Routine</span>
         </div>
 
@@ -216,8 +216,11 @@
           <!-- Toggle the form using v-show -->
           <div class="workout-comments"></div>
         </div>
+        <!-- SAVE BUTTON (To be created) -->
+        <div class="save-button">
+          <button @click="saveRoutineToFS()">Save</button>
+        </div>
       </div>
-      <!-- SAVE BUTTON (To be created) -->
       <div class="close" @click="$emit('close-modal'), closeAddActivity()">
         <img class="close-img" src="@/assets/images/cross-icon.png" alt="" />
       </div>
@@ -228,14 +231,13 @@
 <script>
 import RoutineActivity from "./RoutineActivity.vue";
 import { db, auth } from "../../firebase.js";
-import { doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { mapGetters } from "vuex";
 
 export default {
   name: "RoutineViewModal",
   data() {
     return {
-      modalAction: "", // Title of Modal
       routineId: 0, // For Creation of Routine Activity uniqueId
       /* Top Part of Modal */
       routineName: "",
@@ -246,6 +248,8 @@ export default {
       activityArr: [], // Pass each object in this for each RoutineActivity
       addActivity: false,
       newActivitiesArr: [], // All activity objs from "Add Activity" go here
+      delActivitiesArr: [], // If we delete activity, remove from activityArr & add it here
+      updateActivitiesArr: [], // If we update activity, remove from activityArr & add it here
       /* Add Activity Information */
       activityType: "",
       activityName: "",
@@ -268,6 +272,21 @@ export default {
       this.addActivity = true;
     },
     closeAddActivity() {
+      // Reset values
+      this.activityType = "";
+      this.activityName = "";
+      this.activityDescription = "";
+      this.numSets = "";
+      this.weight1 = "";
+      this.weight2 = "";
+      this.weight3 = "";
+      this.reps1 = "";
+      this.reps2 = "";
+      this.reps3 = "";
+      this.done1 = "";
+      this.done2 = "";
+      this.done3 = "";
+      // Toggle addActivity section
       this.addActivity = false;
     },
     formatDateForDatePicker(dateString) {
@@ -282,8 +301,13 @@ export default {
     },
     confirmAddActivity() {
       let newActivityObj = {};
+      // I may need to rethink how to assign activityId
       newActivityObj["activityId"] =
-        this.activityArr.length + this.newActivitiesArr.length + 1;
+        this.activityArr.length +
+        this.newActivitiesArr.length +
+        this.delActivitiesArr.length +
+        this.updateActivitiesArr.length +
+        1;
       newActivityObj["uniqueId"] =
         this.routineId + "-" + newActivityObj["activityId"];
       newActivityObj["activityType"] = this.activityType;
@@ -324,23 +348,18 @@ export default {
       this.newActivitiesArr.push(newActivityObj);
       console.log(this.newActivities);
 
-      // Reset values
-      this.activityType = "";
-      this.activityName = "";
-      this.activityDescription = "";
-      this.numSets = "";
-      this.weight1 = "";
-      this.weight2 = "";
-      this.weight3 = "";
-      this.reps1 = "";
-      this.reps2 = "";
-      this.reps3 = "";
-      this.done1 = "";
-      this.done2 = "";
-      this.done3 = "";
-
       // close the add activity portion
       this.closeAddActivity();
+    },
+    async saveRoutineToFS() {
+      // navigate to the correct document
+      const clientRef = doc(db, "client", this.user.data.email);
+      const clientSnap = await getDoc(clientRef);
+      let routinesFromFirebase = clientSnap.data().routines;
+      console.log(routinesFromFirebase);
+      // await updateDoc(clientRef, {
+      //   routines:
+      // })
     },
   },
   watch: {
@@ -375,9 +394,18 @@ export default {
           console.log(this.activityArr);
         } else {
           this.activityArr = [];
+          this.newActivitiesArr = [];
         }
       }
     },
+  },
+  computed: {
+    ...mapGetters(["user"]),
+  },
+  mounted() {
+    auth.onAuthStateChanged((user) => {
+      this.$store.dispatch("fetchUser", user);
+    });
   },
   components: {
     RoutineActivity,
