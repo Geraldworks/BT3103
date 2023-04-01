@@ -31,6 +31,7 @@
           :routineInfo="selectedRoutineInfo"
           v-show="routineViewModal"
           @close-modal="routineViewModal = false"
+          @reload-routines="reloadPage"
         />
       </div>
     </div>
@@ -156,6 +157,10 @@ export default {
       this.routineViewModal = true;
       this.viewingAction = "Creating";
       this.showUpdateInViewing = false;
+    },
+    reloadPage() {
+      console.log("Reloading...");
+      window.location.reload();
     },
   },
 };

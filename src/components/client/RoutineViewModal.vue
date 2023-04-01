@@ -313,6 +313,39 @@ export default {
       var year = dateParts[2];
       return year + "-" + month + "-" + day;
     },
+    addActivityValidator() {
+      console.log("Checking");
+      // Check activityType, activityName, activityDescription, and numSets
+      if (
+        this.activityType === "" ||
+        this.activityName === "" ||
+        this.activityDescription === "" ||
+        this.numSets === ""
+      ) {
+        return false;
+      }
+
+      // Check weight and reps based on numSets
+      if (this.numSets >= 1) {
+        if (this.weight1 === "" || this.reps1 === "" || this.done1 === "") {
+          return false;
+        }
+      }
+
+      if (this.numSets >= 2) {
+        if (this.weight2 === "" || this.reps2 === "" || this.done2 === "") {
+          return false;
+        }
+      }
+
+      if (this.numSets >= 3) {
+        if (this.weight3 === "" || this.reps3 === "" || this.done3 === "") {
+          return false;
+        }
+      }
+
+      return true;
+    },
     // "Add" Button (Red Section)
     // CASE 1: NEW activities (freshly created) <==> Add Activity Button
     // 1) Add to newActivitiesArr
@@ -326,52 +359,57 @@ export default {
     // 1) Add to delActivitiesArr
     // 2) Del from activityArr
     confirmAddActivity() {
-      let newActivityObj = {};
-      // Assign & update the activityNextId
-      newActivityObj["activityId"] = this.activityNextId;
-      this.activityNextId += 1;
-      newActivityObj["uniqueId"] =
-        this.routineId + "-" + newActivityObj["activityId"];
-      newActivityObj["activityType"] = this.activityType;
-      newActivityObj["activityName"] = this.activityName;
-      newActivityObj["activityDescription"] = this.activityDescription;
-      newActivityObj["numSets"] = this.numSets;
+      if (this.addActivityValidator()) {
+        console.log("values are acceptable");
+        let newActivityObj = {};
+        // Assign & update the activityNextId
+        newActivityObj["activityId"] = this.activityNextId;
+        this.activityNextId += 1;
+        newActivityObj["uniqueId"] =
+          this.routineId + "-" + newActivityObj["activityId"];
+        newActivityObj["activityType"] = this.activityType;
+        newActivityObj["activityName"] = this.activityName;
+        newActivityObj["activityDescription"] = this.activityDescription;
+        newActivityObj["numSets"] = this.numSets;
 
-      /* Fill up set */
-      let setsArr = [];
-      if (this.numSets >= 1) {
-        setsArr.push({
-          setNum: 1,
-          weight: this.weight1,
-          reps: this.reps1,
-          done: this.done1 ? true : false,
-        });
-      }
-      if (this.numSets >= 2) {
-        setsArr.push({
-          setNum: 2,
-          weight: this.weight2,
-          reps: this.reps2,
-          done: this.done2 ? true : false,
-        });
-      }
-      if (this.numSets == 3) {
-        setsArr.push({
-          setNum: 3,
-          weight: this.weight3,
-          reps: this.reps3,
-          done: this.done3 ? true : false,
-        });
-      }
-      newActivityObj["setInfo"] = setsArr;
+        /* Fill up set */
+        let setsArr = [];
+        if (this.numSets >= 1) {
+          setsArr.push({
+            setNum: 1,
+            weight: this.weight1,
+            reps: this.reps1,
+            done: this.done1 ? true : false,
+          });
+        }
+        if (this.numSets >= 2) {
+          setsArr.push({
+            setNum: 2,
+            weight: this.weight2,
+            reps: this.reps2,
+            done: this.done2 ? true : false,
+          });
+        }
+        if (this.numSets == 3) {
+          setsArr.push({
+            setNum: 3,
+            weight: this.weight3,
+            reps: this.reps3,
+            done: this.done3 ? true : false,
+          });
+        }
+        newActivityObj["setInfo"] = setsArr;
 
-      console.log(newActivityObj);
-      // Assign the new activities to data property
-      this.newActivitiesArr.push(newActivityObj);
-      console.log(this.newActivities);
+        console.log(newActivityObj);
+        // Assign the new activities to data property
+        this.newActivitiesArr.push(newActivityObj);
+        console.log(this.newActivities);
 
-      // close the add activity portion --> Also resets section values
-      this.closeAddActivity();
+        // close the add activity portion --> Also resets section values
+        this.closeAddActivity();
+      } else {
+        alert("Incomplete fields");
+      }
     },
     getCurrentDateTime() {
       let currentDate = new Date();
@@ -429,57 +467,76 @@ export default {
       let newArr = this.activityArr.concat(this.newActivitiesArr);
       return newArr;
     },
+    saveRoutineValidator() {
+      // Check routineName and routineDate
+      if (this.routineName === "" || this.routineDate === "") {
+        return false;
+      }
+      // Check newActivitiesArr
+      if (this.newActivitiesArr == null || this.newActivitiesArr.length == 0) {
+        return false;
+      }
+      return true;
+    },
     // On click to "Save" at bottom of Modal
     async saveRoutineToFS() {
-      // navigate to the correct document & access routines
-      const clientRef = doc(db, "client", this.user.data.email);
-      const clientSnap = await getDoc(clientRef);
-      let routinesFromFirebase = [];
-      routinesFromFirebase = clientSnap.data().routines;
-      console.log(routinesFromFirebase);
+      if (this.saveRoutineValidator()) {
+        // navigate to the correct document & access routines
+        const clientRef = doc(db, "client", this.user.data.email);
+        const clientSnap = await getDoc(clientRef);
+        let routinesFromFirebase = [];
+        routinesFromFirebase = clientSnap.data().routines;
+        console.log(routinesFromFirebase);
 
-      // Create a new Routine based off current Modal
-      let newRoutine = {};
-      newRoutine["routineId"] = this.routineNextId;
-      this.routineNextId += 1; // Increment
-      newRoutine["creatorName"] = this.creatorName
-        ? this.creatorName
-        : clientSnap.data().fullName;
-      newRoutine["routineName"] = this.routineName;
-      newRoutine["routineDate"] = this.convertToFirestoreTimestamp(
-        this.routineDate
-      );
-      newRoutine["exerciseTypes"] = this.constructExerciseString();
-      newRoutine["updatedBool"] = true;
-      newRoutine["lastUpdatedName"] = clientSnap.data().fullName; // WHAT IF TRAINER???
-      newRoutine["lastUpdatedTimestamp"] = this.convertToFirestoreTimestamp(
-        this.getCurrentDateTime()
-      );
-      newRoutine["activityNextId"] = this.activityNextId;
-      newRoutine["activities"] = this.compileActivites();
-      newRoutine["routineComments"] = this.activityDescription;
+        // Create a new Routine based off current Modal
+        let newRoutine = {};
+        newRoutine["routineId"] = this.routineNextId;
+        this.routineNextId += 1; // Increment
+        newRoutine["creatorName"] = this.creatorName
+          ? this.creatorName
+          : clientSnap.data().fullName;
+        newRoutine["routineName"] = this.routineName;
+        newRoutine["routineDate"] = this.convertToFirestoreTimestamp(
+          this.routineDate
+        );
+        newRoutine["exerciseTypes"] = this.constructExerciseString();
+        newRoutine["updatedBool"] = true;
+        newRoutine["lastUpdatedName"] = clientSnap.data().fullName; // WHAT IF TRAINER???
+        newRoutine["lastUpdatedTimestamp"] = this.convertToFirestoreTimestamp(
+          this.getCurrentDateTime()
+        );
+        newRoutine["activityNextId"] = this.activityNextId;
+        newRoutine["activities"] = this.compileActivites();
+        newRoutine["routineComments"] = this.activityDescription;
 
-      // Delete Existing (old) version of current routine in FS (if applicable)
-      let newRoutinesToFirebase = [];
+        // Delete Existing (old) version of current routine in FS (if applicable)
+        let newRoutinesToFirebase = [];
 
-      routinesFromFirebase.forEach((routine) => {
-        // Skip the current routine
-        if (this.routineId != routine.routineId) {
-          newRoutinesToFirebase.push(routine);
-        }
-      });
-      newRoutinesToFirebase.push(newRoutine);
+        routinesFromFirebase.forEach((routine) => {
+          // Skip the current routine
+          if (this.routineId != routine.routineId) {
+            newRoutinesToFirebase.push(routine);
+          }
+        });
+        newRoutinesToFirebase.push(newRoutine);
 
-      console.log(newRoutinesToFirebase);
+        console.log(newRoutinesToFirebase);
 
-      // Update new Array of Routines & routineNextId to FireStore
-      await updateDoc(clientRef, {
-        routineNextId: this.routineNextId,
-        routines: newRoutinesToFirebase,
-      });
+        // Update new Array of Routines & routineNextId to FireStore
+        await updateDoc(clientRef, {
+          routineNextId: this.routineNextId,
+          routines: newRoutinesToFirebase,
+        });
 
-      // reset data
-      this.newActivitiesArr = [];
+        // reset data
+        this.newActivitiesArr = [];
+
+        // Emit & Close the modal
+        this.$emit("close-modal");
+        this.$emit("reload-routines");
+      } else {
+        alert("Incomplete fields");
+      }
     },
   },
   watch: {
