@@ -60,22 +60,7 @@ export default {
       email: "",
       viewingAction: "",
       showUpdateInViewing: true,
-      routineArr: [
-        // {
-        //   routineCreator: "Trainer Joe",
-        //   routineName: "Saturday Chest Ripper",
-        //   exerciseTypes: "Chest",
-        //   routineDate: "12/3/2023",
-        //   updateBool: true,
-        // },
-        // {
-        //   routineCreator: "Client Gerald",
-        //   routineName: "Monday Morning Back Workout",
-        //   exerciseTypes: "Back, Shoulders",
-        //   routineDate: "27/3/2023",
-        //   updateBool: false,
-        // },
-      ],
+      routineArr: [],
       selectedRoutineInfo: {},
       routineViewModal: false,
     };

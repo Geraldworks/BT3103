@@ -232,7 +232,16 @@
 import RoutineActivity from "./RoutineActivity.vue";
 import { db, auth } from "../../firebase.js";
 import * as firebase from "firebase/app";
-import { doc, updateDoc, getDoc, Timestamp } from "firebase/firestore";
+import {
+  doc,
+  updateDoc,
+  getDoc,
+  Timestamp,
+  collection,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { mapGetters } from "vuex";
 
 export default {
@@ -508,13 +517,13 @@ export default {
           });
           this.activityArr = activityInfo;
           this.activityNextId = this.routineInfo.activityNextId;
+          this.newActivitiesArr = [];
           // console.log(this.activityArr);
         }
       } else {
         // Creating
         console.log("Creating");
         // No Data
-        this.creatorName = "";
         this.routineId = 0;
         this.routineName = "";
         this.routineDate = "";
@@ -522,10 +531,28 @@ export default {
         this.lastUpdatedTimestamp = "";
         this.activityArr = [];
         this.newActivitiesArr = [];
-        this.routineNextId = 1;
         this.activityNextId = 1;
       }
     },
+  },
+  async created() {
+    let routineNextAvailId;
+    let clientName;
+
+    const clientRef = collection(db, "client");
+    const thisClientQuery = query(
+      clientRef,
+      where("email", "==", this.user.data.email)
+    );
+    const clientQuerySnapshot = await getDocs(thisClientQuery);
+
+    clientQuerySnapshot.forEach((doc) => {
+      routineNextAvailId = doc.data().routineNextId;
+      clientName = doc.data().fullName;
+    });
+
+    this.routineNextId = routineNextAvailId;
+    this.creatorName = clientName;
   },
   computed: {
     ...mapGetters(["user"]),
