@@ -760,6 +760,32 @@ export default {
         alert("Incomplete fields");
       }
     },
+    async delRoutineFromFS() {
+      // navigate to the correct document & access routines
+      const clientRef = doc(db, "client", this.user.data.email);
+      const clientSnap = await getDoc(clientRef);
+      let routinesFromFirebase = [];
+      routinesFromFirebase = clientSnap.data().routines;
+
+      let newRoutinesToFirebase = [];
+
+      // Go through each routine in firebase
+      routinesFromFirebase.forEach((routine) => {
+        // Skip the current routine
+        if (this.routineId != routine.routineId) {
+          newRoutinesToFirebase.push(routine);
+        }
+      });
+
+      // Update new Array of Routines to FireStore
+      await updateDoc(clientRef, {
+        routines: newRoutinesToFirebase,
+      });
+
+      // Emit & Close the modal
+      this.$emit("close-modal");
+      this.$emit("reload-routines");
+    },
     routineCommentsStringFormatter(arr) {
       return arr.join("<br>");
     },
