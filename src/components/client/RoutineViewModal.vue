@@ -215,8 +215,20 @@
             />
           </div>
           <!-- WORKOUT COMMENTS SECTION -->
-          <!-- Toggle the form using v-show -->
-          <div class="workout-comments"></div>
+          <div class="workout-comments">
+            <div>Workout Comments</div>
+            <div v-html="formattedRoutineStrings"></div>
+            <div>
+              <!-- <label for="rComments"></label> <br /> -->
+              <textarea
+                name="rComments"
+                id="rComments"
+                placeholder="Share your comments here"
+                @change="updateRoutineCommentsBool"
+                v-model="routineNewComments"
+              ></textarea>
+            </div>
+          </div>
         </div>
         <!-- SAVE BUTTON -->
         <div class="save-button">
@@ -224,7 +236,9 @@
         </div>
         <!-- DELETE ROUTINE BUTTON -->
         <div class="delete-button">
-          <button @click="delRoutineFromFS()">Delete Routine</button>
+          <button @click="delRoutineFromFS()" v-show="showUpdate">
+            Delete Routine
+          </button>
         </div>
       </div>
       <!-- Close Modal Button -->
@@ -260,9 +274,12 @@ export default {
       activityNextId: 0,
       /* Permanent creator */
       creatorName: "",
+      /* Current User */
+      currUserName: "",
       routineId: 0, // For Creation of Routine Activity uniqueId
       /* Data Validation */
       hasFieldChanged: false,
+      hasRoutineCommentsChanged: false,
       /* Top Part of Modal */
       routineName: "",
       routineDate: "",
@@ -288,6 +305,9 @@ export default {
       done1: "",
       done2: "",
       done3: "",
+      /* Routine Comments */
+      routineComments: [], // Array of String
+      routineNewComments: "", // String of input
     };
   },
   methods: {
@@ -326,6 +346,11 @@ export default {
     updateChangeBool() {
       console.log("Detected Change in Fields");
       this.hasFieldChanged = true;
+    },
+    // Tracks if changes are made for routineComments
+    updateRoutineCommentsBool() {
+      console.log("Detected Change in Routine Comments");
+      this.hasRoutineCommentsChanged = true;
     },
     addActivityValidator() {
       console.log("Checking");
@@ -492,6 +517,20 @@ export default {
           return false;
         }
         return true;
+      } else if (this.hasRoutineCommentsChanged) {
+        // If routineNewComments has changed ==> Check Not null
+        // Check if fields are empty or no activities at all
+        if (
+          this.routineName === "" ||
+          this.routineDate === "" ||
+          this.routineNewComments === ""
+        ) {
+          return false;
+        }
+        if (this.newActivitiesArr.length == 0 && this.activityArr.length == 0) {
+          return false;
+        }
+        return true;
       } else {
         // No changes were made to fields
         // Check routineName and routineDate
@@ -507,6 +546,19 @@ export default {
         }
         return true;
       }
+    },
+    // Creates a new Comment Array based on
+    createNewCommentsArray() {
+      if (
+        this.routineNewComments === "" ||
+        this.routineNewComments == undefined
+      ) {
+        return this.routineComments;
+      }
+      let newComment = `${this.currUserName}: ${this.routineNewComments}`;
+      let newCommentsArr = [...this.routineComments];
+      newCommentsArr.push(newComment);
+      return newCommentsArr;
     },
     // On click to "Save" at bottom of Modal
     async saveRoutineToFS() {
@@ -537,7 +589,7 @@ export default {
         );
         newRoutine["activityNextId"] = this.activityNextId;
         newRoutine["activities"] = this.compileActivites();
-        newRoutine["routineComments"] = this.activityDescription;
+        newRoutine["routineComments"] = this.createNewCommentsArray();
 
         // Delete Existing (old) version of current routine in FS (if applicable)
         let newRoutinesToFirebase = [];
@@ -568,6 +620,9 @@ export default {
         alert("Incomplete fields");
       }
     },
+    routineCommentsStringFormatter(arr) {
+      return arr.join("<br>");
+    },
   },
   watch: {
     routineInfo() {
@@ -590,6 +645,7 @@ export default {
         );
         this.lastUpdatedName = this.routineInfo.lastUpdatedName;
         this.lastUpdatedTimestamp = this.routineInfo.lastUpdatedTimestamp;
+        this.routineComments = this.routineInfo.routineComments; // Array of Strings
 
         // Container to store activities (formatted for RoutineActivity)
         let activityInfo = [];
@@ -621,6 +677,7 @@ export default {
         this.lastUpdatedTimestamp = "";
         this.activityArr = [];
         this.activityNextId = 1;
+        this.routineComments = [];
       }
     },
   },
@@ -642,9 +699,16 @@ export default {
 
     this.routineNextId = routineNextAvailId;
     this.creatorName = clientName;
+    this.currUserName = clientName;
   },
   computed: {
     ...mapGetters(["user"]),
+    formattedRoutineStrings() {
+      if (this.routineComments === "" || this.routineComments == []) {
+        return "No Comments Currently";
+      }
+      return this.routineCommentsStringFormatter(this.routineComments);
+    },
   },
   mounted() {
     auth.onAuthStateChanged((user) => {
