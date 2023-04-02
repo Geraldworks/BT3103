@@ -22,7 +22,23 @@
     </div>
     <div class="icons">
       <!-- Include Edit Icon (On Hover show) -->
+      <div class="edit">
+        <img
+          class="edit-img"
+          src="@/assets/images/edit-icon.png"
+          alt=""
+          @click="reqEditActivity"
+        />
+      </div>
       <!-- Include Delete Icon (On Hover show) -->
+      <div class="delete">
+        <img
+          class="delete-img"
+          src="@/assets/images/delete-icon.png"
+          alt=""
+          @click="reqDeleteActivity"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -32,6 +48,24 @@ export default {
   name: "RoutineActivity",
   data() {
     return {};
+  },
+  methods: {
+    reqEditActivity() {
+      console.log("Requesting Edit Activity from RoutineActivity");
+      let activityInfo = {
+        uniqueId: this.uniqueId,
+        activityId: this.uniqueId.split("-")[1],
+        activityType: this.activityType,
+        activityName: this.activityName,
+        activityDescription: this.activityDescription,
+        numSets: this.numSets,
+        setInfo: this.setInfo,
+      };
+      this.$emit("edit-activity", activityInfo);
+    },
+    reqDeleteActivity() {
+      this.$emit("delete-activity", this.activityId);
+    },
   },
   props: {
     uniqueId: String,
@@ -105,5 +139,19 @@ export default {
 
 .icons {
   flex: 1;
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+}
+
+.edit,
+.delete {
+  flex: 1;
+  cursor: pointer;
+}
+
+.edit-img,
+.delete-img {
+  width: 15px;
 }
 </style>

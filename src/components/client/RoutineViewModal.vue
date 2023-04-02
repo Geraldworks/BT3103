@@ -2,7 +2,7 @@
   <transition name="modal-fade">
     <div
       class="modal-overlay"
-      @click="$emit('close-modal'), closeAddActivity()"
+      @click="checkIfSaved(), $emit('close-modal'), closeAddActivity()"
     >
       <div class="modal" @click.stop>
         <div class="modal-header">
@@ -11,7 +11,7 @@
           <span class="routine-text">Routine</span>
         </div>
 
-        <div class="content-area">
+        <div class="content-area" id="scrollable-content-area">
           <!-- TOP SECTION -->
           <div class="top-part">
             <div class="top-left">
@@ -23,6 +23,7 @@
                   name="rname"
                   placeholder="Give a Name"
                   required
+                  @change="updateChangeBool"
                   v-model="routineName"
                 />
                 <br />
@@ -33,6 +34,7 @@
                   name="rdate"
                   placeholder="DD/MM/YYYY"
                   required
+                  @change="updateChangeBool"
                   v-model="routineDate"
                 />
               </form>
@@ -41,8 +43,8 @@
               <!-- showUpdate is false for Creating, true for Viewing -->
               <div class="top-right-top" v-show="showUpdate">
                 <i
-                  >Last Updated By {{ lastUpdatedName }} at
-                  {{ lastUpdatedTimestamp }}</i
+                  >Last Update -- {{ lastUpdatedName }} <br />
+                  [{{ lastUpdatedTimestamp }}]</i
                 >
               </div>
               <div class="top-right-btm">
@@ -199,6 +201,8 @@
               :numSets="activity.numSets"
               :setInfo="activity.setInfo"
               :uniqueId="activity.uniqueId"
+              @edit-activity="prepEditActivity"
+              @delete-activity="prepDeleteActivity"
             />
             <!-- New Activities Created using Button -->
             <RoutineActivity
@@ -213,15 +217,37 @@
             />
           </div>
           <!-- WORKOUT COMMENTS SECTION -->
-          <!-- Toggle the form using v-show -->
-          <div class="workout-comments"></div>
+          <div class="workout-comments">
+            <div>Workout Comments</div>
+            <div v-html="formattedRoutineStrings"></div>
+            <div>
+              <!-- <label for="rComments"></label> <br /> -->
+              <textarea
+                name="rComments"
+                id="rComments"
+                placeholder="Share your comments here"
+                @change="updateRoutineCommentsBool"
+                v-model="routineNewComments"
+              ></textarea>
+            </div>
+          </div>
         </div>
-        <!-- SAVE BUTTON (To be created) -->
+        <!-- SAVE BUTTON -->
         <div class="save-button">
           <button @click="saveRoutineToFS()">Save</button>
         </div>
+        <!-- DELETE ROUTINE BUTTON -->
+        <div class="delete-button">
+          <button @click="delRoutineFromFS()" v-show="showUpdate">
+            Delete Routine
+          </button>
+        </div>
       </div>
-      <div class="close" @click="$emit('close-modal'), closeAddActivity()">
+      <!-- Close Modal Button -->
+      <div
+        class="close"
+        @click="checkIfSaved(), $emit('close-modal'), closeAddActivity()"
+      >
         <img class="close-img" src="@/assets/images/cross-icon.png" alt="" />
       </div>
     </div>
@@ -253,7 +279,14 @@ export default {
       activityNextId: 0,
       /* Permanent creator */
       creatorName: "",
+      /* Current User */
+      currUserName: "",
       routineId: 0, // For Creation of Routine Activity uniqueId
+      /* Data Validation */
+      hasFieldChanged: false,
+      hasRoutineCommentsChanged: false,
+      isEditingActivity: false,
+      isSaved: false,
       /* Top Part of Modal */
       routineName: "",
       routineDate: "",
@@ -262,7 +295,9 @@ export default {
       /* Activity - General */
       activityArr: [], // Pass each object in this for each RoutineActivity
       addActivity: false,
+      backupActivityArr: [], // Use this to reset activityArr if required
       newActivitiesArr: [], // All activity objs from "Add Activity" go here
+      editActivitiesStorage: {}, // Store the currently edited activity
       delActivitiesArr: [], // If we delete activity, remove from activityArr & add it here
       /* Add Activity Information */
       activityType: "",
@@ -279,6 +314,9 @@ export default {
       done1: "",
       done2: "",
       done3: "",
+      /* Routine Comments */
+      routineComments: [], // Array of String
+      routineNewComments: "", // String of input
     };
   },
   methods: {
@@ -303,6 +341,91 @@ export default {
       // Toggle addActivity section
       this.addActivity = false;
     },
+    checkIfSaved() {
+      if (!this.isSaved) {
+        console.log("Session not saved");
+        console.log("---updated---");
+        console.log(this.activityArr);
+        console.log(this.newActivitiesArr);
+        this.activityArr = this.backupActivityArr;
+        this.newActivitiesArr = [];
+        console.log("---restored---");
+        console.log(this.activityArr);
+        console.log(this.newActivitiesArr);
+      }
+    },
+    prepEditActivity(activityInfo) {
+      console.log("Editing...");
+      console.log(activityInfo);
+
+      // Give existing values
+      this.activityType = activityInfo.activityType || "";
+      this.activityName = activityInfo.activityName || "";
+      this.activityDescription = activityInfo.activityDescription || "";
+      this.numSets = activityInfo.numSets || "";
+
+      if (activityInfo.setInfo && activityInfo.setInfo.length > 0) {
+        this.weight1 =
+          activityInfo.setInfo[0].weight !== undefined
+            ? activityInfo.setInfo[0].weight
+            : "";
+        this.reps1 =
+          activityInfo.setInfo[0].reps !== undefined
+            ? activityInfo.setInfo[0].reps
+            : "";
+        this.done1 =
+          activityInfo.setInfo[0].done !== undefined
+            ? activityInfo.setInfo[0].done
+            : "";
+
+        if (activityInfo.numSets > 1) {
+          this.weight2 =
+            activityInfo.setInfo[1].weight !== undefined
+              ? activityInfo.setInfo[1].weight
+              : "";
+          this.reps2 =
+            activityInfo.setInfo[1].reps !== undefined
+              ? activityInfo.setInfo[1].reps
+              : "";
+          this.done2 =
+            activityInfo.setInfo[1].done !== undefined
+              ? activityInfo.setInfo[1].done
+              : "";
+        }
+
+        if (activityInfo.numSets > 2) {
+          this.weight3 =
+            activityInfo.setInfo[2].weight !== undefined
+              ? activityInfo.setInfo[2].weight
+              : "";
+          this.reps3 =
+            activityInfo.setInfo[2].reps !== undefined
+              ? activityInfo.setInfo[2].reps
+              : "";
+          this.done3 =
+            activityInfo.setInfo[2].done !== undefined
+              ? activityInfo.setInfo[2].done
+              : "";
+        }
+      }
+
+      // Store the currently edited activity
+      this.editActivitiesStorage = activityInfo;
+      // Open Add Activity Part
+      this.showAddActivity();
+      // Scroll to top of window
+      document.getElementById("scrollable-content-area").scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+
+      // Signify we are editing an activity
+      this.isEditingActivity = true;
+    },
+    prepDeleteActivity(activityId) {
+      console.log("Deleting...");
+      console.log(activityId);
+    },
     formatDateForDatePicker(dateString) {
       if (dateString == null) {
         return;
@@ -312,6 +435,16 @@ export default {
       var month = dateParts[1].padStart(2, "0");
       var year = dateParts[2];
       return year + "-" + month + "-" + day;
+    },
+    // Tracks if changes are made for routineName & routineDate
+    updateChangeBool() {
+      console.log("Detected Change in Fields");
+      this.hasFieldChanged = true;
+    },
+    // Tracks if changes are made for routineComments
+    updateRoutineCommentsBool() {
+      console.log("Detected Change in Routine Comments");
+      this.hasRoutineCommentsChanged = true;
     },
     addActivityValidator() {
       console.log("Checking");
@@ -327,19 +460,19 @@ export default {
 
       // Check weight and reps based on numSets
       if (this.numSets >= 1) {
-        if (this.weight1 === "" || this.reps1 === "" || this.done1 === "") {
+        if (this.weight1 === "" || this.reps1 === "") {
           return false;
         }
       }
 
       if (this.numSets >= 2) {
-        if (this.weight2 === "" || this.reps2 === "" || this.done2 === "") {
+        if (this.weight2 === "" || this.reps2 === "") {
           return false;
         }
       }
 
       if (this.numSets >= 3) {
-        if (this.weight3 === "" || this.reps3 === "" || this.done3 === "") {
+        if (this.weight3 === "" || this.reps3 === "") {
           return false;
         }
       }
@@ -403,7 +536,19 @@ export default {
         console.log(newActivityObj);
         // Assign the new activities to data property
         this.newActivitiesArr.push(newActivityObj);
-        console.log(this.newActivities);
+
+        if (this.isEditingActivity) {
+          // If editing activity, remove old from `activityArr` (since updated is now in `newActivitiesArr`)
+          let updatedActivityArr = this.activityArr.filter(
+            (activity) =>
+              activity.activityId != this.editActivitiesStorage.activityId
+          );
+          this.activityArr = updatedActivityArr;
+
+          // reset values
+          this.editActivitiesStorage = {};
+          this.isEditingActivity = false;
+        }
 
         // close the add activity portion --> Also resets section values
         this.closeAddActivity();
@@ -468,19 +613,65 @@ export default {
       return newArr;
     },
     saveRoutineValidator() {
-      // Check routineName and routineDate
-      if (this.routineName === "" || this.routineDate === "") {
-        return false;
+      // Check if changes are made to routineName / routineDate
+      if (this.hasFieldChanged) {
+        // Check if fields are empty or no activities at all
+        if (this.routineName === "" || this.routineDate === "") {
+          return false;
+        }
+        if (this.newActivitiesArr.length == 0 && this.activityArr.length == 0) {
+          return false;
+        }
+        return true;
+      } else if (this.hasRoutineCommentsChanged) {
+        // If routineNewComments has changed ==> Check Not null
+        // Check if fields are empty or no activities at all
+        if (
+          this.routineName === "" ||
+          this.routineDate === "" ||
+          this.routineNewComments === ""
+        ) {
+          return false;
+        }
+        if (this.newActivitiesArr.length == 0 && this.activityArr.length == 0) {
+          return false;
+        }
+        return true;
+      } else {
+        // No changes were made to fields
+        // Check routineName and routineDate
+        if (this.routineName === "" || this.routineDate === "") {
+          return false;
+        }
+        // Check newActivitiesArr
+        if (
+          this.newActivitiesArr == null ||
+          this.newActivitiesArr.length == 0
+        ) {
+          return false;
+        }
+        return true;
       }
-      // Check newActivitiesArr
-      if (this.newActivitiesArr == null || this.newActivitiesArr.length == 0) {
-        return false;
+    },
+    // Creates a new Comment Array based on
+    createNewCommentsArray() {
+      if (
+        this.routineNewComments === "" ||
+        this.routineNewComments == undefined
+      ) {
+        return this.routineComments;
       }
-      return true;
+      let newComment = `${this.currUserName}: ${this.routineNewComments}`;
+      let newCommentsArr = [...this.routineComments];
+      newCommentsArr.push(newComment);
+      return newCommentsArr;
     },
     // On click to "Save" at bottom of Modal
     async saveRoutineToFS() {
       if (this.saveRoutineValidator()) {
+        // set status to save
+        this.isSaved = true;
+
         // navigate to the correct document & access routines
         const clientRef = doc(db, "client", this.user.data.email);
         const clientSnap = await getDoc(clientRef);
@@ -507,7 +698,7 @@ export default {
         );
         newRoutine["activityNextId"] = this.activityNextId;
         newRoutine["activities"] = this.compileActivites();
-        newRoutine["routineComments"] = this.activityDescription;
+        newRoutine["routineComments"] = this.createNewCommentsArray();
 
         // Delete Existing (old) version of current routine in FS (if applicable)
         let newRoutinesToFirebase = [];
@@ -538,12 +729,20 @@ export default {
         alert("Incomplete fields");
       }
     },
+    routineCommentsStringFormatter(arr) {
+      return arr.join("<br>");
+    },
   },
   watch: {
     routineInfo() {
       console.log("Change in routine info");
       console.log(this.routineInfo);
-      // If routineInfo is not empty (the case for Creating)
+
+      //Reset Fields for each RoutineInfo Change
+      this.hasFieldChanged = false;
+      this.newActivitiesArr = [];
+      this.isSaved = false;
+
       if (this.action == "Viewing") {
         console.log("Viewing");
         this.creatorName = this.routineInfo.routineCreator;
@@ -556,6 +755,7 @@ export default {
         );
         this.lastUpdatedName = this.routineInfo.lastUpdatedName;
         this.lastUpdatedTimestamp = this.routineInfo.lastUpdatedTimestamp;
+        this.routineComments = this.routineInfo.routineComments; // Array of Strings
 
         // Container to store activities (formatted for RoutineActivity)
         let activityInfo = [];
@@ -573,8 +773,8 @@ export default {
             });
           });
           this.activityArr = activityInfo;
+          this.backupActivityArr = activityInfo;
           this.activityNextId = this.routineInfo.activityNextId;
-          this.newActivitiesArr = [];
           // console.log(this.activityArr);
         }
       } else {
@@ -587,8 +787,9 @@ export default {
         this.lastUpdatedName = "";
         this.lastUpdatedTimestamp = "";
         this.activityArr = [];
-        this.newActivitiesArr = [];
+        this.backupActivityArr = [];
         this.activityNextId = 1;
+        this.routineComments = [];
       }
     },
   },
@@ -610,9 +811,16 @@ export default {
 
     this.routineNextId = routineNextAvailId;
     this.creatorName = clientName;
+    this.currUserName = clientName;
   },
   computed: {
     ...mapGetters(["user"]),
+    formattedRoutineStrings() {
+      if (this.routineComments === "" || this.routineComments == []) {
+        return "No Comments Currently";
+      }
+      return this.routineCommentsStringFormatter(this.routineComments);
+    },
   },
   mounted() {
     auth.onAuthStateChanged((user) => {

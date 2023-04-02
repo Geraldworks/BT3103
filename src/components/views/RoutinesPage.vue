@@ -13,7 +13,7 @@
 
       <div class="routine-list">
         <RoutineBlock
-          v-for="routine in routineArr"
+          v-for="routine in routineArr.sort(this.comparatorForRoutine)"
           :routineCreator="routine.routineCreator"
           :routineName="routine.routineName"
           :exerciseTypes="routine.exerciseTypes"
@@ -160,7 +160,21 @@ export default {
     },
     reloadPage() {
       console.log("Reloading...");
-      window.location.reload();
+      // window.location.reload();
+      this.$router.go(0);
+    },
+    comparatorForRoutine(routineOne, routineTwo) {
+      const dateOne = new Date(
+        `${routineOne.routineDate.split("/")[1]}/${
+          routineOne.routineDate.split("/")[0]
+        }/${routineOne.routineDate.split("/")[2]}`
+      );
+      const dateTwo = new Date(
+        `${routineTwo.routineDate.split("/")[1]}/${
+          routineTwo.routineDate.split("/")[0]
+        }/${routineTwo.routineDate.split("/")[2]}`
+      );
+      return dateTwo - dateOne;
     },
   },
 };
