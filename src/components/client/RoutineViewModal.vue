@@ -704,7 +704,7 @@ export default {
         this.isSaved = true;
 
         // navigate to the correct document & access routines
-        const clientRef = doc(db, "client", this.user.data.email);
+        const clientRef = doc(db, "client", this.email);
         const clientSnap = await getDoc(clientRef);
         let routinesFromFirebase = [];
         routinesFromFirebase = clientSnap.data().routines;
@@ -762,7 +762,7 @@ export default {
     },
     async delRoutineFromFS() {
       // navigate to the correct document & access routines
-      const clientRef = doc(db, "client", this.user.data.email);
+      const clientRef = doc(db, "client", this.email);
       const clientSnap = await getDoc(clientRef);
       let routinesFromFirebase = [];
       routinesFromFirebase = clientSnap.data().routines;
@@ -855,10 +855,7 @@ export default {
     let clientName;
 
     const clientRef = collection(db, "client");
-    const thisClientQuery = query(
-      clientRef,
-      where("email", "==", this.user.data.email)
-    );
+    const thisClientQuery = query(clientRef, where("email", "==", this.email));
     const clientQuerySnapshot = await getDocs(thisClientQuery);
 
     clientQuerySnapshot.forEach((doc) => {
@@ -888,6 +885,7 @@ export default {
     RoutineActivity,
   },
   props: {
+    email: String,
     action: String,
     showUpdate: Boolean,
     routineInfo: Object, // All information related to routines (from RoutinesPage)
