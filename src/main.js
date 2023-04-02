@@ -6,5 +6,7 @@ import CoreuiVue from '@coreui/vue';
 import store from './store';
 import VueChartkick from 'vue-chartkick'
 import 'chartkick/chart.js'
+import "vue-cal/dist/vuecal.css";
+import "sweetalert2/src/sweetalert2.scss";
 
 createApp(App).use(router).use(store).use(CoreuiVue).use(VueChartkick).component('Navbar', Navbar).mount('#app')

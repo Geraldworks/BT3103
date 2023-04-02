@@ -177,7 +177,7 @@ export default {
   background-color: black;
   min-height: 100vh;
   font-family: Teko;
-  min-width: 1100px;
+  min-width: 100vh;
 }
 
 .calendar {
@@ -187,7 +187,7 @@ export default {
 }
 </style>
 
-<style>
+<style scoped>
 .vuecal__event {
   background-color: rgba(169, 169, 169, 0.7);
   border: solid rgba(0, 0, 0, 0.3);
@@ -195,6 +195,9 @@ export default {
   box-sizing: border-box;
   padding: 5px;
   cursor: pointer;
+}
+.unclickable {
+  cursor: default;
 }
 
 .vuecal__event-title {
@@ -211,11 +214,21 @@ export default {
   background-color: #fffacd;
 }
 
-.vuecal__cell-events-count {
-  /* Remove the event count number in month view */
-  display: none;
+/* Styles for Min and Max Range vue-cal */
+.vuecal__cell--disabled {
+  text-decoration: line-through;
 }
 
+.vuecal__cell--after-max {
+  color: #a8a2a2;
+}
+
+.otherClient {
+  background: black;
+  color: #fff;
+}
+
+/* Other styles */
 .vuecal__menu,
 .vuecal__cell-events-count {
   background-color: #ed1f24;

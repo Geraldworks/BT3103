@@ -45,12 +45,13 @@
         </div>
       </div>
     </div>
-    <div v-if="user.clientEmail">
+    <div v-else>
       <!-- ClientPerformance listens for the returnToHome event
              when this occurs, we remove the current client email that is rendered 
              we then render everything again using the :key attribute -->
       <ClientPerformance
         :clientEmail="user.clientEmail"
+        :profilePicURL="clientInfo[user.clientEmail][3]"
         :key="refreshCount"
         @returnToHome="removeEmailToRender()"
       />
@@ -176,7 +177,7 @@ export default {
 
       list(listRef).then((res) => {
         res.items.forEach((imageRef) => {
-          const email = imageRef._location.path;
+          const email = imageRef._location.path.slice(0, -4);
           if (clientInfo[email]) {
             getDownloadURL(imageRef).then((url) => {
               clientInfo[email][3] = url;

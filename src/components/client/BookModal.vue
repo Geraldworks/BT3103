@@ -3,7 +3,7 @@
     <div class="modal-overlay" @click="$emit('close-modal')">
       <div class="modal" @click.stop>
         <!-- <img class="check" src="~/assets/check-icon.png" alt="" /> -->
-        <div style="font-size: 2.5rem">Select a Date</div>
+        <div style="font-size: 2.5rem">Select a Date to Book</div>
         <div>
           <Datepicker
             v-model="date"
@@ -16,18 +16,13 @@
           Available Slots
         </div>
         <select
+          key="key"
           class="slots"
           name="slots"
           v-if="date"
           v-model="selected"
           multiple
         >
-          <!--
-          <input :id="session" type="checkbox" style="margin-right: 10px" />
-          <label :for="session"
-            >{{ createTimeString(session) }} -
-            {{ createTimeString(session + 1) }}</label
-          > -->
           <option v-for="session in availableSessions" :value="session">
             {{ createTimeString(session) }} -
             {{ createTimeString(session + 1) }}
@@ -75,7 +70,7 @@
             style="text-align: center"
             type="submit"
           >
-            Save
+            Book
           </button>
         </div>
       </div>
@@ -89,10 +84,19 @@
 
 <script>
 import Datepicker from "@vuepic/vue-datepicker";
+import Swal from "sweetalert2";
 import { db, auth } from "../../firebase.js";
 import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { mapGetters } from "vuex";
 import "@vuepic/vue-datepicker/dist/main.css";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
 
 const gymStartingTimes = [9, 11, 13, 15, 17, 19];
 const routineOptions = [
@@ -105,16 +109,20 @@ const routineOptions = [
   "Legs",
   "Cardio",
 ];
-const minDate = new Date();
+
+let minDate = new Date();
 let maxDate = new Date();
-maxDate.setMonth(maxDate.getMonth() + 3);
+minDate.setDate(minDate.getDate() + 1);
+maxDate.setMonth(minDate.getMonth() + 3);
 
 export default {
-  name: "SmallModal",
+  name: "BookModal",
   data() {
     return {
+      key: 0,
       date: null,
       enableTime: false,
+      newBookings: [],
       selected: [],
       availableSessions: [],
       routineOptions: routineOptions,
@@ -126,25 +134,40 @@ export default {
   },
   methods: {
     confirmBooking() {
-      window.confirm("Confirm your booking")
-        ? this.submitBooking()
-        : window.alert("Booking Not Done!");
+      Swal.fire({
+        title: "Confirm Your Bookings",
+        html: this.displayBookings(this.selected),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#28a745",
+        cancelButtonColor: "#ed1f24",
+        confirmButtonText: "Confirm",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.submitBooking();
+          Toast.fire({
+            icon: "success",
+            title: "Bookings successful",
+          });
+        } else {
+          Toast.fire({
+            icon: "error",
+            title: "Bookings cancelled",
+          });
+        }
+      });
     },
     async submitBooking() {
-      // get the focus (routineParser)
-      // get the title (gym session)
-      // get the start time (selected)
-      // get the end time (selected + 1)
-      // refresh calendar after submitting
+      // get the document we need to update the bookings for
       const clientRef = doc(db, "client", this.user.data.email);
-
       // get focus
       let focus = this.parseRoutines(this.routineOne, this.routineTwo);
       // get title
       let title = "Gym Session";
 
+      // for every selected timeslot, we will create an object to be updated into firebase
       this.selected.forEach(async (startTime) => {
-        // get start time
         let from = new Date(
           this.date.getFullYear(),
           this.date.getMonth(),
@@ -158,25 +181,30 @@ export default {
           startTime + 1
         );
         let newBooking = { focus, from, title, to };
-        console.log(newBooking);
+        // bookings to be passed to cancel modal and booking page
+        this.newBookings.push(newBooking);
+        // adding to the booked session for this component
+        this.addBookedSession(newBooking);
+        // updating the bookings field on firebase with a new booking
         await updateDoc(clientRef, {
           bookings: arrayUnion(newBooking),
         });
       });
-      // refresh page
-      this.$emit("updateCalendar");
-      window.alert("Booking Done!");
+      // pass the set of new bookings to the parent component
+      this.$emit("addBookings", this.newBookings);
+      // emit booking done and close the modal
       this.$emit("close-modal");
+
       // cleaning up the components
       this.date = null;
+      this.newBookings = [];
       this.selected = [];
-      this.routineOne = ""
-      this.routineTwo = ""
+      this.routineOne = "";
+      this.routineTwo = "";
     },
     listOfPossibleBookings(stringDate) {
       let output = [];
       let bookedSessions = this.allBookedSessions[stringDate];
-      // console.log(bookedSessions);
       if (!bookedSessions) {
         return gymStartingTimes;
       }
@@ -199,15 +227,52 @@ export default {
     parseRoutines(routineOne, routineTwo) {
       return routineTwo === "" ? routineOne : `${routineOne}, ${routineTwo}`;
     },
+    addBookedSession(booking) {
+      // helps to add the new booking to the current set of all booked sessions
+      let month = booking.from.getMonth();
+      let day = booking.from.getDate();
+      let startHour = booking.from.getHours();
+
+      if (this.allBookedSessions.hasOwnProperty(`${day}, ${month}`)) {
+        this.allBookedSessions[`${day}, ${month}`].push(startHour);
+      } else {
+        this.allBookedSessions[`${day}, ${month}`] = [startHour];
+      }
+    },
+    displayBookings(bookings) {
+      let output = `
+      ${this.date.getDate()} 
+      ${this.date.toLocaleString("default", { month: "long" })}, 
+      ${this.parseRoutines(this.routineOne, this.routineTwo)}`;
+      bookings.forEach((startTime) => {
+        output += "<div>";
+        output += this.createTimeString(startTime);
+        output += " - ";
+        output += this.createTimeString(startTime + 1);
+        output += "</div>";
+      });
+      return output;
+    },
+    createTimeString(time) {
+      let pm = false;
+      if (time >= 12) {
+        pm = true;
+      }
+      return pm
+        ? String(time === 12 ? 12 : time % 12) + "pm"
+        : String(time) + "am";
+    },
   },
   components: {
     Datepicker,
   },
   props: {
     allBookedSessions: Object,
+    cancelledBookings: Array,
   },
-  emits: ["close-modal", "updateCalendar"],
+  emits: ["close-modal", "addBookings"],
   watch: {
+    // if the date has been selected, we will need to show all the available session that can be booked on this day
     date(newDate) {
       if (!newDate) {
         return;
@@ -216,6 +281,27 @@ export default {
       let month = newDate.getMonth();
       let newAvailability = this.listOfPossibleBookings(`${day}, ${month}`);
       this.availableSessions = newAvailability;
+    },
+    // if there are bookings that have been cancelled, we will need to remove it from the set of all booked sessions
+    cancelledBookings(cancelled) {
+      cancelled.forEach((x) => {
+        let startTime = x["from"];
+        let startHour = startTime.getHours();
+        let day = startTime.getDate();
+        let month = startTime.getMonth();
+        this.allBookedSessions[`${day}, ${month}`] = this.allBookedSessions[
+          `${day}, ${month}`
+        ].filter((y) => {
+          return y !== startHour;
+        });
+      });
+      if (this.date) {
+        let newAvailability = this.listOfPossibleBookings(
+          `${this.date.getDate()}, ${this.date.getMonth()}`
+        );
+        this.availableSessions = newAvailability;
+      }
+      this.key++;
     },
   },
   computed: {
@@ -297,16 +383,21 @@ button:hover {
   animation-duration: 0.15s;
   animation-fill-mode: forwards;
   box-sizing: border-box;
+  border: 2px solid white;
 }
 
 .slots {
   min-height: 200px;
-  border: 0.5px solid black;
+  border: 0.1px solid black;
   padding: 0px 3px;
   text-align: center;
 }
 
-@keyframes pill-button-highlight {
+.list-styling {
+  list-style-type: none;
+}
+
+/* @keyframes pill-button-highlight {
   from {
     border: 0px white solid;
   }
@@ -314,7 +405,7 @@ button:hover {
     border: 2px white solid;
     background-color: #5041e0;
   }
-}
+} */
 
 .modal-fade-enter,
 .modal-fade-leave-to {
@@ -325,3 +416,14 @@ button:hover {
   transition: opacity 0.5s ease;
 }
 </style>
+
+<style>
+.swal2-popup {
+  font-size: 1.1rem !important;
+  font-family: Teko !important;
+  width: auto !important;
+  padding: 10px !important;
+}
+</style>
+
+<!-- Global styling for popups is here -->

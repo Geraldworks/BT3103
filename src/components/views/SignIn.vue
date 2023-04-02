@@ -12,8 +12,7 @@ button {
   border: none;
   outline: none;
   cursor: pointer;
-  margin: 5px;
-  margin-top: 30px;
+  margin: 30px;
   font-size: 1.5rem;
   text-align: center;
   box-sizing: border-box;
@@ -49,7 +48,7 @@ button:hover {
   background-color: #d9d9d9;
   padding: 10px 20px 10px 20px;
   box-shadow: 0px 0px 3px grey;
-  margin-bottom: 50px
+  margin-bottom: 50px;
 }
 
 .no-account {
@@ -57,10 +56,16 @@ button:hover {
   top: 20px;
   text-align: center;
   text-decoration: underline;
+  font-family: "Source Sans Pro", sans-serif;
 }
 
 .no-account:hover {
   cursor: pointer;
+}
+
+form {
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: larger;
 }
 </style>
 
@@ -115,7 +120,7 @@ button:hover {
 
                 <div class="form-group row mb-0">
                   <div class="button-div">
-                    <button type="submit" class="btn btn-primary mt-2">
+                    <button type="submit">
                       <div
                         v-if="isLoading"
                         class="spinner-border spinner-border-sm"
@@ -144,6 +149,16 @@ button:hover {
 import { doc, getDoc } from "@firebase/firestore";
 import { db } from "../../firebase";
 import SignUpHeader from "../SignUpHeader.vue";
+import Swal from "sweetalert2";
+
+// cool alert
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
 
 export default {
   name: "SignInComponent",
@@ -160,7 +175,7 @@ export default {
   },
   methods: {
     goToSignUp() {
-      this.$router.push("/signUp")
+      this.$router.push("/signup");
     },
     async SignIn() {
       this.isLoading = true;
@@ -185,6 +200,11 @@ export default {
                   this.$store.dispatch("fetchTrainer");
 
                   this.$router.push("/clients");
+                  Toast.fire({
+                    icon: "success",
+                    title: "Signed in successfully"
+                  }
+                  )
                 }
               })
               .catch((err) => {
@@ -192,6 +212,10 @@ export default {
                 console.log("CLIENT ACCOUNT");
 
                 this.$router.push("/performance");
+                Toast.fire({
+                  icon: "success",
+                  title: "Signed in successfully",
+                });
               });
           });
       } catch (err) {

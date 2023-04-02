@@ -4,7 +4,9 @@
       <Navbar />
     </div>
 
-    <div class="container">
+    <LoadingSpinner v-if="pageLoading" :pageLoading="pageLoading" />
+
+    <div v-else class="container">
       <div class="row display-words">
         <div>GOALS</div>
       </div>
@@ -59,7 +61,7 @@
 
                 <div class="form-group row mb-0">
                   <div class="button-div">
-                    <button type="submit" class="btn btn-primary mt-6">
+                    <button type="submit">
                       <div
                         v-if="isLoading"
                         class="spinner-border spinner-border-sm"
@@ -81,6 +83,17 @@
 import { mapGetters } from "vuex";
 import { auth, db } from "../../firebase";
 import { doc, getDoc, updateDoc } from "@firebase/firestore";
+import LoadingSpinner from "../LoadingSpinner.vue";
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import "sweetalert2/src/sweetalert2.scss";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
 
 export default {
   name: "GoalsPage",
@@ -90,12 +103,15 @@ export default {
       weightGoal: "",
       isLoading: false,
       errorMessage: "",
+      pageLoading: false,
     };
   },
+  components: { LoadingSpinner },
   computed: {
     ...mapGetters(["user"]),
   },
   mounted() {
+    this.pageLoading = true;
     auth.onAuthStateChanged((user) => {
       this.$store.dispatch("fetchUser", user);
     });
@@ -106,6 +122,7 @@ export default {
         const goals = docSnap.data().goals;
         this.muscleMassGoal = goals.muscleMassGoal;
         this.weightGoal = goals.weightGoal;
+        this.pageLoading = false;
       })
       .catch((err) => {
         console.log(err);
@@ -131,6 +148,11 @@ export default {
             // some sort of feedback to show that it's done here
             this.isLoading = false;
             this.errorMessage = "";
+            // location.reload();
+            Toast.fire({
+              icon: "success",
+              title: "Goals Saved",
+            });
           })
           .catch((err) => {
             console.log(err);
@@ -146,8 +168,15 @@ export default {
 .goals-page {
   background-color: black;
   overflow-y: hidden;
-  min-width: 800px;
-  padding-bottom: 800px;
+  min-width: 100vh;
+  min-height: 100vh;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10%;
 }
 .display-words {
   padding: 20px 10vw;
@@ -218,5 +247,14 @@ input {
   border-radius: 10px;
   padding: 10px;
   width: 300px;
+}
+</style>
+
+<style>
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10%;
 }
 </style>

@@ -1,66 +1,12 @@
-<style scoped>
-.button-div {
-  text-align: center;
-}
-
-button {
-  width: 120px;
-  height: 50px;
-  border-radius: 25px; /* half of height */
-  background-color: rgb(237, 12, 16);
-  border: none;
-  outline: none;
-  cursor: pointer;
-  margin: 5px;
-  margin-top: 30px;
-  font-size: 1.5rem;
-  text-align: center;
-  box-sizing: border-box;
-  color: white;
-  font-family: Teko;
-}
-
-button:hover {
-  animation-name: pill-button-highlight;
-  animation-duration: 0.15s;
-  animation-fill-mode: forwards;
-  box-sizing: border-box;
-}
-
-@keyframes pill-button-highlight {
-  from {
-    border: 0px white solid;
-  }
-  to {
-    border: 2px white solid;
-  }
-}
-
-.background-color-change {
-  background-color: #d9d9d9;
-  padding: 10px 20px 10px 20px;
-  box-shadow: 0px 0px 3px grey;
-  overflow: auto;
-  margin-bottom: 50px;
-}
-
-.signUp-page {
-  min-width: 100vw;
-  min-height: 100vh;
-  background-color: #d9d9d9;
-  position: relative;
-}
-</style>
-
 <template>
   <div class="signUp-page">
-    <SignUpHeader headerWords="sign up for account" />
-    <div class="container">
+    <SignUpHeader :headerWords="headerWords" />
+    <div v-if="pageNo === 1" class="container">
       <div class="row justify-content-center">
         <div class="col-md-8">
           <div class="card background-color-change">
             <div class="card-body">
-              <form action="#" @submit.prevent="SignUp">
+              <form action="#">
                 <div class="form-group row py-2">
                   <label
                     for="fullName"
@@ -223,12 +169,8 @@ button:hover {
 
                 <div class="form-group row mb-0">
                   <div class="button-div">
-                    <button type="submit" class="btn btn-primary mt-2">
-                      <div
-                        v-if="isLoading"
-                        class="spinner-border spinner-border-sm"
-                      ></div>
-                      Sign-Up
+                    <button v-if="pageNo === 1" type="button" @click="nextPage">
+                      Next
                     </button>
                   </div>
                 </div>
@@ -238,16 +180,66 @@ button:hover {
         </div>
       </div>
     </div>
+
+    <div v-else>
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card background-color-change">
+            <div class="card-body d-flex flex-row justify-content-center">
+              <div
+                v-for="(trainerDetails, trainerEmail) in trainerInfo"
+              >
+                <div class="p-5 trainer-card">
+                  <input :class="{active: trainerEmail === selectedTrainer, inactive: trainerEmail != selectedTrainer}" type="image" :src="trainerDetails[1]" alt="Trainer" @click="selectTrainer(trainerEmail)">
+                  <div>{{ trainerDetails[0] }}</div>
+                  <div>{{  trainerEmail }}</div>
+                </div>
+              </div>
+            </div>
+            <p v-if="errorMessage" class="alert alert-danger mt-3">
+              {{ errorMessage }}
+            </p>
+            <div class="row mb-0">
+                <div class="button-div">
+                  <button type="button" @click="previousPage">Back</button>
+                  <button type="submit" @click="SignUp">
+                    <div
+                      v-if="isLoading"
+                      class="spinner-border spinner-border-sm"
+                    ></div>
+                    Sign-Up
+                  </button>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import SignUpHeader from "../SignUpHeader.vue"
+import SignUpHeader from "../SignUpHeader.vue";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../firebase.js";
+import { ref, getStorage, getDownloadURL, list } from "@firebase/storage";
+import defaultPic from "../../assets/images/default_dp.svg";
+import Swal from "sweetalert2";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
 
 export default {
   name: "SignUpComponent",
   data() {
     return {
+      headerWords: "Sign Up For Account",
+      pageNo: 1,
       isLoading: false,
       fullName: "",
       gymmboxxid: "",
@@ -258,12 +250,25 @@ export default {
       password: "",
       confirmPassword: "",
       errorMessage: "",
+      selectedTrainer: "btrainer@gmail.com",
+      trainerInfo: null,
     };
   },
   components: {
-    SignUpHeader
+    SignUpHeader,
   },
   methods: {
+    selectTrainer(trainerEmail) {
+      this.selectedTrainer = trainerEmail;
+    },
+    previousPage() {
+      this.pageNo -= 1;
+      this.headerWords = "Sign Up For Account";
+    },
+    nextPage() {
+      this.pageNo += 1;
+      this.headerWords = "Select Your Trainer";
+    },
     validateForm() {
       // validate that passwords are the same
       if (this.password !== this.confirmPassword) {
@@ -285,9 +290,14 @@ export default {
             fullName: this.fullName,
             email: this.email,
             password: this.password,
+            trainerEmail: this.selectedTrainer,
           })
           .then((response) => {
             this.$router.push("/signin");
+            Toast.fire({
+              icon: "success",
+              title: "Sign up successful"
+            })
           });
       } catch (err) {
         this.isLoading = false;
@@ -300,5 +310,125 @@ export default {
       }
     },
   },
+  async created() {
+    try {
+      // Gets the trainer collection
+      const trainerInfo = {};
+
+      const querySnapshot = await getDocs(collection(db, "trainer"));
+      // Retrieve the trainer emails
+      querySnapshot.forEach((doc) => {
+        let documentData = doc.data();
+        let currTrainer = [];
+        currTrainer.push(documentData.fullName);
+        currTrainer.push(defaultPic);
+        trainerInfo[documentData.email] = currTrainer;
+      });
+
+      // Storing image URLs
+      const storage = getStorage();
+      const listRef = ref(storage);
+
+      list(listRef).then((res) => {
+        res.items.forEach((imageRef) => {
+          const email = imageRef._location.path.slice(0, -4);
+          if (trainerInfo[email]) {
+            getDownloadURL(imageRef).then((url) => {
+              trainerInfo[email][1] = url;
+            });
+          }
+        });
+      });
+
+      // assign all client information to the variable clientInfo
+      this.trainerInfo = trainerInfo;
+      // console.log(this.trainerInfo);
+    } catch (error) {
+      // error handling
+      console.log(error);
+      console.log("No email observed in database");
+    }
+  },
 };
 </script>
+
+<style scoped>
+.button-div {
+  text-align: center;
+}
+
+button {
+  width: 120px;
+  height: 50px;
+  border-radius: 25px; /* half of height */
+  background-color: rgb(237, 12, 16);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  margin: 30px;
+  font-size: 1.5rem;
+  text-align: center;
+  box-sizing: border-box;
+  color: white;
+  font-family: Teko;
+}
+
+button:hover {
+  animation-name: pill-button-highlight;
+  animation-duration: 0.15s;
+  animation-fill-mode: forwards;
+  box-sizing: border-box;
+}
+
+@keyframes pill-button-highlight {
+  from {
+    border: 0px white solid;
+  }
+  to {
+    border: 2px white solid;
+  }
+}
+
+.background-color-change {
+  background-color: #d9d9d9;
+  padding: 10px 20px 10px 20px;
+  box-shadow: 0px 0px 3px grey;
+  overflow: auto;
+  margin-bottom: 50px;
+}
+
+.signUp-page {
+  min-width: 100vw;
+  min-height: 100vh;
+  background-color: #d9d9d9;
+  position: relative;
+}
+
+form {
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: larger;
+}
+
+.trainer-card > input:hover {
+  border: 2px solid red;
+}
+
+.trainer-card {
+  text-align: center;
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: larger;
+}
+.trainer-card > input {
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+}
+
+.active {
+  border: 2px solid red;
+}
+
+.inactive {
+  border: 2px solid white;
+}
+</style>
