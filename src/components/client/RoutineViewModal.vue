@@ -2,7 +2,7 @@
   <transition name="modal-fade">
     <div
       class="modal-overlay"
-      @click="$emit('close-modal'), closeAddActivity()"
+      @click="checkIfSaved(), $emit('close-modal'), closeAddActivity()"
     >
       <div class="modal" @click.stop>
         <div class="modal-header">
@@ -11,7 +11,7 @@
           <span class="routine-text">Routine</span>
         </div>
 
-        <div class="content-area">
+        <div class="content-area" id="scrollable-content-area">
           <!-- TOP SECTION -->
           <div class="top-part">
             <div class="top-left">
@@ -201,6 +201,8 @@
               :numSets="activity.numSets"
               :setInfo="activity.setInfo"
               :uniqueId="activity.uniqueId"
+              @edit-activity="prepEditActivity"
+              @delete-activity="prepDeleteActivity"
             />
             <!-- New Activities Created using Button -->
             <RoutineActivity
@@ -242,7 +244,10 @@
         </div>
       </div>
       <!-- Close Modal Button -->
-      <div class="close" @click="$emit('close-modal'), closeAddActivity()">
+      <div
+        class="close"
+        @click="checkIfSaved(), $emit('close-modal'), closeAddActivity()"
+      >
         <img class="close-img" src="@/assets/images/cross-icon.png" alt="" />
       </div>
     </div>
@@ -280,6 +285,8 @@ export default {
       /* Data Validation */
       hasFieldChanged: false,
       hasRoutineCommentsChanged: false,
+      isEditingActivity: false,
+      isSaved: false,
       /* Top Part of Modal */
       routineName: "",
       routineDate: "",
@@ -288,7 +295,9 @@ export default {
       /* Activity - General */
       activityArr: [], // Pass each object in this for each RoutineActivity
       addActivity: false,
+      backupActivityArr: [], // Use this to reset activityArr if required
       newActivitiesArr: [], // All activity objs from "Add Activity" go here
+      editActivitiesStorage: {}, // Store the currently edited activity
       delActivitiesArr: [], // If we delete activity, remove from activityArr & add it here
       /* Add Activity Information */
       activityType: "",
@@ -331,6 +340,91 @@ export default {
       this.done3 = "";
       // Toggle addActivity section
       this.addActivity = false;
+    },
+    checkIfSaved() {
+      if (!this.isSaved) {
+        console.log("Session not saved");
+        console.log("---updated---");
+        console.log(this.activityArr);
+        console.log(this.newActivitiesArr);
+        this.activityArr = this.backupActivityArr;
+        this.newActivitiesArr = [];
+        console.log("---restored---");
+        console.log(this.activityArr);
+        console.log(this.newActivitiesArr);
+      }
+    },
+    prepEditActivity(activityInfo) {
+      console.log("Editing...");
+      console.log(activityInfo);
+
+      // Give existing values
+      this.activityType = activityInfo.activityType || "";
+      this.activityName = activityInfo.activityName || "";
+      this.activityDescription = activityInfo.activityDescription || "";
+      this.numSets = activityInfo.numSets || "";
+
+      if (activityInfo.setInfo && activityInfo.setInfo.length > 0) {
+        this.weight1 =
+          activityInfo.setInfo[0].weight !== undefined
+            ? activityInfo.setInfo[0].weight
+            : "";
+        this.reps1 =
+          activityInfo.setInfo[0].reps !== undefined
+            ? activityInfo.setInfo[0].reps
+            : "";
+        this.done1 =
+          activityInfo.setInfo[0].done !== undefined
+            ? activityInfo.setInfo[0].done
+            : "";
+
+        if (activityInfo.numSets > 1) {
+          this.weight2 =
+            activityInfo.setInfo[1].weight !== undefined
+              ? activityInfo.setInfo[1].weight
+              : "";
+          this.reps2 =
+            activityInfo.setInfo[1].reps !== undefined
+              ? activityInfo.setInfo[1].reps
+              : "";
+          this.done2 =
+            activityInfo.setInfo[1].done !== undefined
+              ? activityInfo.setInfo[1].done
+              : "";
+        }
+
+        if (activityInfo.numSets > 2) {
+          this.weight3 =
+            activityInfo.setInfo[2].weight !== undefined
+              ? activityInfo.setInfo[2].weight
+              : "";
+          this.reps3 =
+            activityInfo.setInfo[2].reps !== undefined
+              ? activityInfo.setInfo[2].reps
+              : "";
+          this.done3 =
+            activityInfo.setInfo[2].done !== undefined
+              ? activityInfo.setInfo[2].done
+              : "";
+        }
+      }
+
+      // Store the currently edited activity
+      this.editActivitiesStorage = activityInfo;
+      // Open Add Activity Part
+      this.showAddActivity();
+      // Scroll to top of window
+      document.getElementById("scrollable-content-area").scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+
+      // Signify we are editing an activity
+      this.isEditingActivity = true;
+    },
+    prepDeleteActivity(activityId) {
+      console.log("Deleting...");
+      console.log(activityId);
     },
     formatDateForDatePicker(dateString) {
       if (dateString == null) {
@@ -442,7 +536,19 @@ export default {
         console.log(newActivityObj);
         // Assign the new activities to data property
         this.newActivitiesArr.push(newActivityObj);
-        console.log(this.newActivities);
+
+        if (this.isEditingActivity) {
+          // If editing activity, remove old from `activityArr` (since updated is now in `newActivitiesArr`)
+          let updatedActivityArr = this.activityArr.filter(
+            (activity) =>
+              activity.activityId != this.editActivitiesStorage.activityId
+          );
+          this.activityArr = updatedActivityArr;
+
+          // reset values
+          this.editActivitiesStorage = {};
+          this.isEditingActivity = false;
+        }
 
         // close the add activity portion --> Also resets section values
         this.closeAddActivity();
@@ -563,6 +669,9 @@ export default {
     // On click to "Save" at bottom of Modal
     async saveRoutineToFS() {
       if (this.saveRoutineValidator()) {
+        // set status to save
+        this.isSaved = true;
+
         // navigate to the correct document & access routines
         const clientRef = doc(db, "client", this.user.data.email);
         const clientSnap = await getDoc(clientRef);
@@ -632,6 +741,7 @@ export default {
       //Reset Fields for each RoutineInfo Change
       this.hasFieldChanged = false;
       this.newActivitiesArr = [];
+      this.isSaved = false;
 
       if (this.action == "Viewing") {
         console.log("Viewing");
@@ -663,6 +773,7 @@ export default {
             });
           });
           this.activityArr = activityInfo;
+          this.backupActivityArr = activityInfo;
           this.activityNextId = this.routineInfo.activityNextId;
           // console.log(this.activityArr);
         }
@@ -676,6 +787,7 @@ export default {
         this.lastUpdatedName = "";
         this.lastUpdatedTimestamp = "";
         this.activityArr = [];
+        this.backupActivityArr = [];
         this.activityNextId = 1;
         this.routineComments = [];
       }
