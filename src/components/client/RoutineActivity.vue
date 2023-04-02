@@ -64,7 +64,7 @@ export default {
       this.$emit("edit-activity", activityInfo);
     },
     reqDeleteActivity() {
-      this.$emit("delete-activity", this.activityId);
+      this.$emit("delete-activity", this.uniqueId.split("-")[1]);
     },
   },
   props: {

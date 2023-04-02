@@ -217,7 +217,10 @@
             />
           </div>
           <!-- WORKOUT COMMENTS SECTION -->
-          <div class="workout-comments">
+          <div
+            class="workout-comments"
+            v-if="activityArr.length > 0 || newActivitiesArr.length > 0"
+          >
             <div>Workout Comments</div>
             <div v-html="formattedRoutineStrings"></div>
             <div>
@@ -285,6 +288,7 @@ export default {
       /* Data Validation */
       hasFieldChanged: false,
       hasRoutineCommentsChanged: false,
+      hasDeletedActivity: false,
       isEditingActivity: false,
       isSaved: false,
       /* Top Part of Modal */
@@ -298,7 +302,6 @@ export default {
       backupActivityArr: [], // Use this to reset activityArr if required
       newActivitiesArr: [], // All activity objs from "Add Activity" go here
       editActivitiesStorage: {}, // Store the currently edited activity
-      delActivitiesArr: [], // If we delete activity, remove from activityArr & add it here
       /* Add Activity Information */
       activityType: "",
       activityName: "",
@@ -343,15 +346,9 @@ export default {
     },
     checkIfSaved() {
       if (!this.isSaved) {
-        console.log("Session not saved");
-        console.log("---updated---");
-        console.log(this.activityArr);
-        console.log(this.newActivitiesArr);
         this.activityArr = this.backupActivityArr;
         this.newActivitiesArr = [];
-        console.log("---restored---");
-        console.log(this.activityArr);
-        console.log(this.newActivitiesArr);
+        this.hasDeletedActivity = false;
       }
     },
     prepEditActivity(activityInfo) {
@@ -424,7 +421,25 @@ export default {
     },
     prepDeleteActivity(activityId) {
       console.log("Deleting...");
+      // Keep the activityId to be deleted
+      let delActivityId = parseInt(activityId);
       console.log(activityId);
+
+      // Remove from activityArr (if it is there)
+      const filteredActivityArr = this.activityArr.filter(
+        (obj) => obj.activityId != delActivityId
+      );
+      // Remove from newActivitiesArr (if it is there)
+      const filteredNewActivitiesArr = this.newActivitiesArr.filter(
+        (obj) => obj.activityId != delActivityId
+      );
+
+      // Reassign arrays to the new ones
+      this.activityArr = filteredActivityArr;
+      this.newActivitiesArr = filteredNewActivitiesArr;
+
+      // Set status of deletion
+      this.hasDeletedActivity = true;
     },
     formatDateForDatePicker(dateString) {
       if (dateString == null) {
@@ -460,19 +475,34 @@ export default {
 
       // Check weight and reps based on numSets
       if (this.numSets >= 1) {
-        if (this.weight1 === "" || this.reps1 === "") {
+        if (
+          this.weight1 === "" ||
+          this.reps1 === "" ||
+          this.weight1 < 0 ||
+          this.reps1 < 0
+        ) {
           return false;
         }
       }
 
       if (this.numSets >= 2) {
-        if (this.weight2 === "" || this.reps2 === "") {
+        if (
+          this.weight2 === "" ||
+          this.reps2 === "" ||
+          this.weight2 < 0 ||
+          this.reps2 < 0
+        ) {
           return false;
         }
       }
 
       if (this.numSets >= 3) {
-        if (this.weight3 === "" || this.reps3 === "") {
+        if (
+          this.weight3 === "" ||
+          this.reps3 === "" ||
+          this.weight3 < 0 ||
+          this.reps3 < 0
+        ) {
           return false;
         }
       }
@@ -614,8 +644,9 @@ export default {
     },
     saveRoutineValidator() {
       // Check if changes are made to routineName / routineDate
-      if (this.hasFieldChanged) {
+      if (this.hasFieldChanged || this.hasDeletedActivity) {
         // Check if fields are empty or no activities at all
+        // Check if activity has been deleted
         if (this.routineName === "" || this.routineDate === "") {
           return false;
         }
