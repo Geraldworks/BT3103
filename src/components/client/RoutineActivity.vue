@@ -22,7 +22,13 @@
     </div>
     <div class="icons">
       <!-- Include Edit Icon (On Hover show) -->
+      <div class="edit">
+        <img class="edit-img" src="@/assets/images/edit-icon.png" alt="" />
+      </div>
       <!-- Include Delete Icon (On Hover show) -->
+      <div class="delete">
+        <img class="delete-img" src="@/assets/images/delete-icon.png" alt="" />
+      </div>
     </div>
   </div>
 </template>
@@ -105,5 +111,19 @@ export default {
 
 .icons {
   flex: 1;
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+}
+
+.edit,
+.delete {
+  flex: 1;
+  cursor: pointer;
+}
+
+.edit-img,
+.delete-img {
+  width: 15px;
 }
 </style>

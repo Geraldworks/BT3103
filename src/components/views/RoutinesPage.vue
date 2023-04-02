@@ -160,7 +160,8 @@ export default {
     },
     reloadPage() {
       console.log("Reloading...");
-      window.location.reload();
+      // window.location.reload();
+      this.$router.go(0);
     },
   },
 };

@@ -23,6 +23,7 @@
                   name="rname"
                   placeholder="Give a Name"
                   required
+                  @change="updateChangeBool"
                   v-model="routineName"
                 />
                 <br />
@@ -33,6 +34,7 @@
                   name="rdate"
                   placeholder="DD/MM/YYYY"
                   required
+                  @change="updateChangeBool"
                   v-model="routineDate"
                 />
               </form>
@@ -41,8 +43,8 @@
               <!-- showUpdate is false for Creating, true for Viewing -->
               <div class="top-right-top" v-show="showUpdate">
                 <i
-                  >Last Updated By {{ lastUpdatedName }} at
-                  {{ lastUpdatedTimestamp }}</i
+                  >Last Update -- {{ lastUpdatedName }} <br />
+                  [{{ lastUpdatedTimestamp }}]</i
                 >
               </div>
               <div class="top-right-btm">
@@ -216,11 +218,16 @@
           <!-- Toggle the form using v-show -->
           <div class="workout-comments"></div>
         </div>
-        <!-- SAVE BUTTON (To be created) -->
+        <!-- SAVE BUTTON -->
         <div class="save-button">
           <button @click="saveRoutineToFS()">Save</button>
         </div>
+        <!-- DELETE ROUTINE BUTTON -->
+        <div class="delete-button">
+          <button @click="delRoutineFromFS()">Delete Routine</button>
+        </div>
       </div>
+      <!-- Close Modal Button -->
       <div class="close" @click="$emit('close-modal'), closeAddActivity()">
         <img class="close-img" src="@/assets/images/cross-icon.png" alt="" />
       </div>
@@ -254,6 +261,8 @@ export default {
       /* Permanent creator */
       creatorName: "",
       routineId: 0, // For Creation of Routine Activity uniqueId
+      /* Data Validation */
+      hasFieldChanged: false,
       /* Top Part of Modal */
       routineName: "",
       routineDate: "",
@@ -313,6 +322,11 @@ export default {
       var year = dateParts[2];
       return year + "-" + month + "-" + day;
     },
+    // Tracks if changes are made for routineName & routineDate
+    updateChangeBool() {
+      console.log("Detected Change in Fields");
+      this.hasFieldChanged = true;
+    },
     addActivityValidator() {
       console.log("Checking");
       // Check activityType, activityName, activityDescription, and numSets
@@ -327,19 +341,19 @@ export default {
 
       // Check weight and reps based on numSets
       if (this.numSets >= 1) {
-        if (this.weight1 === "" || this.reps1 === "" || this.done1 === "") {
+        if (this.weight1 === "" || this.reps1 === "") {
           return false;
         }
       }
 
       if (this.numSets >= 2) {
-        if (this.weight2 === "" || this.reps2 === "" || this.done2 === "") {
+        if (this.weight2 === "" || this.reps2 === "") {
           return false;
         }
       }
 
       if (this.numSets >= 3) {
-        if (this.weight3 === "" || this.reps3 === "" || this.done3 === "") {
+        if (this.weight3 === "" || this.reps3 === "") {
           return false;
         }
       }
@@ -468,15 +482,31 @@ export default {
       return newArr;
     },
     saveRoutineValidator() {
-      // Check routineName and routineDate
-      if (this.routineName === "" || this.routineDate === "") {
-        return false;
+      // Check if changes are made to routineName / routineDate
+      if (this.hasFieldChanged) {
+        // Check if fields are empty or no activities at all
+        if (this.routineName === "" || this.routineDate === "") {
+          return false;
+        }
+        if (this.newActivitiesArr.length == 0 && this.activityArr.length == 0) {
+          return false;
+        }
+        return true;
+      } else {
+        // No changes were made to fields
+        // Check routineName and routineDate
+        if (this.routineName === "" || this.routineDate === "") {
+          return false;
+        }
+        // Check newActivitiesArr
+        if (
+          this.newActivitiesArr == null ||
+          this.newActivitiesArr.length == 0
+        ) {
+          return false;
+        }
+        return true;
       }
-      // Check newActivitiesArr
-      if (this.newActivitiesArr == null || this.newActivitiesArr.length == 0) {
-        return false;
-      }
-      return true;
     },
     // On click to "Save" at bottom of Modal
     async saveRoutineToFS() {
@@ -543,7 +573,11 @@ export default {
     routineInfo() {
       console.log("Change in routine info");
       console.log(this.routineInfo);
-      // If routineInfo is not empty (the case for Creating)
+
+      //Reset Fields for each RoutineInfo Change
+      this.hasFieldChanged = false;
+      this.newActivitiesArr = [];
+
       if (this.action == "Viewing") {
         console.log("Viewing");
         this.creatorName = this.routineInfo.routineCreator;
@@ -574,7 +608,6 @@ export default {
           });
           this.activityArr = activityInfo;
           this.activityNextId = this.routineInfo.activityNextId;
-          this.newActivitiesArr = [];
           // console.log(this.activityArr);
         }
       } else {
@@ -587,7 +620,6 @@ export default {
         this.lastUpdatedName = "";
         this.lastUpdatedTimestamp = "";
         this.activityArr = [];
-        this.newActivitiesArr = [];
         this.activityNextId = 1;
       }
     },
