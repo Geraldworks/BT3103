@@ -11,48 +11,35 @@
         <div>
           Viewing <span style="color: #ed1f24">{{ clientName }}</span>
         </div>
-        <div class="right-side-items" @click="">Meal plan</div>
-        <div class="right-side-items" @click="">Routine</div>
-        <div class="right-side-items" @click="showUpdateForm()">Update Stats</div>
-        <div class="pop-up">
-          <UpdateForm2 v-show="updateForm" :clientEmail="email" :clientName ="clientName" @close-modal="updateForm = false"/>
-        </div>
         <!-- If we detect that the trainer wants to return, we will emit "refresh" to 
-          go back to the page with all the client cards-->
-        <div class="right-side-items" @click="returnBackToTrainerHomePage()">Return</div>
+           go back to the page with all the client cards-->
+        <div class="right-side-items" @click="returnBackToTrainerHomePage()">
+          Return
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { doc, collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase.js";
-import { CModal, CFormInput, CFormFeedback, CFormLabel, CFormText } from "@coreui/vue";
-import UpdateForm2 from "./UpdateForm2.vue";
-
 
 export default {
   name: "TrainerPerformanceHeader",
-  components: {
-    UpdateForm2,
-  },
   data() {
     return {
       clientName: null,
-      updateForm: false,
     };
   },
   props: {
     email: String,
+    profilePic: String,
   },
   methods: {
     returnBackToTrainerHomePage() {
       this.$emit("returnToHome");
     },
-    showUpdateForm() {
-      this.updateForm = true;
-    }
   },
   emits: ["returnToHome"],
   async created() {
@@ -123,6 +110,7 @@ export default {
   animation-duration: 0.3s;
   animation-fill-mode: forwards;
 }
+
 @keyframes turn-red {
   from {
     color: white;

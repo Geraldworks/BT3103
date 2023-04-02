@@ -34,10 +34,10 @@
             <div>
               <h3 class="Routine">
                 <div class="white-text upper">
-                  {{ clientInfo[4][0] ? formatDate(clientInfo[4][0]["from"]) : "No Upcoming Session" }}
+                  {{ clientInfo[1] ? clientInfo[1] : "No Upcoming Session" }}
                 </div>
                 <div class="white-text lower">
-                  {{ clientInfo[4][0] ? clientInfo[4][0]["focus"] : "No Upcoming Routine" }}
+                  {{ clientInfo[2] ? clientInfo[2] : "No Upcoming Routine" }}
                 </div>
               </h3>
             </div>
@@ -96,28 +96,6 @@ export default {
       this.$store.dispatch("setClientEmail", null);
       this.refreshPage();
     },
-    // this comparator method helps to compare the date for the bookings
-    comparatorForTime(bookingOne, bookingTwo) {
-      if (bookingOne.from < bookingTwo.from) {
-        return -1;
-      } else if (bookingOne.from > bookingTwo.from) {
-        return 1;
-      }
-      return 0;
-    },
-    formatDate(timestamp) {
-      const date = timestamp.toDate()
-      const options = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        hour12: false
-      }
-      return date.toLocaleString('en-US', options)
-    }
   },
   props: {
     email: String,
@@ -155,18 +133,10 @@ export default {
         let documentData2 = clientEmail.data();
         // array to store required client information
         let currClient = [];
-        //searching for the next session
-        const bookings = documentData2.bookings;
-        const sortedBookings = bookings.sort(this.comparatorForTime);
-        // console.log(documentData2)
-        // console.log(sortedBookings);
-
-        // pushing the information into the list to store
         currClient.push(documentData2.fullName);
         currClient.push(documentData2.emergencyContactNo);
         currClient.push(documentData2.emergencyContactName);
         currClient.push(defaultPic);
-        currClient.push(sortedBookings);
         // putting current client info into the clientInfo object
         clientInfo[documentData2.email] = currClient;
       });
@@ -214,7 +184,6 @@ export default {
   margin: 40px 200px 20px 200px;
   border-bottom: 5px solid white;
   font-size: 3.5rem;
-  width: 70%;
 }
 
 .filler {
@@ -246,7 +215,6 @@ export default {
   border: 3px solid transparent;
   z-index: 2;
   animation-fill-mode: forwards;
-  width: 70vw;
 }
 
 .box:hover {
@@ -303,11 +271,6 @@ export default {
   }
   to {
     border: 3px solid white;
-  }
-}
-@media (max-width: 600px) {
-  .profile-pic {
-    display: none;
   }
 }
 </style>
