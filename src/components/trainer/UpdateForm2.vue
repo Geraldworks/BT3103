@@ -1,12 +1,10 @@
 <template>
 <div>
-  <!-- Whats left is that the type for the input has to be number and need to be required
-  Front end has to be improved -->
   <!-- requried is not working -->
 <transition name="modal-fade">
     <div class="modal-overlay" @click="$emit('close-modal')">
       <div class="modal" @click.stop>
-          <div style="font-size: 3rem"> <b style="color: white;">Upadting Stats for</b> <b style="color: #ED1F24;">{{ clientName }}</b></div>
+          <div style="font-size: 3rem"> <b style="color: white;">Updating Stats for</b> <b style="color: #ED1F24;">{{ clientName }}</b></div>
           <hr>
           <div id="update-form">
             <form action="">

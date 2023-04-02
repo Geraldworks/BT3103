@@ -213,6 +213,7 @@ export default {
   margin: 40px 200px 20px 200px;
   border-bottom: 5px solid white;
   font-size: 3.5rem;
+  width: 70%;
 }
 
 .filler {
@@ -244,6 +245,7 @@ export default {
   border: 3px solid transparent;
   z-index: 2;
   animation-fill-mode: forwards;
+  width: 70vw;
 }
 
 .box:hover {
@@ -300,6 +302,11 @@ export default {
   }
   to {
     border: 3px solid white;
+  }
+}
+@media (max-width: 600px) {
+  .profile-pic {
+    display: none;
   }
 }
 </style>
