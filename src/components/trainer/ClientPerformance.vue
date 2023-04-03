@@ -1,6 +1,11 @@
 <template>
   <div class="performance-page">
-    <TrainerPerformanceHeader :email= "clientEmail" :profilePic="profilePicURL" @returnToHome="returnBackToTrainerHomePage()"/>
+    <TrainerPerformanceHeader 
+      :email= "clientEmail" 
+      :profilePic="profilePicURL" 
+      @returnToHome="returnBackToTrainerHomePage()" 
+      @routeToRoutine="routeToRoutinePage()"
+      />
     <div class="content-container">
       <AllCharts :email= "clientEmail" />
       <PerformanceBottom class="bottom" :email= "clientEmail" />
@@ -34,7 +39,10 @@ export default {
   },
   methods: {
     returnBackToTrainerHomePage() {
-      this.$emit("returnToHome")
+      this.$emit("returnToHome");
+    },
+    routeToRoutinePage() {
+      this.$emit("routeToRoutine");
     }
   },
   emits: ["returnToHome"]
