@@ -23,6 +23,7 @@
     <div class="viewModal">
       <RoutineViewModal
         :email="email"
+        :fullName="fullName"
         :action="viewingAction"
         :showUpdate="showUpdateInViewing"
         :routineInfo="selectedRoutineInfo"
@@ -62,67 +63,70 @@ export default {
       store.dispatch("fetchUser", user);
     });
   },
-  async created() {
-    // Container to store routines from firebase (raw)
-    let routinesFromFirebase = [];
-    // Container to store routines (formatted for RoutineBlock)
-    let routineList = [];
-    // Declare Other variables from firebase
-    let routineNextAvailId;
-
-    // Retrieve client's document
-    const clientRef = collection(db, "client");
-    const thisClientQuery = query(clientRef, where("email", "==", this.email));
-    const clientQuerySnapshot = await getDocs(thisClientQuery);
-
-    // Access routines field
-    clientQuerySnapshot.forEach((doc) => {
-      routinesFromFirebase = doc.data().routines;
-      routineNextAvailId = doc.data().routineNextId;
-      // access clientTrainer here if needed
-    });
-
-    // function to convert dates to nicer format
-    function convertDateFormat(dateString) {
-      // Split the input string into date and time components, if applicable
-      const dateComponents = dateString.split(",")[0].split("/");
-      const timeComponents = dateString.split(",")[1];
-      // Check whether a time component is present
-      if (timeComponents) {
-        // Format with time component: "mm/dd/yyyy, hh:mm:ss am" -> "dd/mm/yyyy, hh:mm:ss am"
-        const [month, day, year] = dateComponents;
-        return `${day}/${month}/${year}, ${timeComponents.trim()}`;
-      } else {
-        // Format without time component: "mm/dd/yyyy" -> "dd/mm/yyyy"
-        const [month, day, year] = dateComponents;
-        return `${day}/${month}/${year}`;
-      }
-    }
-
-    // After getting all routines, create object to parse into RoutineBlock
-    routinesFromFirebase.forEach((routine) => {
-      routineList.push({
-        routineNextId: routineNextAvailId,
-        routineId: routine.routineId,
-        routineCreator: routine.creatorName,
-        routineName: routine.routineName,
-        exerciseTypes: routine.exerciseTypes,
-        routineDate: convertDateFormat(
-          routine.routineDate.toDate().toLocaleDateString()
-        ),
-        updateBool: routine.updatedBool,
-        lastUpdatedName: routine.lastUpdatedName,
-        lastUpdatedTimestamp: convertDateFormat(
-          routine.lastUpdatedTimestamp.toDate().toLocaleString()
-        ),
-        activityNextId: routine.activityNextId,
-        activities: routine.activities,
-        routineComments: routine.routineComments,
-      });
-    });
-    this.routineArr = routineList;
-  },
   methods: {
+    async fetchFireBaseData() {
+      // Container to store routines from firebase (raw)
+      let routinesFromFirebase = [];
+      // Container to store routines (formatted for RoutineBlock)
+      let routineList = [];
+      // Declare Other variables from firebase
+      let routineNextAvailId;
+
+      // Retrieve client's document
+      const clientRef = collection(db, "client");
+      const thisClientQuery = query(
+        clientRef,
+        where("email", "==", this.email)
+      );
+      const clientQuerySnapshot = await getDocs(thisClientQuery);
+
+      // Access routines field
+      clientQuerySnapshot.forEach((doc) => {
+        routinesFromFirebase = doc.data().routines;
+        routineNextAvailId = doc.data().routineNextId;
+        // access clientTrainer here if needed
+      });
+
+      // function to convert dates to nicer format
+      function convertDateFormat(dateString) {
+        // Split the input string into date and time components, if applicable
+        const dateComponents = dateString.split(",")[0].split("/");
+        const timeComponents = dateString.split(",")[1];
+        // Check whether a time component is present
+        if (timeComponents) {
+          // Format with time component: "mm/dd/yyyy, hh:mm:ss am" -> "dd/mm/yyyy, hh:mm:ss am"
+          const [month, day, year] = dateComponents;
+          return `${day}/${month}/${year}, ${timeComponents.trim()}`;
+        } else {
+          // Format without time component: "mm/dd/yyyy" -> "dd/mm/yyyy"
+          const [month, day, year] = dateComponents;
+          return `${day}/${month}/${year}`;
+        }
+      }
+
+      // After getting all routines, create object to parse into RoutineBlock
+      routinesFromFirebase.forEach((routine) => {
+        routineList.push({
+          routineNextId: routineNextAvailId,
+          routineId: routine.routineId,
+          routineCreator: routine.creatorName,
+          routineName: routine.routineName,
+          exerciseTypes: routine.exerciseTypes,
+          routineDate: convertDateFormat(
+            routine.routineDate.toDate().toLocaleDateString()
+          ),
+          updateBool: routine.updatedBool,
+          lastUpdatedName: routine.lastUpdatedName,
+          lastUpdatedTimestamp: convertDateFormat(
+            routine.lastUpdatedTimestamp.toDate().toLocaleString()
+          ),
+          activityNextId: routine.activityNextId,
+          activities: routine.activities,
+          routineComments: routine.routineComments,
+        });
+      });
+      this.routineArr = routineList;
+    },
     showRoutineViewModal(hiddenRoutineInfo) {
       // console.log(hiddenRoutineInfo);
       this.selectedRoutineInfo = hiddenRoutineInfo;
@@ -138,7 +142,8 @@ export default {
     },
     reloadPage() {
       console.log("Reloading...");
-      this.$router.go(0);
+      // this.$router.go(0);
+      this.fetchFireBaseData();
     },
     comparatorForRoutine(routineOne, routineTwo) {
       const dateOne = new Date(
@@ -155,12 +160,24 @@ export default {
     },
   },
   props: {
-    email: String,
+    email: {
+      type: String,
+      required: true,
+    },
     fullName: String,
   },
   components: {
     RoutineViewModal,
     RoutineBlock,
+  },
+  watch: {
+    email(newEmail) {
+      console.log("watch:", newEmail);
+      this.fetchFireBaseData();
+    },
+    fullName(newFullName) {
+      console.log("watch:", newFullName);
+    },
   },
 };
 </script>

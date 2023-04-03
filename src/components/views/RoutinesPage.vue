@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { mapGetters, useStore } from "vuex";
 import { db, auth } from "../../firebase.js";
 import RoutineContent from "../client/RoutineContent.vue";
@@ -32,9 +33,23 @@ export default {
     });
   },
   async created() {
+    const clientRef = collection(db, "client");
+    const thisClientQuery = query(
+      clientRef,
+      where("email", "==", this.user.data.email)
+    );
+    const clientQuerySnapshot = await getDocs(thisClientQuery);
+
+    let clientName;
+    clientQuerySnapshot.forEach((doc) => {
+      clientName = doc.data().fullName;
+    });
+
     this.email = this.user.data.email;
-    // this.fullName = this.user.data.fullName;
+    this.fullName = clientName;
+    console.log("--- Routines Page ---");
     console.log(this.email);
+    console.log(this.fullName);
     // console.log(this.fullName);
   },
   methods: {
@@ -47,11 +62,14 @@ export default {
   components: {
     RoutineContent,
   },
-  watch: {
-    email(newEmail) {
-      console.log(newEmail);
-    },
-  },
+  // watch: {
+  //   email(newEmail) {
+  //     console.log("watch:", newEmail);
+  //   },
+  //   fullName(newFullName) {
+  //     console.log("watch:", newFullName);
+  //   },
+  // },
 };
 </script>
 
