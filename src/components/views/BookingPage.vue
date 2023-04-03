@@ -296,7 +296,7 @@ export default {
 
 .calendar {
   background-color: white;
-  font-family: Teko;
+  font-family: "Source Sans Pro", "sans-serif";
   font-size: 1.2rem;
 }
 

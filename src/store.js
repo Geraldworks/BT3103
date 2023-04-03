@@ -76,7 +76,8 @@ const store = createStore({
           fatPercentage: [],
           fullName: fullName,
           muscleMass: [],
-          routineIds: [],
+          routineNextId: 1,
+          routines: [],
           weight: [],
           records: {
             benchPress: 0,
