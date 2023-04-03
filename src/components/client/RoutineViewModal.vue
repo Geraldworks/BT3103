@@ -214,6 +214,8 @@
               :numSets="activity.numSets"
               :setInfo="activity.setInfo"
               :uniqueId="activity.uniqueId"
+              @edit-activity="prepEditActivity"
+              @delete-activity="prepDeleteActivity"
             />
           </div>
           <!-- WORKOUT COMMENTS SECTION -->
@@ -282,8 +284,6 @@ export default {
       activityNextId: 0,
       /* Permanent creator */
       creatorName: "",
-      /* Current User */
-      currUserName: "",
       routineId: 0, // For Creation of Routine Activity uniqueId
       /* Data Validation */
       hasFieldChanged: false,
@@ -323,6 +323,23 @@ export default {
     };
   },
   methods: {
+    async fetchFireBaseData() {
+      let routineNextAvailId;
+      let clientName;
+
+      const clientRef = collection(db, "client");
+      const thisClientQuery = query(
+        clientRef,
+        where("email", "==", this.email)
+      );
+      const clientQuerySnapshot = await getDocs(thisClientQuery);
+
+      clientQuerySnapshot.forEach((doc) => {
+        routineNextAvailId = doc.data().routineNextId;
+      });
+
+      this.routineNextId = routineNextAvailId;
+    },
     showAddActivity() {
       this.addActivity = true;
     },
@@ -524,6 +541,27 @@ export default {
     confirmAddActivity() {
       if (this.addActivityValidator()) {
         console.log("values are acceptable");
+
+        if (this.isEditingActivity) {
+          // If editing activity, remove old from `activityArr` (since updated is now in `newActivitiesArr`)
+          let updatedActivityArr = this.activityArr.filter(
+            (activity) =>
+              activity.activityId != this.editActivitiesStorage.activityId
+          );
+          this.activityArr = updatedActivityArr;
+
+          // The activity could also be in `newActivitiesArr` (filter for it too)
+          let updatedNewActivitiesArr = this.newActivitiesArr.filter(
+            (activity) =>
+              activity.activityId != this.editActivitiesStorage.activityId
+          );
+          this.newActivitiesArr = updatedNewActivitiesArr;
+
+          // reset values
+          this.editActivitiesStorage = {};
+          this.isEditingActivity = false;
+        }
+
         let newActivityObj = {};
         // Assign & update the activityNextId
         newActivityObj["activityId"] = this.activityNextId;
@@ -566,19 +604,6 @@ export default {
         console.log(newActivityObj);
         // Assign the new activities to data property
         this.newActivitiesArr.push(newActivityObj);
-
-        if (this.isEditingActivity) {
-          // If editing activity, remove old from `activityArr` (since updated is now in `newActivitiesArr`)
-          let updatedActivityArr = this.activityArr.filter(
-            (activity) =>
-              activity.activityId != this.editActivitiesStorage.activityId
-          );
-          this.activityArr = updatedActivityArr;
-
-          // reset values
-          this.editActivitiesStorage = {};
-          this.isEditingActivity = false;
-        }
 
         // close the add activity portion --> Also resets section values
         this.closeAddActivity();
@@ -692,7 +717,7 @@ export default {
       ) {
         return this.routineComments;
       }
-      let newComment = `${this.currUserName}: ${this.routineNewComments}`;
+      let newComment = `${this.fullName}: ${this.routineNewComments}`;
       let newCommentsArr = [...this.routineComments];
       newCommentsArr.push(newComment);
       return newCommentsArr;
@@ -704,7 +729,7 @@ export default {
         this.isSaved = true;
 
         // navigate to the correct document & access routines
-        const clientRef = doc(db, "client", this.user.data.email);
+        const clientRef = doc(db, "client", this.email);
         const clientSnap = await getDoc(clientRef);
         let routinesFromFirebase = [];
         routinesFromFirebase = clientSnap.data().routines;
@@ -716,14 +741,14 @@ export default {
         this.routineNextId += 1; // Increment
         newRoutine["creatorName"] = this.creatorName
           ? this.creatorName
-          : clientSnap.data().fullName;
+          : this.fullName;
         newRoutine["routineName"] = this.routineName;
         newRoutine["routineDate"] = this.convertToFirestoreTimestamp(
           this.routineDate
         );
         newRoutine["exerciseTypes"] = this.constructExerciseString();
         newRoutine["updatedBool"] = true;
-        newRoutine["lastUpdatedName"] = clientSnap.data().fullName; // WHAT IF TRAINER???
+        newRoutine["lastUpdatedName"] = this.fullName; // WHAT IF TRAINER???
         newRoutine["lastUpdatedTimestamp"] = this.convertToFirestoreTimestamp(
           this.getCurrentDateTime()
         );
@@ -762,7 +787,7 @@ export default {
     },
     async delRoutineFromFS() {
       // navigate to the correct document & access routines
-      const clientRef = doc(db, "client", this.user.data.email);
+      const clientRef = doc(db, "client", this.email);
       const clientSnap = await getDoc(clientRef);
       let routinesFromFirebase = [];
       routinesFromFirebase = clientSnap.data().routines;
@@ -791,6 +816,13 @@ export default {
     },
   },
   watch: {
+    email(newEmail) {
+      console.log("watch:", newEmail);
+      this.fetchFireBaseData();
+    },
+    fullName(newFullName) {
+      console.log("watch:", newFullName);
+    },
     routineInfo() {
       console.log("Change in routine info");
       console.log(this.routineInfo);
@@ -850,26 +882,6 @@ export default {
       }
     },
   },
-  async created() {
-    let routineNextAvailId;
-    let clientName;
-
-    const clientRef = collection(db, "client");
-    const thisClientQuery = query(
-      clientRef,
-      where("email", "==", this.user.data.email)
-    );
-    const clientQuerySnapshot = await getDocs(thisClientQuery);
-
-    clientQuerySnapshot.forEach((doc) => {
-      routineNextAvailId = doc.data().routineNextId;
-      clientName = doc.data().fullName;
-    });
-
-    this.routineNextId = routineNextAvailId;
-    this.creatorName = clientName;
-    this.currUserName = clientName;
-  },
   computed: {
     ...mapGetters(["user"]),
     formattedRoutineStrings() {
@@ -884,10 +896,17 @@ export default {
       this.$store.dispatch("fetchUser", user);
     });
   },
+  updated() {
+    this.hasFieldChanged = false;
+    this.newActivitiesArr = [];
+    this.isSaved = false;
+  },
   components: {
     RoutineActivity,
   },
   props: {
+    email: String,
+    fullName: String,
     action: String,
     showUpdate: Boolean,
     routineInfo: Object, // All information related to routines (from RoutinesPage)
