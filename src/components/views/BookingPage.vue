@@ -5,6 +5,7 @@
       Current Bookings
       <button @click="showCancelModal()">Cancel Booking</button>
       <button @click="showBookModal()">Make Booking</button>
+      <button @click="showPreviousBookingsModal()">Previous Bookings</button>
     </div>
     <div class="popup">
       <CancelModal
@@ -23,6 +24,13 @@
         @close-modal="bookModal = false"
         :allBookedSessions="dateToBookMappings"
         :cancelledBookings="cancelledBookingsFromCancelModal"
+      />
+    </div>
+    <div class="popup">
+      <PreviousBookingsModal
+        v-show="previousBookingsModal"
+        @close-modal="previousBookingsModal = false"
+        :previousBookings="previousClientBookings"
       />
     </div>
     <div
@@ -78,6 +86,7 @@ import VueCal from "vue-cal";
 import BookModal from "../client/BookModal.vue";
 import CancelModal from "../client/CancelModal.vue";
 import CalendarDetailModal from "../client/CalendarDetailModal.vue";
+import PreviousBookingsModal from "../client/PreviousBookingsModal.vue";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db, auth } from "../../firebase.js";
 import { mapGetters } from "vuex";
@@ -85,7 +94,7 @@ import "vue-cal/dist/vuecal.css";
 
 let minDate = new Date();
 let maxDate = new Date();
-minDate.setDate(minDate.getDate() + 1)
+minDate.setDate(minDate.getDate() + 1);
 maxDate.setMonth(minDate.getMonth() + 3);
 
 export default {
@@ -95,12 +104,14 @@ export default {
       key: 0,
       clientTrainer: "",
       clientBookings: [],
+      previousClientBookings: [],
       newBookingsFromBookModal: [],
       cancelledBookingsFromCancelModal: [],
       allBookings: [],
       dateToBookMappings: {},
       cancelModal: false,
       bookModal: false,
+      previousBookingsModal: false,
       minDate: minDate,
       maxDate: maxDate,
       events: [],
@@ -119,6 +130,7 @@ export default {
     BookModal,
     CancelModal,
     CalendarDetailModal,
+    PreviousBookingsModal,
   },
   computed: {
     ...mapGetters(["user"]),
@@ -139,6 +151,10 @@ export default {
     let bookingsFromFirebase = [];
     // track all day -> session slots
     let dateToBookMappings = {};
+    // track previous bookings
+    let previousClientBookings = [];
+    // track the date today
+    let today = new Date();
 
     // retrieving this client's bookings
     const clientRef = collection(db, "client");
@@ -155,14 +171,19 @@ export default {
     });
     // after getting all bookings of this client, modify it to be used by cancel modal
     bookingsFromFirebase.forEach((booking) => {
-      clientBookings.push({
-        title: booking.title,
-        focus: booking.focus,
-        from: booking.from.toDate(),
-        to: booking.from.toDate(),
-      });
+      let title = booking.title;
+      let focus = booking.focus;
+      let from = booking.from.toDate();
+      let to = booking.from.toDate();
+
+      if (today < from) {
+        clientBookings.push({ title, focus, from, to });
+      } else {
+        previousClientBookings.push({ title, focus, from, to });
+      }
     });
     this.clientBookings = clientBookings;
+    this.previousClientBookings = previousClientBookings;
 
     // getting all client emails associated with the current trainer
     const trainerRef = collection(db, "trainer");
@@ -190,25 +211,29 @@ export default {
         let title = doc.title;
         let focus = doc.focus; // added stuff here
         let obj = { start, end, title, focus };
-        // setting the class attribute for each booking
-        if (client.data().email != this.user.data.email) {
-          obj["class"] = "otherClient unclickable";
-          obj["title"] = "Unavailable";
-          allClientBookings.push(obj);
-        } else {
-          obj["class"] = "thisClient unclickable";
-          allClientBookings.push(obj);
-        }
 
-        // data pivoting on each booking
-        let month = start.getMonth();
-        let day = start.getDate();
-        let startHour = start.getHours();
+        // checking for date
+        if (today < start) {
+          // setting the class attribute for each booking
+          if (client.data().email != this.user.data.email) {
+            obj["class"] = "otherClient unclickable";
+            obj["title"] = "Unavailable";
+            allClientBookings.push(obj);
+          } else {
+            obj["class"] = "thisClient unclickable";
+            allClientBookings.push(obj);
+          }
 
-        if (dateToBookMappings.hasOwnProperty(`${day}, ${month}`)) {
-          dateToBookMappings[`${day}, ${month}`].push(startHour);
-        } else {
-          dateToBookMappings[`${day}, ${month}`] = [startHour];
+          // data pivoting on each booking
+          let month = start.getMonth();
+          let day = start.getDate();
+          let startHour = start.getHours();
+
+          if (dateToBookMappings.hasOwnProperty(`${day}, ${month}`)) {
+            dateToBookMappings[`${day}, ${month}`].push(startHour);
+          } else {
+            dateToBookMappings[`${day}, ${month}`] = [startHour];
+          }
         }
       });
       // this is the initial set of bookings when the booking component is rendered
@@ -246,6 +271,9 @@ export default {
     },
     showBookModal() {
       this.bookModal = true;
+    },
+    showPreviousBookingsModal() {
+      this.previousBookingsModal = true;
     },
     // pass the new bookings over to cancel modal to be able to cancel more bookings
     updateCancelModal(newBookings) {
