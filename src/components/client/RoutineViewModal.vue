@@ -214,6 +214,8 @@
               :numSets="activity.numSets"
               :setInfo="activity.setInfo"
               :uniqueId="activity.uniqueId"
+              @edit-activity="prepEditActivity"
+              @delete-activity="prepDeleteActivity"
             />
           </div>
           <!-- WORKOUT COMMENTS SECTION -->
@@ -524,6 +526,27 @@ export default {
     confirmAddActivity() {
       if (this.addActivityValidator()) {
         console.log("values are acceptable");
+
+        if (this.isEditingActivity) {
+          // If editing activity, remove old from `activityArr` (since updated is now in `newActivitiesArr`)
+          let updatedActivityArr = this.activityArr.filter(
+            (activity) =>
+              activity.activityId != this.editActivitiesStorage.activityId
+          );
+          this.activityArr = updatedActivityArr;
+          
+          // The activity could also be in `newActivitiesArr` (filter for it too)
+          let updatedNewActivitiesArr = this.newActivitiesArr.filter(
+            (activity) =>
+              activity.activityId != this.editActivitiesStorage.activityId
+          );
+          this.newActivitiesArr = updatedNewActivitiesArr;
+
+          // reset values
+          this.editActivitiesStorage = {};
+          this.isEditingActivity = false;
+        }
+
         let newActivityObj = {};
         // Assign & update the activityNextId
         newActivityObj["activityId"] = this.activityNextId;
@@ -566,19 +589,6 @@ export default {
         console.log(newActivityObj);
         // Assign the new activities to data property
         this.newActivitiesArr.push(newActivityObj);
-
-        if (this.isEditingActivity) {
-          // If editing activity, remove old from `activityArr` (since updated is now in `newActivitiesArr`)
-          let updatedActivityArr = this.activityArr.filter(
-            (activity) =>
-              activity.activityId != this.editActivitiesStorage.activityId
-          );
-          this.activityArr = updatedActivityArr;
-
-          // reset values
-          this.editActivitiesStorage = {};
-          this.isEditingActivity = false;
-        }
 
         // close the add activity portion --> Also resets section values
         this.closeAddActivity();
