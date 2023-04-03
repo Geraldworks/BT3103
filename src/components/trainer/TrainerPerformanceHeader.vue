@@ -1,6 +1,6 @@
 <template>
   <div class="profile-container">
-    <!--Profile Picture-->
+    <!--Profile Picture-->2
     <img
       class="profile-picture"
       :src="profilePic"
@@ -11,7 +11,6 @@
         <div>
           Viewing <span style="color: #ed1f24">{{ clientName }}</span>
         </div>
-        <div class="right-side-items" @click="">Meal plan</div>
         <div class="right-side-items" @click="">Routine</div>
         <div class="right-side-items" @click="showUpdateForm()">Update Stats</div>
         <div class="pop-up">

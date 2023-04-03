@@ -15,7 +15,7 @@
       >
         <div class="client-card" @click="setEmailToRender(clientEmail)">
           <div class="profile-pic">
-            <img :src="clientInfo[3]" alt="DP" />
+            <img :src="clientInfo[1]" alt="DP" />
           </div>
           <div class="Name">
             {{ clientInfo[0] }}
@@ -34,10 +34,10 @@
             <div>
               <h3 class="Routine">
                 <div class="white-text upper">
-                  {{ clientInfo[4][0] ? formatDate(clientInfo[4][0]["from"]) : "No Upcoming Session" }}
+                  {{ clientInfo[2][0] ? formatDate(clientInfo[2][0]["from"]) : "No Upcoming Session" }}
                 </div>
                 <div class="white-text lower">
-                  {{ clientInfo[4][0] ? clientInfo[4][0]["focus"] : "No Upcoming Routine" }}
+                  {{ clientInfo[2][0] ? clientInfo[2][0]["focus"] : "No Upcoming Routine" }}
                 </div>
               </h3>
             </div>
@@ -51,7 +51,7 @@
              we then render everything again using the :key attribute -->
       <ClientPerformance
         :clientEmail="user.clientEmail"
-        :profilePicURL="clientInfo[user.clientEmail][3]"
+        :profilePicURL="clientInfo[user.clientEmail][1]"
         :key="refreshCount"
         @returnToHome="removeEmailToRender()"
       />
@@ -78,7 +78,8 @@ export default {
     return {
       clients: null,
       clientInfo: null,
-      refreshCount: 0, // helps to update components when there are state changes
+      refreshCount: 0, // helps to update components when there are state changes,
+      trainerEmail: "",
     };
   },
   methods: {
@@ -141,6 +142,7 @@ export default {
         let documentData = doc.data();
         let clientIds = documentData.ClientsId;
         this.clients = clientIds;
+        this.trainerEmail = documentData.email;
       });
 
       const clientInfo = {};
@@ -158,13 +160,11 @@ export default {
         //searching for the next session
         const bookings = documentData2.bookings;
         const sortedBookings = bookings.sort(this.comparatorForTime);
-        // console.log(documentData2)
-        // console.log(sortedBookings);
 
         // pushing the information into the list to store
         currClient.push(documentData2.fullName);
-        currClient.push(documentData2.emergencyContactNo);
-        currClient.push(documentData2.emergencyContactName);
+        // currClient.push(documentData2.emergencyContactNo);
+        // currClient.push(documentData2.emergencyContactName);
         currClient.push(defaultPic);
         currClient.push(sortedBookings);
         // putting current client info into the clientInfo object
@@ -180,7 +180,7 @@ export default {
           const email = imageRef._location.path.slice(0, -4);
           if (clientInfo[email]) {
             getDownloadURL(imageRef).then((url) => {
-              clientInfo[email][3] = url;
+              clientInfo[email][1] = url;
             });
           }
         });
@@ -258,7 +258,7 @@ export default {
 
 .Session {
   text-align: right;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
 }
 
 .upper {

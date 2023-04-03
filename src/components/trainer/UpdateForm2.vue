@@ -112,7 +112,7 @@ export default {
 }
 </script>
 
-<style scope>
+<style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
 .modal-overlay {
   position: fixed;
