@@ -8,9 +8,9 @@
          the client information with the email pass to clientEmailToRender -->
     <!-- Displaying the client's routine page if the trainer clicks on the Routine button -->
     <div v-if="clientEmailToRender && isDisplayRoutines">
-      <ClientRoutine 
-        :email="emailToRender" 
-        :fullName="trainerFullName" 
+      <ClientRoutine
+        :email="emailToRender"
+        :userFullName="trainerFullName"
         :profilePicURL="clientInfo[user.clientEmail][1]"
         @returnToHome="removeEmailToRender()"
         @routeToPerformance="renderPerformance()"
@@ -58,10 +58,18 @@
             <div>
               <h3 class="Routine">
                 <div class="white-text upper">
-                  {{ clientInfo[2][0] ? formatDate(clientInfo[2][0]["from"]) : "No Upcoming Session" }}
+                  {{
+                    clientInfo[2][0]
+                      ? formatDate(clientInfo[2][0]["from"])
+                      : "No Upcoming Session"
+                  }}
                 </div>
                 <div class="white-text lower">
-                  {{ clientInfo[2][0] ? clientInfo[2][0]["focus"] : "No Upcoming Routine" }}
+                  {{
+                    clientInfo[2][0]
+                      ? clientInfo[2][0]["focus"]
+                      : "No Upcoming Routine"
+                  }}
                 </div>
               </h3>
             </div>
@@ -137,17 +145,17 @@ export default {
       return 0;
     },
     formatDate(timestamp) {
-      const date = timestamp.toDate()
+      const date = timestamp.toDate();
       const options = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        hour12: false
-      }
-      return date.toLocaleString('en-US', options)
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+        hour12: false,
+      };
+      return date.toLocaleString("en-US", options);
     },
   },
   props: {
