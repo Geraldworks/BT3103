@@ -366,6 +366,7 @@ export default {
         this.activityArr = this.backupActivityArr;
         this.newActivitiesArr = [];
         this.hasDeletedActivity = false;
+        this.routineNewComments = "";
       }
     },
     prepEditActivity(activityInfo) {
@@ -831,6 +832,7 @@ export default {
       this.hasFieldChanged = false;
       this.newActivitiesArr = [];
       this.isSaved = false;
+      this.routineNewComments = "";
 
       if (this.action == "Viewing") {
         console.log("Viewing");

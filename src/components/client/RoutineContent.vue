@@ -58,6 +58,7 @@ export default {
     ...mapGetters(["user"]),
   },
   mounted() {
+    this.fetchFireBaseData();
     const store = useStore();
     auth.onAuthStateChanged((user) => {
       store.dispatch("fetchUser", user);
@@ -65,6 +66,7 @@ export default {
   },
   methods: {
     async fetchFireBaseData() {
+      console.log("====Fetching Firebase Data====");
       // Container to store routines from firebase (raw)
       let routinesFromFirebase = [];
       // Container to store routines (formatted for RoutineBlock)

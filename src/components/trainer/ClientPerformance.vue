@@ -1,14 +1,14 @@
 <template>
   <div class="performance-page">
-    <TrainerPerformanceHeader 
-      :email= "clientEmail" 
-      :profilePic="profilePicURL" 
-      @returnToHome="returnBackToTrainerHomePage()" 
+    <TrainerPerformanceHeader
+      :email="clientEmail"
+      :profilePic="profilePicURL"
+      @returnToHome="returnBackToTrainerHomePage()"
       @routeToRoutine="routeToRoutinePage()"
-      />
+    />
     <div class="content-container">
-      <AllCharts :email= "clientEmail" />
-      <PerformanceBottom class="bottom" :email= "clientEmail" />
+      <AllCharts :email="clientEmail" />
+      <PerformanceBottom class="bottom" :email="clientEmail" />
     </div>
   </div>
 </template>
@@ -17,11 +17,11 @@
 import AllCharts from "../client/AllCharts.vue";
 import PerformanceBottom from "../client/PerformanceBottom.vue";
 import TrainerPerformanceHeader from "./TrainerPerformanceHeader.vue";
-import TrainerNavbar from './TrainerNavbar.vue';
+import TrainerNavbar from "./TrainerNavbar.vue";
 
 export default {
   name: "ClientPerformancePage",
-  props:["clientEmail", "profilePicURL"],
+  props: ["clientEmail", "profilePicURL"],
   components: {
     AllCharts,
     PerformanceBottom,
@@ -43,9 +43,9 @@ export default {
     },
     routeToRoutinePage() {
       this.$emit("routeToRoutine");
-    }
+    },
   },
-  emits: ["returnToHome"]
+  emits: ["returnToHome", "routeToRoutine"],
 };
 </script>
 <style scoped>
