@@ -8,6 +8,8 @@
     </div>
 
     <div class="routine-list">
+        console.log({{email}})
+        console.log({{fullName}})
       <RoutineBlock
         v-for="routine in routineArr.sort(this.comparatorForRoutine)"
         :routineCreator="routine.routineCreator"
@@ -44,7 +46,7 @@ import RoutineViewModal from "../client/RoutineViewModal.vue";
 import RoutineBlock from "../client/RoutineBlock.vue";
 
 export default {
-  name: "RoutineContent",
+  name: "ClientRoutineContent",
   data() {
     return {
       viewingAction: "",
@@ -54,19 +56,8 @@ export default {
       routineViewModal: false,
     };
   },
-  computed: {
-    ...mapGetters(["user"]),
-  },
-  mounted() {
-    this.fetchFireBaseData();
-    const store = useStore();
-    auth.onAuthStateChanged((user) => {
-      store.dispatch("fetchUser", user);
-    });
-  },
   methods: {
     async fetchFireBaseData() {
-      console.log("====Fetching Firebase Data====");
       // Container to store routines from firebase (raw)
       let routinesFromFirebase = [];
       // Container to store routines (formatted for RoutineBlock)

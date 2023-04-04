@@ -6,8 +6,32 @@
     <!-- v-if is used to render client information or trainer information selectively on the same page -->
     <!-- if the trainer clicks on a specific client, we update clientEmailToRender and refresh the page with 
          the client information with the email pass to clientEmailToRender -->
-    <div v-if="!user.clientEmail" class="header1">YOUR CLIENTS</div>
-    <div v-if="!user.clientEmail" class="client-cards-container">
+    <!-- Displaying the client's routine page if the trainer clicks on the Routine button -->
+    <div v-if="clientEmailToRender && isDisplayRoutines">
+      <ClientRoutine 
+        :email="emailToRender" 
+        :fullName="trainerFullName" 
+        :profilePicURL="clientInfo[user.clientEmail][1]"
+        @returnToHome="removeEmailToRender()"
+        @routeToPerformance="renderPerformance()"
+      />
+    </div>
+    <!-- Displaying the specific client performance page -->
+    <div v-else-if="clientEmailToRender">
+      <!-- ClientPerformance listens for the returnToHome event
+             when this occurs, we remove the current client email that is rendered 
+             we then render everything again using the :key attribute -->
+      <ClientPerformance
+        :clientEmail="user.clientEmail"
+        :profilePicURL="clientInfo[user.clientEmail][1]"
+        :key="refreshCount"
+        @returnToHome="removeEmailToRender()"
+        @routeToRoutine="setDisplayRoutine()"
+      />
+    </div>
+    <!-- Displaying the original client selection screen -->
+    <div v-else class="client-cards-container">
+      <div class="header1">YOUR CLIENTS</div>
       <div
         v-for="(clientInfo, clientEmail) in clientInfo"
         class="box"
@@ -15,7 +39,7 @@
       >
         <div class="client-card" @click="setEmailToRender(clientEmail)">
           <div class="profile-pic">
-            <img :src="clientInfo[3]" alt="DP" />
+            <img :src="clientInfo[1]" alt="DP" />
           </div>
           <div class="Name">
             {{ clientInfo[0] }}
@@ -34,10 +58,10 @@
             <div>
               <h3 class="Routine">
                 <div class="white-text upper">
-                  {{ clientInfo[4][0] ? formatDate(clientInfo[4][0]["from"]) : "No Upcoming Session" }}
+                  {{ clientInfo[2][0] ? formatDate(clientInfo[2][0]["from"]) : "No Upcoming Session" }}
                 </div>
                 <div class="white-text lower">
-                  {{ clientInfo[4][0] ? clientInfo[4][0]["focus"] : "No Upcoming Routine" }}
+                  {{ clientInfo[2][0] ? clientInfo[2][0]["focus"] : "No Upcoming Routine" }}
                 </div>
               </h3>
             </div>
@@ -45,18 +69,9 @@
         </div>
       </div>
     </div>
-    <div v-else>
-      <!-- ClientPerformance listens for the returnToHome event
-             when this occurs, we remove the current client email that is rendered 
-             we then render everything again using the :key attribute -->
-      <ClientPerformance
-        :clientEmail="user.clientEmail"
-        :profilePicURL="clientInfo[user.clientEmail][3]"
-        :key="refreshCount"
-        @returnToHome="removeEmailToRender()"
-      />
-    </div>
   </div>
+  <!-- console.log({{clientInfo[3]}})
+  console.log({{trainerFullName}}) -->
 </template>
 
 <script>
@@ -66,6 +81,7 @@ import { mapGetters } from "vuex";
 import { ref, getStorage, getDownloadURL, list } from "@firebase/storage";
 import TrainerNavbar from "../trainer/TrainerNavbar.vue";
 import ClientPerformance from "../trainer/ClientPerformance.vue";
+import ClientRoutine from "../trainer/ClientRoutine.vue";
 import defaultPic from "../../assets/images/default_dp.svg";
 
 export default {
@@ -73,12 +89,17 @@ export default {
   components: {
     TrainerNavbar,
     ClientPerformance,
+    ClientRoutine,
   },
   data() {
     return {
       clients: null,
       clientInfo: null,
-      refreshCount: 0, // helps to update components when there are state changes
+      refreshCount: 0, // helps to update components when there are state changes,
+      trainerFullName: null,
+      emailToRender: "", // client email to render for the routines
+      clientEmailToRender: false, // helps to know which page to render
+      isDisplayRoutines: false, // helps to know which page to render
     };
   },
   methods: {
@@ -89,12 +110,22 @@ export default {
     // this method helps to set the specific client information to render
     setEmailToRender(email) {
       this.$store.dispatch("setClientEmail", email);
+      this.emailToRender = email; // might need to set this to "" at removeEmail
+      this.clientEmailToRender = true;
       this.refreshPage();
     },
     // this method helps to remove the specific client information to render when the trainer clicks back
     removeEmailToRender() {
       this.$store.dispatch("setClientEmail", null);
+      this.isDisplayRoutines = false;
+      this.clientEmailToRender = false;
       this.refreshPage();
+    },
+    setDisplayRoutine() {
+      this.isDisplayRoutines = true;
+    },
+    renderPerformance() {
+      this.isDisplayRoutines = false;
     },
     // this comparator method helps to compare the date for the bookings
     comparatorForTime(bookingOne, bookingTwo) {
@@ -117,7 +148,7 @@ export default {
         hour12: false
       }
       return date.toLocaleString('en-US', options)
-    }
+    },
   },
   props: {
     email: String,
@@ -141,6 +172,8 @@ export default {
         let documentData = doc.data();
         let clientIds = documentData.ClientsId;
         this.clients = clientIds;
+        let trainerName = documentData.fullName;
+        this.trainerFullName = trainerName;
       });
 
       const clientInfo = {};
@@ -158,15 +191,12 @@ export default {
         //searching for the next session
         const bookings = documentData2.bookings;
         const sortedBookings = bookings.sort(this.comparatorForTime);
-        // console.log(documentData2)
-        // console.log(sortedBookings);
 
         // pushing the information into the list to store
         currClient.push(documentData2.fullName);
-        currClient.push(documentData2.emergencyContactNo);
-        currClient.push(documentData2.emergencyContactName);
         currClient.push(defaultPic);
         currClient.push(sortedBookings);
+        currClient.push(documentData2.email);
         // putting current client info into the clientInfo object
         clientInfo[documentData2.email] = currClient;
       });
@@ -180,7 +210,7 @@ export default {
           const email = imageRef._location.path.slice(0, -4);
           if (clientInfo[email]) {
             getDownloadURL(imageRef).then((url) => {
-              clientInfo[email][3] = url;
+              clientInfo[email][1] = url;
             });
           }
         });
@@ -258,7 +288,7 @@ export default {
 
 .Session {
   text-align: right;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
 }
 
 .upper {

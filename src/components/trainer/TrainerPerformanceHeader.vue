@@ -1,6 +1,6 @@
 <template>
   <div class="profile-container">
-    <!--Profile Picture-->
+    <!--Profile Picture-->2
     <img
       class="profile-picture"
       :src="profilePic"
@@ -11,8 +11,9 @@
         <div>
           Viewing <span style="color: #ed1f24">{{ clientName }}</span>
         </div>
-        <div class="right-side-items" @click="">Meal plan</div>
-        <div class="right-side-items" @click="">Routine</div>
+        <!-- <router-link to="/routines"><div  class="right-side-items">Routine</div></router-link> -->
+        <div class="right-side-items" @click="routeToPerformancePage()">Performance</div>
+        <div class="right-side-items" @click="routeToRoutinePage()">Routines</div>
         <div class="right-side-items" @click="showUpdateForm()">Update Stats</div>
         <div class="pop-up">
           <UpdateForm2 v-show="updateForm" :clientEmail="email" :clientName ="clientName" @close-modal="updateForm = false"/>
@@ -30,12 +31,13 @@ import { doc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase.js";
 import { CModal, CFormInput, CFormFeedback, CFormLabel, CFormText } from "@coreui/vue";
 import UpdateForm2 from "./UpdateForm2.vue";
-
+import RoutineContent from "../client/RoutineContent.vue";
 
 export default {
   name: "TrainerPerformanceHeader",
   components: {
     UpdateForm2,
+    RoutineContent,
   },
   data() {
     return {
@@ -52,9 +54,15 @@ export default {
     },
     showUpdateForm() {
       this.updateForm = true;
+    },
+    routeToRoutinePage() {
+      this.$emit("routeToRoutine");
+    },
+    routeToPerformancePage() {
+      this.$emit("routeToPerformance");
     }
   },
-  emits: ["returnToHome"],
+  emits: ["returnToHome","routeToRoutine","routeToPerformance"],
   async created() {
     try {
       const clientRef = collection(db, "client");
