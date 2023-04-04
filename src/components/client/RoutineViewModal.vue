@@ -202,7 +202,7 @@
               :setInfo="activity.setInfo"
               :uniqueId="activity.uniqueId"
               @edit-activity="prepEditActivity"
-              @delete-activity="prepDeleteActivity"
+              @delete-activity="confirmPrepDeleteActivity"
             />
             <!-- New Activities Created using Button -->
             <RoutineActivity
@@ -215,7 +215,7 @@
               :setInfo="activity.setInfo"
               :uniqueId="activity.uniqueId"
               @edit-activity="prepEditActivity"
-              @delete-activity="prepDeleteActivity"
+              @delete-activity="confirmPrepDeleteActivity"
             />
           </div>
           <!-- WORKOUT COMMENTS SECTION -->
@@ -239,11 +239,11 @@
         </div>
         <!-- SAVE BUTTON -->
         <div class="save-button">
-          <button @click="saveRoutineToFS()">Save</button>
+          <button @click="confirmSaveRoutineToFS()">Save</button>
         </div>
         <!-- DELETE ROUTINE BUTTON -->
         <div class="delete-button">
-          <button @click="delRoutineFromFS()" v-show="showUpdate">
+          <button @click="confirmDelRoutineFromFS()" v-show="showUpdate">
             Delete Routine
           </button>
         </div>
@@ -261,6 +261,7 @@
 
 <script>
 import RoutineActivity from "./RoutineActivity.vue";
+import Swal from "sweetalert2";
 import { db, auth } from "../../firebase.js";
 import * as firebase from "firebase/app";
 import {
@@ -437,6 +438,22 @@ export default {
       // Signify we are editing an activity
       this.isEditingActivity = true;
     },
+    confirmPrepDeleteActivity(activityId) {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to restore this activity!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#28a745",
+        cancelButtonColor: "#ed1f24",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.prepDeleteActivity(activityId);
+          Swal.fire("Deleted!", "Your activity has been deleted.", "success");
+        }
+      });
+    },
     prepDeleteActivity(activityId) {
       console.log("Deleting...");
       // Keep the activityId to be deleted
@@ -609,7 +626,11 @@ export default {
         // close the add activity portion --> Also resets section values
         this.closeAddActivity();
       } else {
-        alert("Incomplete fields");
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Incomplete Fields Detected!",
+        });
       }
     },
     getCurrentDateTime() {
@@ -723,68 +744,104 @@ export default {
       newCommentsArr.push(newComment);
       return newCommentsArr;
     },
-    // On click to "Save" at bottom of Modal
-    async saveRoutineToFS() {
+    confirmSaveRoutineToFS() {
       if (this.saveRoutineValidator()) {
-        // set status to save
-        this.isSaved = true;
-
-        // navigate to the correct document & access routines
-        const clientRef = doc(db, "client", this.email);
-        const clientSnap = await getDoc(clientRef);
-        let routinesFromFirebase = [];
-        routinesFromFirebase = clientSnap.data().routines;
-        console.log(routinesFromFirebase);
-
-        // Create a new Routine based off current Modal
-        let newRoutine = {};
-        newRoutine["routineId"] = this.routineNextId;
-        this.routineNextId += 1; // Increment
-        newRoutine["creatorName"] = this.creatorName
-          ? this.creatorName
-          : this.fullName;
-        newRoutine["routineName"] = this.routineName;
-        newRoutine["routineDate"] = this.convertToFirestoreTimestamp(
-          this.routineDate
-        );
-        newRoutine["exerciseTypes"] = this.constructExerciseString();
-        newRoutine["updatedBool"] = true;
-        newRoutine["lastUpdatedName"] = this.fullName; // WHAT IF TRAINER???
-        newRoutine["lastUpdatedTimestamp"] = this.convertToFirestoreTimestamp(
-          this.getCurrentDateTime()
-        );
-        newRoutine["activityNextId"] = this.activityNextId;
-        newRoutine["activities"] = this.compileActivites();
-        newRoutine["routineComments"] = this.createNewCommentsArray();
-
-        // Delete Existing (old) version of current routine in FS (if applicable)
-        let newRoutinesToFirebase = [];
-
-        routinesFromFirebase.forEach((routine) => {
-          // Skip the current routine
-          if (this.routineId != routine.routineId) {
-            newRoutinesToFirebase.push(routine);
+        Swal.fire({
+          title: "Are you sure?",
+          text: "Do you want to save this routine?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#28a745",
+          cancelButtonColor: "#ed1f24",
+          confirmButtonText: "Yes, save it!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.saveRoutineToFS();
+            Swal.fire("Saved!", "Your routine has been saved.", "success");
           }
         });
-        newRoutinesToFirebase.push(newRoutine);
-
-        console.log(newRoutinesToFirebase);
-
-        // Update new Array of Routines & routineNextId to FireStore
-        await updateDoc(clientRef, {
-          routineNextId: this.routineNextId,
-          routines: newRoutinesToFirebase,
-        });
-
-        // reset data
-        this.newActivitiesArr = [];
-
-        // Emit & Close the modal
-        this.$emit("close-modal");
-        this.$emit("reload-routines");
       } else {
-        alert("Incomplete fields");
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Incomplete Fields Detected!",
+        });
       }
+    },
+    // On click to "Save" at bottom of Modal
+    async saveRoutineToFS() {
+      // set status to save
+      this.isSaved = true;
+
+      // navigate to the correct document & access routines
+      const clientRef = doc(db, "client", this.email);
+      const clientSnap = await getDoc(clientRef);
+      let routinesFromFirebase = [];
+      routinesFromFirebase = clientSnap.data().routines;
+      console.log(routinesFromFirebase);
+
+      // Create a new Routine based off current Modal
+      let newRoutine = {};
+      newRoutine["routineId"] = this.routineNextId;
+      this.routineNextId += 1; // Increment
+      newRoutine["creatorName"] = this.creatorName
+        ? this.creatorName
+        : this.fullName;
+      newRoutine["routineName"] = this.routineName;
+      newRoutine["routineDate"] = this.convertToFirestoreTimestamp(
+        this.routineDate
+      );
+      newRoutine["exerciseTypes"] = this.constructExerciseString();
+      newRoutine["updatedBool"] = true;
+      newRoutine["lastUpdatedName"] = this.fullName; // WHAT IF TRAINER???
+      newRoutine["lastUpdatedTimestamp"] = this.convertToFirestoreTimestamp(
+        this.getCurrentDateTime()
+      );
+      newRoutine["activityNextId"] = this.activityNextId;
+      newRoutine["activities"] = this.compileActivites();
+      newRoutine["routineComments"] = this.createNewCommentsArray();
+
+      // Delete Existing (old) version of current routine in FS (if applicable)
+      let newRoutinesToFirebase = [];
+
+      routinesFromFirebase.forEach((routine) => {
+        // Skip the current routine
+        if (this.routineId != routine.routineId) {
+          newRoutinesToFirebase.push(routine);
+        }
+      });
+      newRoutinesToFirebase.push(newRoutine);
+
+      console.log(newRoutinesToFirebase);
+
+      // Update new Array of Routines & routineNextId to FireStore
+      await updateDoc(clientRef, {
+        routineNextId: this.routineNextId,
+        routines: newRoutinesToFirebase,
+      });
+
+      // reset data
+      this.newActivitiesArr = [];
+
+      // Emit & Close the modal
+      this.$emit("close-modal");
+      this.$emit("reload-routines");
+    },
+    confirmDelRoutineFromFS() {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to restore this routine!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#28a745",
+        cancelButtonColor: "#ed1f24",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.delRoutineFromFS();
+          Swal.fire("Deleted!", "Your routine has been deleted.", "success");
+        }
+      });
     },
     async delRoutineFromFS() {
       // navigate to the correct document & access routines
