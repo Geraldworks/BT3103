@@ -286,6 +286,8 @@ export default {
       /* Permanent creator */
       creatorName: "",
       routineId: 0, // For Creation of Routine Activity uniqueId
+      /* Update Status */
+      updateBool: false,
       /* Data Validation */
       hasFieldChanged: false,
       hasRoutineCommentsChanged: false,
@@ -340,6 +342,7 @@ export default {
       });
 
       this.routineNextId = routineNextAvailId;
+      console.log("FROM FIREBASE: routineNextId IS", this.routineNextId);
     },
     showAddActivity() {
       this.addActivity = true;
@@ -362,12 +365,60 @@ export default {
       // Toggle addActivity section
       this.addActivity = false;
     },
-    checkIfSaved() {
+    async checkIfSaved() {
       if (!this.isSaved) {
+        // reset the stuff in modal
         this.activityArr = this.backupActivityArr;
         this.newActivitiesArr = [];
         this.hasDeletedActivity = false;
+        this.hasRoutineCommentsChanged = false;
         this.routineNewComments = "";
+
+        // also toggle the updateValue if previously updated
+        if (this.updateBool) {
+          console.log("===Setting update bool to false===");
+          // navigate to the correct document & access routines
+          const clientRef = doc(db, "client", this.email);
+          const clientSnap = await getDoc(clientRef);
+          let routinesFromFirebase = [];
+          routinesFromFirebase = clientSnap.data().routines;
+
+          // Create a new Routine based off current Modal
+          let newRoutine = {};
+          newRoutine["routineId"] = this.routineId;
+          newRoutine["creatorName"] = this.creatorName;
+          newRoutine["routineName"] = this.routineName;
+          newRoutine["routineDate"] = this.convertToFirestoreTimestamp(
+            this.routineDate
+          );
+          newRoutine["exerciseTypes"] = this.constructExerciseString();
+          newRoutine["updatedBool"] = false; // toggle this
+          newRoutine["lastUpdatedName"] = this.lastUpdatedName;
+          newRoutine["lastUpdatedTimestamp"] = this.convertToFirestoreTimestamp(
+            this.lastUpdatedTimestamp
+          );
+          newRoutine["activityNextId"] = this.activityNextId;
+          newRoutine["activities"] = this.activityArr;
+          newRoutine["routineComments"] = this.routineComments;
+
+          // Delete Existing (old) version of current routine in FS (if applicable)
+          let newRoutinesToFirebase = [];
+
+          routinesFromFirebase.forEach((routine) => {
+            // Skip the current routine
+            if (this.routineId != routine.routineId) {
+              newRoutinesToFirebase.push(routine);
+            }
+          });
+          newRoutinesToFirebase.push(newRoutine);
+
+          // Update new Array of Routines to FireStore
+          await updateDoc(clientRef, {
+            routines: newRoutinesToFirebase,
+          });
+
+          this.$emit("reload-routines");
+        }
       }
     },
     prepEditActivity(activityInfo) {
@@ -441,7 +492,7 @@ export default {
     confirmPrepDeleteActivity(activityId) {
       Swal.fire({
         title: "Are you sure?",
-        text: "You won't be able to restore this activity!",
+        text: "Your activity will be deleted!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#28a745",
@@ -589,7 +640,7 @@ export default {
         newActivityObj["activityType"] = this.activityType;
         newActivityObj["activityName"] = this.activityName;
         newActivityObj["activityDescription"] = this.activityDescription;
-        newActivityObj["numSets"] = this.numSets;
+        newActivityObj["numSets"] = parseInt(this.numSets);
 
         /* Fill up set */
         let setsArr = [];
@@ -695,9 +746,11 @@ export default {
         // Check if fields are empty or no activities at all
         // Check if activity has been deleted
         if (this.routineName === "" || this.routineDate === "") {
+          console.log("FAIL 1");
           return false;
         }
         if (this.newActivitiesArr.length == 0 && this.activityArr.length == 0) {
+          console.log("FAIL 2");
           return false;
         }
         return true;
@@ -709,9 +762,11 @@ export default {
           this.routineDate === "" ||
           this.routineNewComments === ""
         ) {
+          console.log("FAIL 3");
           return false;
         }
         if (this.newActivitiesArr.length == 0 && this.activityArr.length == 0) {
+          console.log("FAIL 4");
           return false;
         }
         return true;
@@ -719,6 +774,7 @@ export default {
         // No changes were made to fields
         // Check routineName and routineDate
         if (this.routineName === "" || this.routineDate === "") {
+          console.log("FAIL 5");
           return false;
         }
         // Check newActivitiesArr
@@ -726,6 +782,7 @@ export default {
           this.newActivitiesArr == null ||
           this.newActivitiesArr.length == 0
         ) {
+          console.log("FAIL 6");
           return false;
         }
         return true;
@@ -739,7 +796,7 @@ export default {
       ) {
         return this.routineComments;
       }
-      let newComment = `${this.fullName}: ${this.routineNewComments}`;
+      let newComment = `${this.userFullName}: ${this.routineNewComments}`;
       let newCommentsArr = [...this.routineComments];
       newCommentsArr.push(newComment);
       return newCommentsArr;
@@ -784,16 +841,16 @@ export default {
       let newRoutine = {};
       newRoutine["routineId"] = this.routineNextId;
       this.routineNextId += 1; // Increment
-      newRoutine["creatorName"] = this.creatorName
-        ? this.creatorName
-        : this.fullName;
+      console.log("Incremented RoutineNextId:", this.routineNextId);
+
+      newRoutine["creatorName"] = this.creatorName;
       newRoutine["routineName"] = this.routineName;
       newRoutine["routineDate"] = this.convertToFirestoreTimestamp(
         this.routineDate
       );
       newRoutine["exerciseTypes"] = this.constructExerciseString();
       newRoutine["updatedBool"] = true;
-      newRoutine["lastUpdatedName"] = this.fullName; // WHAT IF TRAINER???
+      newRoutine["lastUpdatedName"] = this.userFullName; // WHAT IF TRAINER???
       newRoutine["lastUpdatedTimestamp"] = this.convertToFirestoreTimestamp(
         this.getCurrentDateTime()
       );
@@ -819,6 +876,8 @@ export default {
         routineNextId: this.routineNextId,
         routines: newRoutinesToFirebase,
       });
+
+      console.log("New RoutineNextId:", this.routineNextId);
 
       // reset data
       this.newActivitiesArr = [];
@@ -875,11 +934,11 @@ export default {
   },
   watch: {
     email(newEmail) {
-      console.log("watch:", newEmail);
+      // console.log("watch:", newEmail);
       this.fetchFireBaseData();
     },
-    fullName(newFullName) {
-      console.log("watch:", newFullName);
+    userFullName(newFullName) {
+      // console.log("watch:", newFullName);
     },
     routineInfo() {
       console.log("Change in routine info");
@@ -889,10 +948,13 @@ export default {
       this.hasFieldChanged = false;
       this.newActivitiesArr = [];
       this.isSaved = false;
+      this.hasRoutineCommentsChanged = false;
       this.routineNewComments = "";
 
       if (this.action == "Viewing") {
         console.log("Viewing");
+        this.updateBool = this.routineInfo.updateBool;
+        console.log(this.updateBool);
         this.creatorName = this.routineInfo.routineCreator;
         this.routineNextId = this.routineInfo.routineNextId;
         this.routineId = this.routineInfo.routineId;
@@ -928,6 +990,7 @@ export default {
       } else {
         // Creating
         console.log("Creating");
+        this.creatorName = this.userFullName;
         // No Data
         this.routineId = 0;
         this.routineName = "";
@@ -951,6 +1014,7 @@ export default {
     },
   },
   mounted() {
+    this.fetchFireBaseData();
     auth.onAuthStateChanged((user) => {
       this.$store.dispatch("fetchUser", user);
     });
@@ -965,7 +1029,7 @@ export default {
   },
   props: {
     email: String,
-    fullName: String,
+    userFullName: String,
     action: String,
     showUpdate: Boolean,
     routineInfo: Object, // All information related to routines (from RoutinesPage)

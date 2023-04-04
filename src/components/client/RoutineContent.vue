@@ -8,6 +8,10 @@
     </div>
 
     <div class="routine-list">
+      <!-- If no routines -->
+      <div v-if="routineArr.length == 0">
+        No routines currently... Create one now!
+      </div>
       <RoutineBlock
         v-for="routine in routineArr.sort(this.comparatorForRoutine)"
         :routineCreator="routine.routineCreator"
@@ -23,7 +27,7 @@
     <div class="viewModal">
       <RoutineViewModal
         :email="email"
-        :fullName="fullName"
+        :userFullName="userFullName"
         :action="viewingAction"
         :showUpdate="showUpdateInViewing"
         :routineInfo="selectedRoutineInfo"
@@ -166,7 +170,7 @@ export default {
       type: String,
       required: true,
     },
-    fullName: String,
+    userFullName: String,
   },
   components: {
     RoutineViewModal,
@@ -174,11 +178,11 @@ export default {
   },
   watch: {
     email(newEmail) {
-      console.log("watch:", newEmail);
+      // console.log("watch:", newEmail);
       this.fetchFireBaseData();
     },
-    fullName(newFullName) {
-      console.log("watch:", newFullName);
+    userFullName(newFullName) {
+      // console.log("watch:", newFullName);
     },
   },
 };

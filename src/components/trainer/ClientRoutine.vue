@@ -9,7 +9,7 @@
   </div>
   <div class="routines-page">
     <div class="content-container">
-      <RoutineContent :email="email" :fullName="fullName" />
+      <RoutineContent :email="email" :userFullName="userFullName" />
     </div>
   </div>
 </template>
@@ -20,7 +20,7 @@ import TrainerPerformanceHeader from "./TrainerPerformanceHeader.vue";
 
 export default {
   name: "ClientRoutine",
-  props: ["email", "fullName", "profilePicURL", "clientName"],
+  props: ["email", "userFullName", "profilePicURL", "clientName"],
   components: {
     TrainerPerformanceHeader,
     RoutineContent,

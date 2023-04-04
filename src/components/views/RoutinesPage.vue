@@ -4,7 +4,7 @@
     <div class="routine-page-header">Your Routines</div>
 
     <div class="content-container">
-      <RoutineContent :email="email" :fullName="fullName" />
+      <RoutineContent :email="email" :userFullName="userFullName" />
     </div>
   </div>
 </template>
@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       email: "",
-      fullName: "",
+      userFullName: "",
     };
   },
   mounted() {
@@ -46,10 +46,10 @@ export default {
     });
 
     this.email = this.user.data.email;
-    this.fullName = clientName;
+    this.userFullName = clientName;
     console.log("--- Routines Page ---");
     console.log(this.email);
-    console.log(this.fullName);
+    console.log(this.userFullName);
     // console.log(this.fullName);
   },
   methods: {
