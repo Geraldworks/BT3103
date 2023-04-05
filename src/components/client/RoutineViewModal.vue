@@ -235,7 +235,7 @@
                 v-model="routineNewComments"
               ></textarea>
              <div style="text-align: right;">
-              <button>Add Comment</button>
+              <!-- <button>Add Comment</button> -->
              </div> 
             </div>
           </div>

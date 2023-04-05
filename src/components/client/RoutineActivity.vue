@@ -87,8 +87,8 @@ export default {
       row.insertCell(2).innerHTML = set.reps;
 
       row.insertCell(3).innerHTML = set.done
-        ? '<input type="checkbox" checked/>'
-        : '<input type="checkbox"/>';
+        ? '<img src="src/assets/images/tick-icon.png" style="width: 20px; margin-bottom: 5px;"/>'
+        : '<img src="src/assets/images/cross-black-icon.png" style="width: 20px; margin-bottom: 5px;"/>';
       index++;
     });
   },
