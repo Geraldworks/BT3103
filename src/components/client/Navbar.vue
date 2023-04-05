@@ -24,15 +24,6 @@
           <p>BOOKING</p>
         </router-link>
       </div>
-      <!-- <div class="col">
-        <router-link
-          class="nav-link"
-          to="/calendar"
-          exact-active-class="active-nav-link"
-        >
-          <p>CALENDAR</p>
-        </router-link>
-      </div> -->
       <div class="col">
         <router-link
           class="nav-link"
@@ -54,7 +45,8 @@
           </CDropdownToggle>
           <CDropdownMenu>
             <CDropdownItem href="/editprofile">Edit Profile</CDropdownItem>
-            <CDropdownItem href="/goals">Set Goals</CDropdownItem>
+            <CDropdownItem href="/goals">Edit Goals</CDropdownItem>
+            <CDropdownItem href="/records">Edit Records</CDropdownItem>
             <CDropdownItem style="cursor: pointer" @click="signOut"
               >Sign Out</CDropdownItem
             >

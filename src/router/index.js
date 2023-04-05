@@ -4,13 +4,13 @@ import SignIn from "../components/views/SignIn.vue";
 import LandingPage from "../components/views/LandingPage.vue";
 import PerformancePage from "../components/views/PerformancePage.vue";
 import BookingPage from "../components/views/BookingPage.vue";
-import CalendarPage from "../components/views/CalendarPage.vue";
 import RoutinesPage from "../components/views/RoutinesPage.vue";
 import TrainerPage from "../components/views/TrainerPage.vue";
 import TrainerCalendarPage from "../components/views/TrainerCalendarPage.vue";
 import NotFound from "../components/views/NotFound.vue";
 import EditProfilePage from "../components/views/EditProfilePage.vue";
 import GoalsPage from "../components/views/GoalsPage.vue";
+import RecordsPage from "../components/views/RecordsPage.vue";
 
 import store from "../store";
 
@@ -69,6 +69,11 @@ const routes = [
     path: "/trainer-calendar",
     name: "TrainerCalendarPage",
     component: TrainerCalendarPage,
+  },
+  {
+    path: "/records",
+    name: "Records",
+    component: RecordsPage,
   },
   {
     path: "/:catchAll(.*)",
