@@ -330,9 +330,11 @@ export default {
 }
 
 .profile-pic img {
-  width: auto;
+  width: 120px;
   height: 120px;
   border-radius: 50%;
+  border: 2px white solid;
+  object-fit: cover;
 }
 
 @keyframes client-highlighting {

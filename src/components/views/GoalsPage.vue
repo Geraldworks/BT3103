@@ -172,12 +172,6 @@ export default {
   min-height: 100vh;
 }
 
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 10%;
-}
 .display-words {
   padding: 20px 10vw;
   margin: 0;
@@ -250,11 +244,3 @@ input {
 }
 </style>
 
-<style>
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 10%;
-}
-</style>

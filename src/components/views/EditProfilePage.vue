@@ -109,7 +109,7 @@
 
                 <div class="form-group row mb-0">
                   <div class="button-div">
-                    <button type="submit" class="">
+                    <button type="submit">
                       <div
                         v-if="isLoading"
                         class="spinner-border spinner-border-sm"
@@ -279,6 +279,9 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  margin: auto;
+}
 .dp {
   width: auto;
   height: 200px;
@@ -315,10 +318,18 @@ export default {
   overflow: hidden;
   position: relative;
 }
+
+.picture img {
+  height: 200px;
+  width: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px white solid;
+}
 .picture > label {
   width: auto;
-  border-radius: 50%;
-  cursor: pointer;
+  /* so that it can only be clicked in the circle */
+  border-radius: 50%; 
 }
 
 .picture .overlay {
@@ -328,11 +339,16 @@ export default {
   background: rgba(0, 0, 0, 0.5); /* Black see-through */
   color: #f1f1f1;
   color: white;
-  width: 15%;
+  width: 200px;
   font-size: 20px;
   padding: 20px;
   text-align: center;
   font-family: "Source Sans Pro", sans-serif;
+  cursor: pointer;
+}
+
+.picture .overlay:hover {
+  color: #ed1f24;
 }
 
 .button-div {
