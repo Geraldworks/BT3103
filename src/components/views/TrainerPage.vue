@@ -78,8 +78,6 @@
       </div>
     </div>
   </div>
-  <!-- console.log({{clientInfo[3]}})
-  console.log({{trainerFullName}}) -->
 </template>
 
 <script>
@@ -226,6 +224,7 @@ export default {
 
       // assign all client information to the variable clientInfo
       this.clientInfo = clientInfo;
+      console.log(this.clientInfo);
     } catch (error) {
       // error handling
       console.log(error);

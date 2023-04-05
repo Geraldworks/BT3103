@@ -1,10 +1,10 @@
 <template>
   <div class="profile-container">
-    <!--Profile Picture-->2
+    <!--Profile Picture-->
     <img
       class="profile-picture"
       :src="profilePic"
-      alt="profile picture"
+      alt="dp"
     />
     <div class="your-profile">
       <div class="trainer-options">
@@ -47,6 +47,7 @@ export default {
   },
   props: {
     email: String,
+    profilePic: String,
   },
   methods: {
     returnBackToTrainerHomePage() {
