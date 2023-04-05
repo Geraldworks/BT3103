@@ -223,10 +223,10 @@
             class="workout-comments"
             v-if="activityArr.length > 0 || newActivitiesArr.length > 0"
           >
-            <div>Workout Comments</div>
-            <div v-html="formattedRoutineStrings"></div>
+            <div style="margin-left: 0.5em;">Workout Comments</div>
+            <div v-html="formattedRoutineStrings" id="comments"></div>
             <div>
-              <!-- <label for="rComments"></label> <br /> -->
+              <label for="rComments" style="margin-left: 0.5em;">Add Comment</label> <br />
               <textarea
                 name="rComments"
                 id="rComments"
@@ -234,19 +234,26 @@
                 @change="updateRoutineCommentsBool"
                 v-model="routineNewComments"
               ></textarea>
+             <div style="text-align: right;">
+              <button>Add Comment</button>
+             </div> 
             </div>
           </div>
         </div>
-        <!-- SAVE BUTTON -->
-        <div class="save-button">
-          <button @click="confirmSaveRoutineToFS()">Save</button>
+        
+        <div style="text-align: center;">
+          <!-- SAVE BUTTON -->
+          <div class="save-button" style="margin: 0.5em 0em;">
+            <button @click="confirmSaveRoutineToFS()">Save</button>
+          </div>
+          <!-- DELETE ROUTINE BUTTON -->
+          <div class="delete-button">
+            <button @click="confirmDelRoutineFromFS()" v-show="showUpdate">
+              Delete Routine
+            </button>
+          </div>
         </div>
-        <!-- DELETE ROUTINE BUTTON -->
-        <div class="delete-button">
-          <button @click="confirmDelRoutineFromFS()" v-show="showUpdate">
-            Delete Routine
-          </button>
-        </div>
+        
       </div>
       <!-- Close Modal Button -->
       <div
@@ -1171,6 +1178,15 @@ button:hover {
   margin-top: 10px;
 }
 
+#comments {
+  border: black 2px solid;
+  border-radius: 25px;
+  padding: 0.4em;
+  margin-bottom: 1em;
+  overflow: auto;
+  max-height: 5em;
+}
+
 .add-activity {
   border-style: solid;
   border-radius: 25px;
@@ -1180,9 +1196,12 @@ button:hover {
   padding: 0.4em;
 }
 
-.activity-left input,
-select {
-  width: 25%;
+.activity-left input, select {
+  width: 30%;
+}
+
+.activity-set input {
+  width: 20%;
 }
 
 .activity-left label,
@@ -1203,6 +1222,12 @@ select {
   margin-left: 0.5em;
   padding: 0em 0.5em;
   height: 1.5em;
+}
+
+input[type="checkbox"] {
+  height: 0.5em;
+  padding: 0;
+  margin: 0;
 }
 
 textarea {
