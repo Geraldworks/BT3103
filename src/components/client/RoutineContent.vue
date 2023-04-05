@@ -9,7 +9,7 @@
 
     <div class="routine-list">
       <!-- If no routines -->
-      <div v-if="routineArr.length == 0">
+      <div v-if="routineArr.length == 0" id="empty-routines">
         No routines currently... Create one now!
       </div>
       <RoutineBlock
@@ -217,5 +217,11 @@ export default {
 
 th {
   font-weight: bold;
+}
+
+#empty-routines {
+  font-size: 28px;
+  text-align: center;
+  margin-top: 20px;
 }
 </style>

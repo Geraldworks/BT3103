@@ -223,10 +223,13 @@
             class="workout-comments"
             v-if="activityArr.length > 0 || newActivitiesArr.length > 0"
           >
-            <div style="margin-left: 0.5em;">Workout Comments</div>
+            <div style="margin-left: 0.5em">Workout Comments</div>
             <div v-html="formattedRoutineStrings" id="comments"></div>
             <div>
-              <label for="rComments" style="margin-left: 0.5em;">Add Comment</label> <br />
+              <label for="rComments" style="margin-left: 0.5em"
+                >Add Comment</label
+              >
+              <br />
               <textarea
                 name="rComments"
                 id="rComments"
@@ -234,16 +237,16 @@
                 @change="updateRoutineCommentsBool"
                 v-model="routineNewComments"
               ></textarea>
-             <div style="text-align: right;">
-              <!-- <button>Add Comment</button> -->
-             </div> 
+              <div style="text-align: right">
+                <!-- <button>Add Comment</button> -->
+              </div>
             </div>
           </div>
         </div>
-        
-        <div style="text-align: center;">
+
+        <div style="text-align: center">
           <!-- SAVE BUTTON -->
-          <div class="save-button" style="margin: 0.5em 0em;">
+          <div class="save-button" style="margin: 0.5em 0em">
             <button @click="confirmSaveRoutineToFS()">Save</button>
           </div>
           <!-- DELETE ROUTINE BUTTON -->
@@ -253,7 +256,6 @@
             </button>
           </div>
         </div>
-        
       </div>
       <!-- Close Modal Button -->
       <div
@@ -1014,9 +1016,15 @@ export default {
   computed: {
     ...mapGetters(["user"]),
     formattedRoutineStrings() {
-      if (this.routineComments === "" || this.routineComments == []) {
-        return "No Comments Currently";
+      if (
+        this.routineComments === "" ||
+        (Array.isArray(this.routineComments) &&
+          this.routineComments.length === 0)
+      ) {
+        console.log("Comments: ", this.routineComments);
+        return "===No Comments Currently===";
       }
+      console.log("Comments: ", this.routineComments);
       return this.routineCommentsStringFormatter(this.routineComments);
     },
   },
@@ -1196,7 +1204,8 @@ button:hover {
   padding: 0.4em;
 }
 
-.activity-left input, select {
+.activity-left input,
+select {
   width: 30%;
 }
 
