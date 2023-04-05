@@ -48,7 +48,7 @@ button:hover {
   background-color: #d9d9d9;
   padding: 10px 20px 10px 20px;
   box-shadow: 0px 0px 3px grey;
-  margin-bottom: 50px
+  margin-bottom: 50px;
 }
 
 .no-account {
@@ -149,6 +149,16 @@ form {
 import { doc, getDoc } from "@firebase/firestore";
 import { db } from "../../firebase";
 import SignUpHeader from "../SignUpHeader.vue";
+import Swal from "sweetalert2";
+
+// cool alert
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
 
 export default {
   name: "SignInComponent",
@@ -165,7 +175,7 @@ export default {
   },
   methods: {
     goToSignUp() {
-      this.$router.push("/signup")
+      this.$router.push("/signup");
     },
     async SignIn() {
       this.isLoading = true;
@@ -190,6 +200,11 @@ export default {
                   this.$store.dispatch("fetchTrainer");
 
                   this.$router.push("/clients");
+                  Toast.fire({
+                    icon: "success",
+                    title: "Signed in successfully"
+                  }
+                  )
                 }
               })
               .catch((err) => {
@@ -197,6 +212,10 @@ export default {
                 console.log("CLIENT ACCOUNT");
 
                 this.$router.push("/performance");
+                Toast.fire({
+                  icon: "success",
+                  title: "Signed in successfully",
+                });
               });
           });
       } catch (err) {

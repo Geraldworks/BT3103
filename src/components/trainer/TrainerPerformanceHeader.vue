@@ -1,6 +1,6 @@
 <template>
   <div class="profile-container">
-    <!--Profile Picture-->
+    <!--Profile Picture-->2
     <img
       class="profile-picture"
       :src="profilePic"
@@ -11,37 +11,58 @@
         <div>
           Viewing <span style="color: #ed1f24">{{ clientName }}</span>
         </div>
-        <!-- If we detect that the trainer wants to return, we will emit "refresh" to 
-           go back to the page with all the client cards-->
-        <div class="right-side-items" @click="returnBackToTrainerHomePage()">
-          Return
+        <!-- <router-link to="/routines"><div  class="right-side-items">Routine</div></router-link> -->
+        <div class="right-side-items" @click="routeToPerformancePage()">Performance</div>
+        <div class="right-side-items" @click="routeToRoutinePage()">Routines</div>
+        <div class="right-side-items" @click="showUpdateForm()">Update Stats</div>
+        <div class="pop-up">
+          <UpdateForm2 v-show="updateForm" :clientEmail="email" :clientName ="clientName" @close-modal="updateForm = false"/>
         </div>
+        <!-- If we detect that the trainer wants to return, we will emit "refresh" to 
+          go back to the page with all the client cards-->
+        <div class="right-side-items" @click="returnBackToTrainerHomePage()">Return</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { doc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase.js";
+import { CModal, CFormInput, CFormFeedback, CFormLabel, CFormText } from "@coreui/vue";
+import UpdateForm2 from "./UpdateForm2.vue";
+import RoutineContent from "../client/RoutineContent.vue";
 
 export default {
   name: "TrainerPerformanceHeader",
+  components: {
+    UpdateForm2,
+    RoutineContent,
+  },
   data() {
     return {
       clientName: null,
+      updateForm: false,
     };
   },
   props: {
     email: String,
-    profilePic: String,
   },
   methods: {
     returnBackToTrainerHomePage() {
       this.$emit("returnToHome");
     },
+    showUpdateForm() {
+      this.updateForm = true;
+    },
+    routeToRoutinePage() {
+      this.$emit("routeToRoutine");
+    },
+    routeToPerformancePage() {
+      this.$emit("routeToPerformance");
+    }
   },
-  emits: ["returnToHome"],
+  emits: ["returnToHome","routeToRoutine","routeToPerformance"],
   async created() {
     try {
       const clientRef = collection(db, "client");
@@ -110,7 +131,6 @@ export default {
   animation-duration: 0.3s;
   animation-fill-mode: forwards;
 }
-
 @keyframes turn-red {
   from {
     color: white;

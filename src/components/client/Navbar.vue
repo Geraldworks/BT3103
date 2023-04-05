@@ -44,20 +44,22 @@
       </div>
       <div class="col signOut">
         <CDropdown class="d-flex" variant="nav-item" :popper="false">
-            <CDropdownToggle color="secondary">
-              <img
-                src="/abstract-user-flat-4.svg"
-                alt=""
-                width="22"
-                height="24"
-              />
-            </CDropdownToggle>
-            <CDropdownMenu>
-              <CDropdownItem href="/editprofile">Edit Profile</CDropdownItem>
-              <CDropdownItem href="/goals">Set Goals</CDropdownItem>
-              <CDropdownItem @click="signOut">Sign Out</CDropdownItem>
-            </CDropdownMenu>
-          </CDropdown>
+          <CDropdownToggle color="secondary">
+            <img
+              src="/abstract-user-flat-4.svg"
+              alt=""
+              width="22"
+              height="24"
+            />
+          </CDropdownToggle>
+          <CDropdownMenu>
+            <CDropdownItem href="/editprofile">Edit Profile</CDropdownItem>
+            <CDropdownItem href="/goals">Set Goals</CDropdownItem>
+            <CDropdownItem style="cursor: pointer" @click="signOut"
+              >Sign Out</CDropdownItem
+            >
+          </CDropdownMenu>
+        </CDropdown>
       </div>
     </div>
   </nav>
@@ -72,6 +74,15 @@ import {
 } from "@coreui/vue";
 import { mapGetters } from "vuex";
 import { auth } from "@/firebase.js";
+import Swal from "sweetalert2";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
 
 export default {
   name: "Navbar",
@@ -86,12 +97,16 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['user'])
+    ...mapGetters(["user"]),
   },
   methods: {
     async signOut() {
       await this.$store.dispatch("logOut");
       this.$router.push("/");
+      Toast.fire({
+        icon: "success",
+        title: "Signed out successfully",
+      });
       sessionStorage.clear();
     },
   },
@@ -111,7 +126,7 @@ nav {
   height: 200px;
   font-family: "Source Sans Pro", "sans-serif";
   font-size: larger;
-  border-bottom: 5px solid #ED1F24;
+  border-bottom: 5px solid #ed1f24;
   box-sizing: border-box;
   min-width: 100vh;
 }
@@ -144,12 +159,11 @@ nav {
 
 .row {
   position: relative;
-  top: 10px
+  top: 10px;
 }
 
 .col {
   box-sizing: border-box;
   padding: 0px 10px;
 }
-
 </style>

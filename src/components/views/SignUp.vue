@@ -229,6 +229,15 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase.js";
 import { ref, getStorage, getDownloadURL, list } from "@firebase/storage";
 import defaultPic from "../../assets/images/default_dp.svg";
+import Swal from "sweetalert2";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
 
 export default {
   name: "SignUpComponent",
@@ -348,6 +357,10 @@ export default {
           })
           .then((response) => {
             this.$router.push("/signin");
+            Toast.fire({
+              icon: "success",
+              title: "Sign up successful"
+            })
           });
       } catch (err) {
         this.isLoading = false;

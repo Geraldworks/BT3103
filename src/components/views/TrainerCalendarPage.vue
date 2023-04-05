@@ -143,7 +143,11 @@ export default {
         let end = doc.to.toDate();
         let title = doc.title;
         let exerciseType = doc.focus;
-        allClientBookings.push({ start, end, title, exerciseType, client });
+
+        let obj = {start, end, title, exerciseType, client}
+        obj["class"] = "thisTrainer"
+
+        allClientBookings.push(obj);
       });
     });
     this.events = allClientBookings;
@@ -189,5 +193,17 @@ export default {
   background-color: white;
   font-family: Teko;
   font-size: 1.2rem;
+}
+</style>
+
+<style>
+.thisTrainer {
+  background: #000; /* #ed1f24 */
+  color: #fff;
+  border: 1px solid transparent;
+}
+
+.thisTrainer:hover {
+  border: 1px white solid;
 }
 </style>
