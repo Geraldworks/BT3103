@@ -10,7 +10,7 @@
                 <div class="form-group row py-2">
                   <label
                     for="fullName"
-                    class="col-md-4 col-form-label text-md-right"
+                    class="col-md-5 col-form-label text-md-right"
                     >FULL NAME:</label
                   >
 
@@ -31,7 +31,7 @@
                 <div class="form-group row py-2">
                   <label
                     for="gymmboxxid"
-                    class="col-md-4 col-form-label text-md-right"
+                    class="col-md-5 col-form-label text-md-right"
                     >GYMMBOXX ID:</label
                   >
 
@@ -50,7 +50,7 @@
                 <div class="form-group row py-2">
                   <label
                     for="contactNo"
-                    class="col-md-4 col-form-label text-md-right"
+                    class="col-md-5 col-form-label text-md-right"
                     >CONTACT NUMBER:</label
                   >
 
@@ -69,7 +69,7 @@
                 <div class="form-group row py-2">
                   <label
                     for="emergencyContactName"
-                    class="col-md-4 col-form-label text-md-right"
+                    class="col-md-5 col-form-label text-md-right"
                     >EMERGENCY CONTACT:</label
                   >
 
@@ -88,7 +88,7 @@
                 <div class="form-group row py-2">
                   <label
                     for="emergencyContactNo"
-                    class="col-md-4 col-form-label text-md-right"
+                    class="col-md-5 col-form-label text-md-right"
                     >EMERGENCY CONTACT NO:</label
                   >
 
@@ -107,8 +107,8 @@
                 <div class="form-group row py-2">
                   <label
                     for="email"
-                    class="col-md-4 col-form-label text-md-right"
-                    >EMAIL:</label
+                    class="col-md-5 col-form-label text-md-right"
+                    >EMAIL ADDRESS:</label
                   >
 
                   <div class="col-md-6">
@@ -128,7 +128,7 @@
                 <div class="form-group row py-2">
                   <label
                     for="password"
-                    class="col-md-4 col-form-label text-md-right"
+                    class="col-md-5 col-form-label text-md-right"
                     >PASSWORD:</label
                   >
 
@@ -147,7 +147,7 @@
                 <div class="form-group row py-2">
                   <label
                     for="confirmPassword"
-                    class="col-md-4 col-form-label text-md-right"
+                    class="col-md-5 col-form-label text-md-right"
                     >CONFIRM PASSWORD:</label
                   >
 
@@ -159,17 +159,19 @@
                       name="confirmPassword"
                       required
                       v-model="confirmPassword"
-                      @input="validateForm"
                     />
                   </div>
-                  <p v-if="errorMessage" class="alert alert-danger mt-3">
-                    {{ errorMessage }}
+                  <p v-if="errorMessage.length" class="alert alert-danger mt-3">
+                    <b>Please correct the following error(s):</b>
+                    <ul>
+                      <li v-for="error in errorMessage">{{ error }}</li>
+                    </ul>
                   </p>
                 </div>
 
                 <div class="form-group row mb-0">
                   <div class="button-div">
-                    <button v-if="pageNo === 1" type="button" @click="nextPage">
+                    <button v-if="pageNo === 1" type="button" @click="validateForm(); nextPage();">
                       Next
                     </button>
                   </div>
@@ -196,13 +198,16 @@
                 </div>
               </div>
             </div>
-            <p v-if="errorMessage" class="alert alert-danger mt-3">
-              {{ errorMessage }}
+            <p v-if="errorMessage.length" class="alert alert-danger mt-3">
+              <b>Please correct the following error(s):</b>
+              <ul>
+                <li v-for="error in errorMessage">{{ error }}</li>
+              </ul>
             </p>
             <div class="row mb-0">
                 <div class="button-div">
                   <button type="button" @click="previousPage">Back</button>
-                  <button type="submit" @click="SignUp">
+                  <button type="submit" @click="SignUp" :disabled="selectedTrainer == null">
                     <div
                       v-if="isLoading"
                       class="spinner-border spinner-border-sm"
@@ -240,8 +245,8 @@ export default {
       email: "",
       password: "",
       confirmPassword: "",
-      errorMessage: "",
-      selectedTrainer: "",
+      errorMessage: [],
+      selectedTrainer: null,
       trainerInfo: null,
     };
   },
@@ -257,17 +262,75 @@ export default {
       this.headerWords = "Sign Up For Account";
     },
     nextPage() {
-      this.pageNo += 1;
-      this.headerWords = "Select Your Trainer";
+      if (this.errorMessage.length == 0) {
+        this.pageNo += 1;
+        this.headerWords = "Select Your Trainer";
+      }
+    },
+    validContact(contactNo) {
+      return (contactNo.length == 8 && (contactNo.charAt(0) == "9" || contactNo.charAt(0) == "8"));
+    },
+    validId(id) {
+      return (id.length == 6 && id.charAt(0) == "U");
+    },
+    validEmail(email) {
+      var re = /\S+@\S+\.\S+/;
+      return re.test(email);
+    },
+    highlightField(id) {
+      document.getElementById(id).style.border = "1px red solid";
+    },
+    unhighlightField(id) {
+      document.getElementById(id).style.border = null;
+    },
+    fieldsFilled() {
+      var fields = [this.fullName, this.gymmboxxid, this.contactNo, this.emergencyContactName, this.emergencyContactNo, this.email, this.password, this.confirmPassword];
+      var ids = ["fullName", "gymmboxxid", "contactNo", "emergencyContactName", "emergencyContactNo", "email", "password", "confirmPassword"];
+      for (let i = 0; i < fields.length; i++) {
+        if (fields[i] == "") {
+          this.highlightField(ids[i]);
+        } else {
+          this.unhighlightField(ids[i]);
+        }
+      }
+      return (this.fullName != "" && this.gymmboxxid != "" && this.contactNo != "" && this.emergencyContactName != "" && this.emergencyContactNo != "" && this.email != "" && this.password != "" && this.confirmPassword != "");
+    },
+    validPasswordLength() {
+      return (this.password.length >= 6);
     },
     validateForm() {
       // validate that passwords are the same
-      if (this.password !== this.confirmPassword) {
-        this.errorMessage = "Passwords do not match.";
-        return false;
+      this.errorMessage = [];
+        if (!this.fieldsFilled()) {
+          // Only show this error if there are empty fields.
+          this.errorMessage = [];
+          this.errorMessage.push("Fields cannot be empty.")
+        } else {
+          if (!this.validId(this.gymmboxxid)) {
+          this.errorMessage.push("Invalid Gymmboxx ID.");
+          this.highlightField("gymmboxxid");
+        } 
+        if (!this.validContact(this.contactNo)) {
+          this.errorMessage.push("Invalid Contact Number.");
+          this.highlightField("contactNo");
+        } 
+        if (!this.validContact(this.emergencyContactNo)) {
+          this.errorMessage.push("Invalid Emergency Contact Number.");
+          this.highlightField("emergencyContactNo");
+        } 
+        if (!this.validEmail(this.email)) {
+          this.errorMessage.push("Invalid Email");
+          this.highlightField("email");
+        } 
+        if (!this.validPasswordLength(this.password)) {
+          this.errorMessage.push("Password too short.");
+          this.highlightField("password");
+        } else if (this.password !== this.confirmPassword) {
+          this.errorMessage.push("Passwords do not match.");
+          this.highlightField("password");
+          this.highlightField("confirmPassword");
+        } 
       }
-      this.errorMessage = "";
-      return true;
     },
     async SignUp() {
       this.isLoading = true;
@@ -312,24 +375,23 @@ export default {
         trainerInfo[documentData.email] = currTrainer;
       });
 
-      // Storing image URLs
-      const storage = getStorage();
-      const listRef = ref(storage);
+      // // Storing image URLs
+      // const storage = getStorage();
+      // const listRef = ref(storage);
 
-      list(listRef).then((res) => {
-        res.items.forEach((imageRef) => {
-          const email = imageRef._location.path.slice(0, -4);
-          if (trainerInfo[email]) {
-            getDownloadURL(imageRef).then((url) => {
-              trainerInfo[email][1] = url;
-            });
-          }
-        });
-      });
+      // list(listRef).then((res) => {
+      //   res.items.forEach((imageRef) => {
+      //     const email = imageRef._location.path.slice(0, -4);
+      //     if (trainerInfo[email]) {
+      //       getDownloadURL(imageRef).then((url) => {
+      //         trainerInfo[email][1] = url;
+      //       });
+      //     }
+      //   });
+      // });
 
       // assign all client information to the variable clientInfo
       this.trainerInfo = trainerInfo;
-      // console.log(this.trainerInfo);
     } catch (error) {
       // error handling
       console.log(error);
@@ -360,7 +422,11 @@ button {
   font-family: Teko;
 }
 
-button:hover {
+button:disabled {
+  opacity: 50%;
+}
+
+button:hover:enabled {
   animation-name: pill-button-highlight;
   animation-duration: 0.15s;
   animation-fill-mode: forwards;
