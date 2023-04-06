@@ -29,15 +29,6 @@ export default {
     TrainerPerformanceHeader,
     TrainerNavbar,
   },
-  created() {
-    // can consider storing something here to maintain client view
-    // this.holder = this.$route.params.clientEmail;
-  },
-  data() {
-    // return {
-    //   holder: ""
-    // }
-  },
   methods: {
     returnBackToTrainerHomePage() {
       this.$emit("returnToHome");
