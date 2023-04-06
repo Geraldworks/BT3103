@@ -1,26 +1,38 @@
 <template>
   <div class="profile-container">
     <!--Profile Picture-->
-    <img
-      class="profile-picture"
-      :src="profilePic"
-      alt="dp"
-    />
+    <img class="profile-picture" :src="profilePic" alt="dp" />
     <div class="your-profile">
-      <div class="trainer-options">
+      <div class="trainer-header">
         <div>
-          Viewing <span style="color: #ed1f24">{{ clientName }}</span>
+          Viewing
+          <span style="color: #ed1f24">{{ clientName.split(" ")[0] }}</span>
         </div>
         <!-- <router-link to="/routines"><div  class="right-side-items">Routine</div></router-link> -->
-        <div class="right-side-items" @click="routeToPerformancePage()">Performance</div>
-        <div class="right-side-items" @click="routeToRoutinePage()">Routines</div>
-        <div class="right-side-items" @click="showUpdateForm()">Update Stats</div>
-        <div class="pop-up">
-          <UpdateForm2 v-show="updateForm" :clientEmail="email" :clientName ="clientName" @close-modal="updateForm = false"/>
-        </div>
-        <!-- If we detect that the trainer wants to return, we will emit "refresh" to 
+        <div class="trainer-options">
+          <div class="right-side-items" @click="routeToPerformancePage()">
+            Performance
+          </div>
+          <div class="right-side-items" @click="routeToRoutinePage()">
+            Routines
+          </div>
+          <div class="right-side-items" @click="showUpdateForm()">
+            Update Stats
+          </div>
+          <div class="pop-up">
+            <UpdateForm2
+              v-show="updateForm"
+              :clientEmail="email"
+              :clientName="clientName"
+              @close-modal="updateForm = false"
+            />
+          </div>
+          <!-- If we detect that the trainer wants to return, we will emit "refresh" to 
           go back to the page with all the client cards-->
-        <div class="right-side-items" @click="returnBackToTrainerHomePage()">Return</div>
+          <div class="right-side-items" @click="returnBackToTrainerHomePage()">
+            Return
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -29,9 +41,9 @@
 <script>
 import { doc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase.js";
-import { CModal, CFormInput, CFormFeedback, CFormLabel, CFormText } from "@coreui/vue";
 import UpdateForm2 from "./UpdateForm2.vue";
 import RoutineContent from "../client/RoutineContent.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "TrainerPerformanceHeader",
@@ -41,7 +53,8 @@ export default {
   },
   data() {
     return {
-      clientName: null,
+      nameToDisplay: "",
+      clientName: "",
       updateForm: false,
     };
   },
@@ -61,9 +74,9 @@ export default {
     },
     routeToPerformancePage() {
       this.$emit("routeToPerformance");
-    }
+    },
   },
-  emits: ["returnToHome","routeToRoutine","routeToPerformance"],
+  emits: ["returnToHome", "routeToRoutine", "routeToPerformance"],
   async created() {
     try {
       const clientRef = collection(db, "client");
@@ -80,6 +93,14 @@ export default {
       console.log("No email observed in database");
     }
   },
+  // mounted() {
+  //   auth.onAuthStateChanged((user) => {
+  //     this.$store.dispatch("fetchUser", user);
+  //   });
+  // },
+  // computed: {
+  //   ...mapGetters(["user"])
+  // }
 };
 </script>
 
@@ -117,13 +138,23 @@ export default {
   border-bottom: 5px solid white;
 }
 
+.trainer-header {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .trainer-options {
   display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 .right-side-items {
   margin-left: auto;
-  font-size: 32px;
+  font-size: 0.6em;
   margin-top: 16px;
+  padding: 0px 10px;
 }
 
 .right-side-items:hover {

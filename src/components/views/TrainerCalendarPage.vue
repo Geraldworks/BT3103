@@ -1,6 +1,9 @@
 <template>
-  <TrainerNavbar />
   <div class="calendar-page">
+    <TrainerNavbar />
+    <div class="booking-page-header">
+      <div>current bookings</div>
+    </div>
     <div
       style="
         height: 800px;
@@ -65,36 +68,7 @@ export default {
       eventEnd: null,
       eventExerciseType: null,
       eventClient: null,
-      events: [
-        // {
-        //   start: "2023-03-27 14:00",
-        //   end: "2023-03-27 15:00",
-        //   title: "Gym Session",
-        //   exerciseType: "Legs",
-        //   client: "James Mak",
-        // },
-        // {
-        //   start: "2023-03-29 10:00",
-        //   end: "2023-03-29 11:00",
-        //   title: "Gym Session",
-        //   exerciseType: "Legs, Arms",
-        //   client: "Bryan Wong",
-        // },
-        // {
-        //   start: "2023-03-15 13:00",
-        //   end: "2023-03-15 14:00",
-        //   title: "Gym Session",
-        //   exerciseType: "Cardio",
-        //   client: "Gerald Ho",
-        // },
-        // {
-        //   start: "2023-03-15 14:00",
-        //   end: "2023-03-15 15:00",
-        //   title: "Gym Session",
-        //   exerciseType: "Back, Shoulders",
-        //   client: "Luther Tan",
-        // },
-      ],
+      events: [],
     };
   },
   computed: {
@@ -144,8 +118,8 @@ export default {
         let title = doc.title;
         let exerciseType = doc.focus;
 
-        let obj = {start, end, title, exerciseType, client}
-        obj["class"] = "thisTrainer"
+        let obj = { start, end, title, exerciseType, client };
+        obj["class"] = "thisTrainer";
 
         allClientBookings.push(obj);
       });
@@ -172,7 +146,7 @@ export default {
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
-.calendar-page-header {
+.booking-page-header {
   color: white;
   border-bottom: 5px white solid;
   font-size: 3rem;
@@ -191,8 +165,26 @@ export default {
 
 .calendar {
   background-color: white;
-  font-family: Teko;
+  font-family: "Source Sans Pro", "sans-serif";
   font-size: 1.2rem;
+}
+
+@media screen and (max-width: 800px) {
+  .calendar-page {
+    padding-bottom: calc(600px - 10vh);
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .calendar-page {
+    padding-bottom: calc(850px - 10vh);
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .calendar-page {
+    padding-bottom: calc(1200px - 10vh);
+  }
 }
 </style>
 
