@@ -1,6 +1,6 @@
 <template>
-  <Navbar />
   <div class="routines-page">
+    <Navbar />
     <div class="routine-page-header">Your Routines</div>
 
     <div class="content-container">
@@ -90,8 +90,8 @@ export default {
   background-color: black;
   overflow-y: hidden;
   min-width: 800px; /* Or else the PerformanceBottom component will overflow into the side margin */
-  padding-bottom: 30px;
-  min-height: 79vh;
+  padding-bottom: 5%;
+  min-height: 100vh;
   font-family: Teko;
 }
 
@@ -105,7 +105,29 @@ export default {
   overflow-y: auto;
 }
 
+@media screen and (max-width: 800px) {
+  .routines-page {
+    padding-bottom: calc(600px - 10vh)
+  }
+  .content-container {
+    max-height: 80vh;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .routines-page {
+    padding-bottom: calc(850px - 10vh)
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .routines-page {
+    padding-bottom: calc(1200px - 10vh)
+  }
+}
+
 body::-webkit-scrollbar {
   display: none;
 }
+
 </style>

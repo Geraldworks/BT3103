@@ -120,7 +120,6 @@ nav {
   font-size: larger;
   border-bottom: 5px solid #ed1f24;
   box-sizing: border-box;
-  min-width: 100vh;
 }
 
 .navbar-brand img {

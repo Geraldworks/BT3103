@@ -63,9 +63,15 @@ export default {
 .performance-page {
   background-color: black;
   overflow-y: hidden;
-  min-width: 100vh; /* Or else the PerformanceBottom component will overflow into the side margin */
+  min-width: 800px; /* Or else the PerformanceBottom component will overflow into the side margin */
   min-height: 100vh;
   padding-bottom: 50px;
+}
+
+@media screen and (max-width: 800px) {
+  .performance-page {
+    padding-bottom: calc(50px + 50vh)
+  }
 }
 
 .content-container {
