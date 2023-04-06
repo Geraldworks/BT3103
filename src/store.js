@@ -5,7 +5,7 @@ import {
 } from "firebase/auth";
 import { auth, db } from "./firebase";
 import { signOut } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { arrayUnion, doc, setDoc, updateDoc } from "firebase/firestore";
 import createPersistedState from 'vuex-persistedstate';
 
 const store = createStore({
@@ -52,6 +52,7 @@ const store = createStore({
         fullName,
         email,
         password,
+        trainerEmail,
       }
     ) {
       const response = await createUserWithEmailAndPassword(
@@ -67,7 +68,7 @@ const store = createStore({
         await setDoc(doc(db, "client", email), {
           gymmboxxid: gymmboxxid,
           email: email,
-          bookingIds: [],
+          bookings: [],
           contactNo: contactNo,
           datetime: [],
           emergencyContactName: emergencyContactName,
@@ -75,7 +76,8 @@ const store = createStore({
           fatPercentage: [],
           fullName: fullName,
           muscleMass: [],
-          routineIds: [],
+          routineNextId: 1,
+          routines: [],
           weight: [],
           records: {
             benchPress: 0,
@@ -85,8 +87,13 @@ const store = createStore({
           goals: {
             muscleMassGoal: 0,
             weightGoal: 0,
-          }
+          },
+          trainerEmail: trainerEmail,
         });
+
+        await updateDoc(doc(db, "trainer", trainerEmail), {
+          ClientsId: arrayUnion(email),
+        })
       } else {
         throw new Error("Unable to register user");
       }

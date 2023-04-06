@@ -1,5 +1,5 @@
 <template>
-  <div class="goals-page">
+  <div class="records-page">
     <div>
       <Navbar />
     </div>
@@ -8,7 +8,7 @@
 
     <div v-else class="container">
       <div class="row display-words">
-        <div>GOALS</div>
+        <div>RECORDS</div>
       </div>
       <div class="row justify-content-center">
         <div class="col-md-6">
@@ -17,40 +17,59 @@
               <form action="#" @submit.prevent="update">
                 <div class="form-group row py-2">
                   <label
-                    for="muscleMassGoal"
+                    for="benchPress"
                     class="col-md-4 col-form-label text-md-right"
-                    >MUSCLE MASS GOAL:</label
+                    >BENCH PRESS:</label
                   >
 
                   <div class="col-md-6">
                     <input
-                      id="muscleMassGoal"
+                      id="benchPress"
                       type="text"
                       class="form-control"
-                      name="muscleMassGoal"
+                      name="benchPress"
                       value
                       required
                       autofocus
-                      v-model="muscleMassGoal"
+                      v-model="benchPress"
                     />
                   </div>
                 </div>
 
                 <div class="form-group row py-2">
                   <label
-                    for="weightGoal"
+                    for="deadlift"
                     class="col-md-4 col-form-label text-md-right"
-                    >WEIGHT GOAL:</label
+                    >DEADLIFT:</label
                   >
 
                   <div class="col-md-6">
                     <input
-                      id="weightGoal"
+                      id="deadlift"
                       type="text"
                       class="form-control"
-                      name="weightGoal"
+                      name="deadlift"
                       required
-                      v-model="weightGoal"
+                      v-model="deadlift"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group row py-2">
+                  <label
+                    for="squat"
+                    class="col-md-4 col-form-label text-md-right"
+                    >SQUAT:</label
+                  >
+
+                  <div class="col-md-6">
+                    <input
+                      id="squat"
+                      type="text"
+                      class="form-control"
+                      name="squat"
+                      required
+                      v-model="squat"
                     />
                   </div>
                 </div>
@@ -99,8 +118,9 @@ export default {
   name: "GoalsPage",
   data() {
     return {
-      muscleMassGoal: "",
-      weightGoal: "",
+      benchPress: "",
+      deadlift: "",
+      squat: "",
       isLoading: false,
       errorMessage: "",
       pageLoading: false,
@@ -119,9 +139,10 @@ export default {
     const clientRef = doc(db, "client", this.user.data.email);
     getDoc(clientRef)
       .then((docSnap) => {
-        const goals = docSnap.data().goals;
-        this.muscleMassGoal = goals.muscleMassGoal;
-        this.weightGoal = goals.weightGoal;
+        const records = docSnap.data().records;
+        this.benchPress = records.benchPress;
+        this.deadlift = records.deadlift;
+        this.squat = records.squat;
         this.pageLoading = false;
       })
       .catch((err) => {
@@ -139,9 +160,10 @@ export default {
       } else {
         this.isLoading = true;
         updateDoc(clientRef, {
-          goals: {
-            muscleMassGoal: parseFloat(this.muscleMassGoal),
-            weightGoal: parseFloat(this.weightGoal),
+          records: {
+            benchPress: parseFloat(this.benchPress),
+            deadlift: parseFloat(this.deadlift),
+            squat: parseFloat(this.squat),
           },
         })
           .then((response) => {
@@ -151,7 +173,7 @@ export default {
             // location.reload();
             Toast.fire({
               icon: "success",
-              title: "Goals Saved",
+              title: "Records Saved",
             });
           })
           .catch((err) => {
@@ -165,7 +187,7 @@ export default {
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@600&display=swap");
-.goals-page {
+.records-page {
   background-color: black;
   overflow-y: hidden;
   min-width: 100vh;

@@ -107,7 +107,7 @@ tr {
 td {
   padding: 5px;
   color: white;
-  font-family: "Teko", sans-serif;
+  font-family: "Source Sans Pro", "sans-serif";
   font-weight: 600;
   font-size: 24px;
   line-height: 34px;

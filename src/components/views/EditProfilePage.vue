@@ -1,7 +1,9 @@
 <template>
   <div class="edit-page">
     <Navbar />
-    <div class="container">
+    <LoadingSpinner v-if="pageLoading" :pageLoading="pageLoading" />
+
+    <div v-else class="container">
       <div class="row display-words">
         <div>EDIT PROFILE</div>
       </div>
@@ -107,7 +109,7 @@
 
                 <div class="form-group row mb-0">
                   <div class="button-div">
-                    <button type="submit" class="btn btn-primary mt-6">
+                    <button type="submit">
                       <div
                         v-if="isLoading"
                         class="spinner-border spinner-border-sm"
@@ -137,6 +139,16 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import defaultPic from "../../assets/images/default_dp.svg";
+import LoadingSpinner from "../LoadingSpinner.vue";
+import Swal from "sweetalert2";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
 
 export default {
   name: "EditProfilePage",
@@ -148,18 +160,20 @@ export default {
       emergencyContactNo: "",
       isLoading: false,
       errorMessage: "",
-      displayPicture: null, // Picture to be displayed
-      profilePicture: null, // Picture to be uploaded
+      displayPicture: null,
+      profilePicture: null,
+      pageLoading: false,
     };
   },
+  components: { LoadingSpinner },
   computed: {
     ...mapGetters(["user"]),
   },
   mounted() {
+    this.pageLoading = true;
     auth.onAuthStateChanged((user) => {
       this.$store.dispatch("fetchUser", user);
     });
-
     const clientRef = doc(db, "client", this.user.data.email);
     getDoc(clientRef)
       .then((docSnap) => {
@@ -172,23 +186,25 @@ export default {
       .catch((err) => {
         console.log(err);
       });
-
     const storage = getStorage();
     const listRef = ref(storage);
-
-    list(listRef).then((res) => {
-      res.items.forEach((imageRef) => {
-        if (imageRef._location.path == this.user.data.email) {
-          getDownloadURL(imageRef).then((url) => {
-            this.displayPicture = url;
-          });
+    list(listRef)
+      .then((res) => {
+        res.items.forEach((imageRef) => {
+          const email = imageRef._location.path.slice(0, -4);
+          if (email == this.user.data.email) {
+            getDownloadURL(imageRef).then((url) => {
+              this.displayPicture = url;
+            });
+          }
+        });
+      })
+      .finally(() => {
+        if (!this.displayPicture) {
+          this.displayPicture = defaultPic;
         }
+        this.pageLoading = false;
       });
-    });
-
-    if (!this.displayPicture) {
-      this.displayPicture = defaultPic;
-    }
   },
   methods: {
     async update() {
@@ -203,7 +219,11 @@ export default {
         .then((response) => {
           // some sort of feedback to show that it's done here
           this.isLoading = false;
-          location.reload();
+          // location.reload();
+          Toast.fire({
+            icon: "success",
+            title: "Profile Saved",
+          });
         })
         .catch((err) => {
           console.log(err);
@@ -222,17 +242,14 @@ export default {
       // 1. 'state_changed' observer, called any time the state changes
       // 2. Error observer, called on failure
       // 3. Completion observer, called on successful completion
-
       // Ensure that it only uploads the pic when a pic is selected
       if (this.profilePicture) {
         const storage = getStorage();
-        const storageRef = ref(storage, `${this.user.data.email}`);
-
+        const storageRef = ref(storage, `${this.user.data.email}.jpg`);
         const uploadTask = uploadBytesResumable(
           storageRef,
           this.profilePicture
         ); // will replace old pic if already there
-
         uploadTask.on(
           "state_changed",
           (snapshot) => {
@@ -262,6 +279,9 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  margin: auto;
+}
 .dp {
   width: auto;
   height: 200px;
@@ -298,10 +318,18 @@ export default {
   overflow: hidden;
   position: relative;
 }
+
+.picture img {
+  height: 200px;
+  width: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px white solid;
+}
 .picture > label {
   width: auto;
-  border-radius: 50%;
-  cursor: pointer;
+  /* so that it can only be clicked in the circle */
+  border-radius: 50%; 
 }
 
 .picture .overlay {
@@ -311,11 +339,16 @@ export default {
   background: rgba(0, 0, 0, 0.5); /* Black see-through */
   color: #f1f1f1;
   color: white;
-  width: 15%;
+  width: 200px;
   font-size: 20px;
   padding: 20px;
   text-align: center;
   font-family: "Source Sans Pro", sans-serif;
+  cursor: pointer;
+}
+
+.picture .overlay:hover {
+  color: #ed1f24;
 }
 
 .button-div {

@@ -37,7 +37,8 @@ export default {
 
     list(listRef).then((res) => {
       res.items.forEach((imageRef) => {
-        if (imageRef._location.path == this.user.data.email) {
+        const email = imageRef._location.path.slice(0, -4);
+        if (email == this.user.data.email) {
           getDownloadURL(imageRef).then((url) => {
             this.displayPicture = url;
           });
@@ -71,6 +72,7 @@ export default {
   width: 100px;
   height: 100px;
   border: 2px solid white;
+  object-fit: cover;
 }
 
 .your-profile {
