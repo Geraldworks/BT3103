@@ -190,7 +190,7 @@ export default {
 .records-page {
   background-color: black;
   overflow-y: hidden;
-  min-width: 100vh;
+  min-width: 100vw;
   min-height: 100vh;
 }
 
@@ -262,7 +262,6 @@ input {
   background-color: #d9d9d9;
   border-radius: 10px;
   padding: 10px;
-  width: 300px;
 }
 </style>
 
