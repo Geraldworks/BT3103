@@ -16,9 +16,6 @@
 <script>
 export default {
   name: "ProgressChart",
-  data() {
-    return {};
-  },
   props: {
     chartName: String,
     progressOutput: String,

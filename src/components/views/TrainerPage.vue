@@ -1,13 +1,13 @@
 <template>
   <div class="Trainer-Page">
-    <TrainerNavbar v-if="!clientEmailToRender && !isDisplayRoutines"/>
+    <TrainerNavbar v-if="!user.displayRoutines && !user.clientEmail"/>
     <!-- v-if is used to render client information or trainer information selectively on the same page -->
     <!-- if the trainer clicks on a specific client, we update clientEmailToRender and refresh the page with 
          the client information with the email pass to clientEmailToRender -->
     <!-- Displaying the client's routine page if the trainer clicks on the Routine button -->
-    <div v-if="clientEmailToRender && isDisplayRoutines">
+    <div v-if="user.displayRoutines && user.clientEmail">
       <ClientRoutine
-        :email="emailToRender"
+        :email="user.clientEmail"
         :userFullName="trainerFullName"
         :profilePicURL="clientInfo[user.clientEmail][1]"
         @returnToHome="removeEmailToRender()"
@@ -15,7 +15,7 @@
       />
     </div>
     <!-- Displaying the specific client performance page -->
-    <div v-else-if="clientEmailToRender">
+    <div v-else-if="user.clientEmail">
       <!-- ClientPerformance listens for the returnToHome event
              when this occurs, we remove the current client email that is rendered 
              we then render everything again using the :key attribute -->
@@ -107,8 +107,8 @@ export default {
       refreshCount: 0, // helps to update components when there are state changes,
       trainerFullName: null,
       emailToRender: "", // client email to render for the routines
-      clientEmailToRender: false, // helps to know which page to render
-      isDisplayRoutines: false, // helps to know which page to render
+      // clientEmailToRender: false, // helps to know which page to render
+      // isDisplayRoutines: false, // helps to know which page to render
     };
   },
   methods: {
@@ -119,22 +119,26 @@ export default {
     // this method helps to set the specific client information to render
     setEmailToRender(email) {
       this.$store.dispatch("setClientEmail", email);
-      this.emailToRender = email; // might need to set this to "" at removeEmail
-      this.clientEmailToRender = true;
+      //this.clientEmailToRender = true;
       this.refreshPage();
     },
     // this method helps to remove the specific client information to render when the trainer clicks back
     removeEmailToRender() {
       this.$store.dispatch("setClientEmail", null);
-      this.isDisplayRoutines = false;
-      this.clientEmailToRender = false;
+      this.$store.dispatch("setDisplayRoutinesStatus", false)
+      //this.isDisplayRoutines = false;
+      //this.clientEmailToRender = false;
       this.refreshPage();
     },
     setDisplayRoutine() {
-      this.isDisplayRoutines = true;
+      this.$store.dispatch("setDisplayRoutinesStatus", true)
+      this.refreshPage();
+      //this.isDisplayRoutines = true;
     },
     renderPerformance() {
-      this.isDisplayRoutines = false;
+      //this.isDisplayRoutines = false;
+      this.$store.dispatch("setDisplayRoutinesStatus", false)
+      this.refreshPage();
     },
     // this comparator method helps to compare the date for the bookings
     comparatorForTime(bookingOne, bookingTwo) {

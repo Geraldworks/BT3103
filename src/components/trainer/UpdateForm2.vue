@@ -11,7 +11,7 @@
           <hr />
           <div id="update-form">
             <form action="">
-              <label for="">Fats percentage </label>
+              <label for="">Fat Percentage </label>
               <input
                 @input="checkFatsInput(fats)"
                 type="number"
@@ -20,11 +20,14 @@
                 id="fats"
                 placeholder="Current Fat %"
               />
-              <div v-if="showFatsError" class="error-message">
+              <div
+                :key="refreshCount"
+                v-if="showFatsError"
+                class="error-message"
+              >
                 The number must be positive and not greater than 100.
               </div>
-              <br />
-              <label for="">Weight in KG </label>
+              <label for="">Weight (kg) </label>
               <input
                 @input="checkWeightInput(weight)"
                 type="number"
@@ -33,11 +36,14 @@
                 id="weight"
                 placeholder="Current weight"
               />
-              <div v-if="showWeightError" class="error-message">
+              <div
+                :key="refreshCount"
+                v-if="showWeightError"
+                class="error-message"
+              >
                 The number must be positive.
               </div>
-              <br />
-              <label for="">Muscle Mass in KG</label>
+              <label for="">Muscle Mass (kg) </label>
               <input
                 @input="checkMuscleInput(muscle)"
                 type="number"
@@ -46,10 +52,13 @@
                 id="muscle"
                 placeholder="Current Muscle Mass"
               />
-              <div v-if="showMuscleError" class="error-message">
+              <div
+                :key="refreshCount"
+                v-if="showMuscleError"
+                class="error-message"
+              >
                 The number must be positive and not greater than the weight.
               </div>
-              <br />
             </form>
           </div>
           <div>
@@ -74,14 +83,23 @@
 import { mapGetters } from "vuex";
 import { auth, db } from "../../firebase";
 import { doc, getDoc, updateDoc, Timestamp } from "@firebase/firestore";
+import Swal from "sweetalert2";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
 
 export default {
   name: "UpdateForm",
   data() {
     return {
-      fats: "",
-      weight: "",
-      muscle: "",
+      fats: null,
+      weight: null,
+      muscle: null,
       date: "",
       isLoading: false,
       showFatsError: false,
@@ -101,43 +119,68 @@ export default {
       this.$store.dispatch("fetchUser", user);
     });
   },
+  emit: ["close-modal"],
   methods: {
+    sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
     async updateDataBase() {
-      this.loading = true;
-      const clientRef = doc(db, "client", this.clientEmail);
-      const querySnapshot = await getDoc(clientRef);
-      // Retrieve the client information
-      const clientData = querySnapshot.data();
-      let clientFatPercentage = clientData.fatPercentage;
-      let clientWeight = clientData.weight;
-      let clientMuscleMass = clientData.muscleMass;
-      let clientDate = clientData.datetime;
-      console.log(this.fats);
-      //pushing the form data into the array before updating the database
-      clientFatPercentage.push(this.fats);
-      clientWeight.push(this.weight);
-      clientMuscleMass.push(this.muscle);
-      const currentDate = new Date();
-      clientDate.push(Timestamp.fromDate(currentDate));
-      // Updating the database
-      updateDoc(clientRef, {
-        fatPercentage: clientFatPercentage,
-        weight: clientWeight,
-        muscleMass: clientMuscleMass,
-        datetime: clientDate,
-      })
-        .then((response) => {
-          this.isLoading = false;
-          location.reload();
-        })
-        .catch((error) => {
-          console.log(error);
+      if (
+        this.showFatsError ||
+        this.showWeightError ||
+        this.showMuscleError ||
+        !this.fats ||
+        !this.weight ||
+        !this.muscle
+      ) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "You have some invalid / incomplete inputs",
         });
+      } else {
+        this.loading = true;
+        const clientRef = doc(db, "client", this.clientEmail);
+        const querySnapshot = await getDoc(clientRef);
+        // Retrieve the client information
+        const clientData = querySnapshot.data();
+        let clientFatPercentage = clientData.fatPercentage;
+        let clientWeight = clientData.weight;
+        let clientMuscleMass = clientData.muscleMass;
+        let clientDate = clientData.datetime;
+        console.log(this.fats);
+        //pushing the form data into the array before updating the database
+        clientFatPercentage.push(this.fats);
+        clientWeight.push(this.weight);
+        clientMuscleMass.push(this.muscle);
+        const currentDate = new Date();
+        clientDate.push(Timestamp.fromDate(currentDate));
+        // Updating the database
+        updateDoc(clientRef, {
+          fatPercentage: clientFatPercentage,
+          weight: clientWeight,
+          muscleMass: clientMuscleMass,
+          datetime: clientDate,
+        })
+          .then((response) => {
+            this.isLoading = false;
+            this.$emit("close-modal");
+            Toast.fire({
+              icon: "success",
+              title: "Updated Successfully",
+            });
+            location.reload();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
     checkFatsInput(value) {
       this.showFatsError = value > 100 || value < 0;
     },
     checkWeightInput(value) {
+      this.checkMuscleInput(this.muscle);
       this.showWeightError = value < 0;
     },
     checkMuscleInput(value) {
@@ -187,18 +230,25 @@ export default {
 #update-form {
   background-color: white;
   border-radius: 25px;
-  padding: 1em 2em;
+  padding: 1rem;
+  padding-bottom: 1.2rem;
   text-align: center;
 }
 input {
   border-radius: 25px;
-  margin: 0.2em 1em;
   padding: 0em 0.5em;
   text-align: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 label {
   color: black;
 }
+
 .close {
   margin: 6% 0 0 10px;
   cursor: pointer;
@@ -235,10 +285,10 @@ select {
 }
 @keyframes pill-button-highlight {
   from {
-    border: 0px white solid;
+    border: 0px black solid;
   }
   to {
-    border: 2.5px black solid;
+    border: 2px white solid;
   }
 }
 .modal-fade-enter,
