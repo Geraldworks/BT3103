@@ -148,12 +148,12 @@ export default {
           this.submitBooking();
           Toast.fire({
             icon: "success",
-            title: "Bookings successful",
+            title: "Bookings Successful",
           });
         } else {
           Toast.fire({
             icon: "error",
-            title: "Bookings cancelled",
+            title: "Bookings Cancelled",
           });
         }
       });

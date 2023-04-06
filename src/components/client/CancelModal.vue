@@ -80,12 +80,12 @@ export default {
           this.cancelBookings();
           Toast.fire({
             icon: "success",
-            title: "Cancellations successful",
+            title: "Cancellations Successful",
           });
         } else {
           Toast.fire({
             icon: "error",
-            title: "bookings cancelled",
+            title: "Cancellations Unsuccessful",
           });
         }
       });

@@ -202,7 +202,7 @@ export default {
                   this.$router.push("/clients");
                   Toast.fire({
                     icon: "success",
-                    title: "Signed in successfully"
+                    title: "Signed In"
                   }
                   )
                 }
@@ -214,7 +214,7 @@ export default {
                 this.$router.push("/performance");
                 Toast.fire({
                   icon: "success",
-                  title: "Signed in successfully",
+                  title: "Signed In",
                 });
               });
           });
