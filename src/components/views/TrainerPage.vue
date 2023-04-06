@@ -1,8 +1,6 @@
 <template>
   <div class="Trainer-Page">
-    <div>
-      <TrainerNavbar />
-    </div>
+    <TrainerNavbar v-if="!clientEmailToRender && !isDisplayRoutines"/>
     <!-- v-if is used to render client information or trainer information selectively on the same page -->
     <!-- if the trainer clicks on a specific client, we update clientEmailToRender and refresh the page with 
          the client information with the email pass to clientEmailToRender -->
@@ -30,48 +28,53 @@
       />
     </div>
     <!-- Displaying the original client selection screen -->
-    <div v-else class="client-cards-container">
+    <div v-else>
       <div class="header1">YOUR CLIENTS</div>
-      <div
-        v-for="(clientInfo, clientEmail) in clientInfo"
-        class="box"
-        :key="refreshCount"
-      >
-        <div class="client-card" @click="setEmailToRender(clientEmail)">
-          <div class="profile-pic">
-            <img :src="clientInfo[1]" alt="DP" />
-          </div>
-          <div class="Name">
-            {{ clientInfo[0] }}
-          </div>
-          <div class="session-routine">
-            <div>
-              <h3 class="Session">
-                <div class="red-text upper">Next Session:</div>
-                <div class="red-text lower">Routine:</div>
-              </h3>
+      <div class="client-cards-container">
+        <div
+          v-for="(clientInfo, clientEmail) in clientInfo"
+          class="box"
+          :key="refreshCount"
+          @click="setEmailToRender(clientEmail)"
+        >
+          <div class="client-card">
+            <div class="image-name">
+              <div class="profile-pic">
+                <img :src="clientInfo[1]" alt="DP" />
+              </div>
+              <div class="Name">
+                {{ clientInfo[0].split(" ")[0] }}
+              </div>
             </div>
-            <div class="filler">
-              <div>_</div>
-              <div>_</div>
-            </div>
-            <div>
-              <h3 class="Routine">
-                <div class="white-text upper">
-                  {{
-                    clientInfo[2][0]
-                      ? formatDate(clientInfo[2][0]["from"])
-                      : "No Upcoming Session"
-                  }}
-                </div>
-                <div class="white-text lower">
-                  {{
-                    clientInfo[2][0]
-                      ? clientInfo[2][0]["focus"]
-                      : "No Upcoming Routine"
-                  }}
-                </div>
-              </h3>
+            <div class="session-routine">
+              <div>
+                <h3 class="Session">
+                  <div class="red-text upper">Next Session: </div>
+                  <div class="red-text lower">Routine: </div>
+                </h3>
+              </div>
+              <div class="filler">
+                <div>_</div>
+                <div>_</div>
+              </div>
+              <div>
+                <h3 class="Routine">
+                  <div class="white-text upper">
+                    {{
+                      clientInfo[2][0]
+                        ? formatDate(clientInfo[2][0]["from"])
+                        : "No Upcoming Session"
+                    }}
+                  </div>
+                  <div class="white-text lower">
+                    {{
+                      clientInfo[2][0]
+                        ? clientInfo[2][0]["focus"]
+                        : "No Upcoming Routine"
+                    }}
+                  </div>
+                </h3>
+              </div>
             </div>
           </div>
         </div>
@@ -241,17 +244,25 @@ export default {
 .Trainer-Page {
   background-color: black;
   overflow-y: hidden;
-  min-width: 800px;
+  min-width: 100vw;
   padding-bottom: 50px;
   min-height: 100vh;
   font-family: Teko;
 }
 .header1 {
   color: white;
-  margin: 40px 200px 20px 200px;
-  border-bottom: 5px solid white;
-  font-size: 3.5rem;
-  width: 70%;
+  border-bottom: 5px white solid;
+  font-size: 3rem;
+  text-transform: uppercase;
+  width: 70vw;
+  margin: auto;
+  padding-top: 20px;
+  margin-bottom: 20px;
+}
+.image-name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .filler {
@@ -261,12 +272,46 @@ export default {
   display: flex;
   justify-content: space-between;
   margin: 40px;
+  flex-wrap: wrap;
 }
 
 .client-cards-container {
-  height: calc(100vh - 400px);
   overflow: auto;
   box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  height: 55vh;
+}
+
+@media screen and (max-width: 1200px) {
+  .image-name {
+    margin-bottom: 15px;
+  }
+  .client-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .session-routine {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .Session {
+    text-align: center;
+  }
+
+  .Routine {
+    text-align: center;
+  }
+
 }
 
 .client-cards-container::-webkit-scrollbar {
@@ -295,19 +340,18 @@ export default {
 
 .Session {
   text-align: right;
-  font-size: 1.75rem;
+  font-size: 100%;
+  font-size:1.2rem;
 }
 
 .upper {
-  padding-bottom: 20px;
+  padding-bottom: 30px;
 }
 .session-routine {
   font-family: "Source Sanr Pro", sans-serif;
   display: flex;
-  justify-content: flex-start;
   align-items: center;
-  margin-right: 50px;
-  width: 400px;
+  margin-right: 40px;
 }
 .red-text {
   color: red;
@@ -317,13 +361,13 @@ export default {
 }
 .Name {
   margin-left: 50px;
-  font-size: 55px;
+  font-size: 3.2rem;
   font-weight: bold;
   color: white;
 }
 .Routine {
   text-align: left;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: white;
   margin-left: auto;
 }
@@ -347,6 +391,25 @@ export default {
 @media (max-width: 600px) {
   .profile-pic {
     display: none;
+  }
+
+  .Name {
+    margin: 0px;
+    padding: 0px;
+    position: relative;
+    font-size: 2.5rem;
+  }
+
+  .session-routine {
+    padding: 0px;
+    margin: 0px;
+  }
+  .red-text, .white-text{
+    font-size: 12px;
+  }
+
+  .client-card {
+    margin: 20px;
   }
 }
 </style>

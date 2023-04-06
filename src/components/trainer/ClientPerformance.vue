@@ -1,5 +1,6 @@
 <template>
   <div class="performance-page">
+    <TrainerNavbar />
     <TrainerPerformanceHeader
       :email="clientEmail"
       :profilePic="profilePicURL"

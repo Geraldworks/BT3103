@@ -1,52 +1,85 @@
 <template>
-<div>
-  <!-- requried is not working -->
-<transition name="modal-fade">
-    <div class="modal-overlay" @click="$emit('close-modal')">
-      <div class="modal" @click.stop>
-          <div style="font-size: 3rem"> <b style="color: white;">Updating Stats for</b> <b style="color: #ED1F24;">{{ clientName }}</b></div>
-          <hr>
+  <div>
+    <!-- requried is not working -->
+    <transition name="modal-fade">
+      <div class="modal-overlay" @click="$emit('close-modal')">
+        <div class="modal" @click.stop>
+          <div style="font-size: 3rem">
+            <b style="color: white">Updating Stats for </b>
+            <b style="color: #ed1f24">{{ clientName.split(" ")[0] }}</b>
+          </div>
+          <hr />
           <div id="update-form">
             <form action="">
-                <label for="">Fats percentage </label> 
-                    <input @input="checkFatsInput(fats)" type="number" v-model="fats" required id="fats"  placeholder="Current Fats %" />
-                        <div v-if="showFatsError" class="error-message"> The number must be positive and not greater than 100.</div> 
-                <br>
-                <label for="">Weight in KG </label> 
-                    <input @input="checkWeightInput(weight)" type="number" v-model="weight" required id="weight"  placeholder="Current weight" /> 
-                        <div v-if="showWeightError" class="error-message"> The number must be positive.</div> 
-                <br>
-                <label for="">Muscle Mass in KG</label> 
-                    <input @input="checkMuscleInput(muscle)" type="number" v-model="muscle" required id="muscle"  placeholder="Current Muscle Mass" /> 
-                        <div v-if="showMuscleError" class="error-message"> The number must be positive and not greater than the weight.</div> 
-                <br>
+              <label for="">Fats percentage </label>
+              <input
+                @input="checkFatsInput(fats)"
+                type="number"
+                v-model="fats"
+                required
+                id="fats"
+                placeholder="Current Fat %"
+              />
+              <div v-if="showFatsError" class="error-message">
+                The number must be positive and not greater than 100.
+              </div>
+              <br />
+              <label for="">Weight in KG </label>
+              <input
+                @input="checkWeightInput(weight)"
+                type="number"
+                v-model="weight"
+                required
+                id="weight"
+                placeholder="Current weight"
+              />
+              <div v-if="showWeightError" class="error-message">
+                The number must be positive.
+              </div>
+              <br />
+              <label for="">Muscle Mass in KG</label>
+              <input
+                @input="checkMuscleInput(muscle)"
+                type="number"
+                v-model="muscle"
+                required
+                id="muscle"
+                placeholder="Current Muscle Mass"
+              />
+              <div v-if="showMuscleError" class="error-message">
+                The number must be positive and not greater than the weight.
+              </div>
+              <br />
             </form>
-
           </div>
-        <div>
-          <button @click="updateDataBase()" style="text-align: center" type="submit">
-            Submit
-          </button>
+          <div>
+            <button
+              @click="updateDataBase()"
+              style="text-align: center"
+              type="submit"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+        <div class="close" @click="$emit('close-modal')">
+          <img class="close-img" src="@/assets/images/cross-icon.png" alt="" />
         </div>
       </div>
-      <div class="close" @click="$emit('close-modal')">
-        <img class="close-img" src="@/assets/images/cross-icon.png" alt="" />
-      </div>
-    </div>
-  </transition>
-</div>
+    </transition>
+  </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import { auth, db } from "../../firebase";
-import { doc, getDoc, updateDoc, Timestamp} from "@firebase/firestore";
+import { doc, getDoc, updateDoc, Timestamp } from "@firebase/firestore";
 
 export default {
   name: "UpdateForm",
   data() {
     return {
-      fats:"",
+      fats: "",
       weight: "",
       muscle: "",
       date: "",
@@ -54,11 +87,11 @@ export default {
       showFatsError: false,
       showWeightError: false,
       showMuscleError: false,
-    }
+    };
   },
   props: {
-    "clientName" :"",
-    "clientEmail":""
+    clientName: String,
+    clientEmail: String,
   },
   computed: {
     ...mapGetters(["user"]),
@@ -85,31 +118,33 @@ export default {
       clientWeight.push(this.weight);
       clientMuscleMass.push(this.muscle);
       const currentDate = new Date();
-      clientDate.push(Timestamp.fromDate(currentDate))
+      clientDate.push(Timestamp.fromDate(currentDate));
       // Updating the database
       updateDoc(clientRef, {
         fatPercentage: clientFatPercentage,
         weight: clientWeight,
         muscleMass: clientMuscleMass,
         datetime: clientDate,
-      }).then((response) => {
-        this.isLoading =false;
-        location.reload();
-      }).catch((error) => {
-        console.log(error);
-      });
+      })
+        .then((response) => {
+          this.isLoading = false;
+          location.reload();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     checkFatsInput(value) {
       this.showFatsError = value > 100 || value < 0;
     },
     checkWeightInput(value) {
-        this.showWeightError = value < 0;
+      this.showWeightError = value < 0;
     },
     checkMuscleInput(value) {
-        this.showMuscleError = this.weight < value || value < 0;
-    }
-  }
-}
+      this.showMuscleError = this.weight < value || value < 0;
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -138,7 +173,7 @@ export default {
   margin-top: 6%;
   border-radius: 25px;
   border-style: solid;
-  border-color: #ED1F24;
+  border-color: #ed1f24;
   border-width: 0.2em;
   max-width: 50%;
   max-height: 70%;
@@ -150,19 +185,19 @@ export default {
   display: none;
 }
 #update-form {
-    background-color: white;
-    border-radius: 25px;
-    padding: 1em 2em;
-    text-align: center;
+  background-color: white;
+  border-radius: 25px;
+  padding: 1em 2em;
+  text-align: center;
 }
 input {
-    border-radius: 25px;
-    margin: 0.2em 1em;
-    padding: 0em 0.5em;
-    text-align: center;
+  border-radius: 25px;
+  margin: 0.2em 1em;
+  padding: 0em 0.5em;
+  text-align: center;
 }
 label {
-    color: black
+  color: black;
 }
 .close {
   margin: 6% 0 0 10px;
@@ -193,9 +228,9 @@ button:hover {
   box-sizing: border-box;
 }
 select {
-  height: 200px; 
-  border: 0.5px solid black; 
-  padding: 0px 3px; 
+  height: 200px;
+  border: 0.5px solid black;
+  padding: 0px 3px;
   text-align: center;
 }
 @keyframes pill-button-highlight {
@@ -215,10 +250,10 @@ select {
   transition: opacity 0.5s ease;
 }
 hr {
-    border: none;
-    height: 4px;
-    background-color: white;
-    opacity: 1;
+  border: none;
+  height: 4px;
+  background-color: white;
+  opacity: 1;
 }
 .error-message {
   color: red;
