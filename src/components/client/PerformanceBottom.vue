@@ -40,6 +40,7 @@ export default {
   background-color: rgba(0, 0, 0, 0.3);
   border-radius: 25px;
   margin: 0px 20px 10px 20px;
+  overflow: auto;
 }
 
 .progress-section {

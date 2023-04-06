@@ -147,6 +147,7 @@ export default {
   /* height: 34.5vh; */
   width: 100%;
   box-sizing: border-box;
+  padding: 15px
 }
 
 .progress-chart-container {

@@ -285,6 +285,14 @@ import {
 } from "firebase/firestore";
 import { mapGetters } from "vuex";
 
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
+
 export default {
   name: "RoutineViewModal",
   data() {
@@ -510,7 +518,10 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           this.prepDeleteActivity(activityId);
-          Swal.fire("Deleted!", "Your activity has been deleted.", "success");
+          Toast.fire({
+            icon:"success",
+            title:"Activity Deleted"
+          })
         }
       });
     },
@@ -823,7 +834,10 @@ export default {
         }).then((result) => {
           if (result.isConfirmed) {
             this.saveRoutineToFS();
-            Swal.fire("Saved!", "Your routine has been saved.", "success");
+            Toast.fire({
+              icon: "success",
+              title: "Routine Saved"
+            })
           }
         });
       } else {
@@ -907,7 +921,10 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           this.delRoutineFromFS();
-          Swal.fire("Deleted!", "Your routine has been deleted.", "success");
+          Toast.fire({
+            icon: "success",
+            title: "Routine Deleted"
+          })
         }
       });
     },

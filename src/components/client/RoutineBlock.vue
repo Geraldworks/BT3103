@@ -51,6 +51,10 @@ export default {
   border-radius: 25px;
   margin-top: 1vh;
   cursor: pointer;
+  border: 2px solid transparent;
+}
+.content-area:hover {
+  border: 2px solid white;
 }
 
 .item-container {
