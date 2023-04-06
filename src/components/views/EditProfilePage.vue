@@ -291,8 +291,7 @@ export default {
 .edit-page {
   background-color: black;
   overflow-y: hidden;
-  min-width: 800px;
-  padding-bottom: 1000px;
+  min-width: 100vw;
 }
 
 .display-words {

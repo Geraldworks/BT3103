@@ -3,7 +3,7 @@
     <div class="modal-overlay" @click="$emit('close-modal')">
       <div class="modal" @click.stop>
         <!-- <img class="check" src="~/assets/check-icon.png" alt="" /> -->
-        <div style="font-size: 2.5rem">Select a Date to Book</div>
+        <div style="font-size: 2.5rem; color:white;">Select a Date to Book</div>
         <div>
           <Datepicker
             v-model="date"
@@ -12,7 +12,7 @@
             :max-date="maxDate"
           />
         </div>
-        <div v-if="date" style="font-size: 2.5rem; margin-top: 10px">
+        <div v-if="date" style="font-size: 2.5rem; margin-top: 10px; color:white;">
           Available Slots
         </div>
         <select
@@ -30,7 +30,7 @@
         </select>
         <!-- ADD routine options here -->
         <div
-          style="font-size: 2.5rem; margin-top: 10px"
+          style="font-size: 2.5rem; margin-top: 10px; color:white;"
           v-if="date && selected.length > 0"
         >
           Select 1 - 2 Routines
@@ -148,12 +148,12 @@ export default {
           this.submitBooking();
           Toast.fire({
             icon: "success",
-            title: "Bookings successful",
+            title: "Bookings Successful",
           });
         } else {
           Toast.fire({
             icon: "error",
-            title: "Bookings cancelled",
+            title: "Bookings Cancelled",
           });
         }
       });
@@ -330,27 +330,29 @@ export default {
   background-color: rgba(0, 0, 0, 0.7);
 }
 
-.modal {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  overflow: auto;
-  position: relative;
-  /* justify-content: center;
-  text-align: center; */
-  background-color: #d9d9d9;
-  height: 90%;
-  width: 90%;
-  margin-top: 6%;
-  border-radius: 20px;
-  max-width: 50%;
-  max-height: 75%;
-  font-size: 28px;
-  padding: 30px 50px;
-  text-align: center;
-  min-width: 550px;
-}
-
+ .modal {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: auto;
+    position: relative;
+    /* justify-content: center;
+    text-align: center; */
+    background-color: black;
+    font-family: Teko;
+    height: 90%;
+    width: 90%;
+    margin-top: 6%;
+    border-radius: 25px;
+    border-style: solid;
+    border-width: 0.2em;
+    border-color: #ED1F24;
+    max-width: 50%;
+    max-height: 80%;
+    font-size: 28px;
+    padding: 1em 3em;
+    text-align: center;
+  }
 .modal::-webkit-scrollbar {
   display: none;
 }

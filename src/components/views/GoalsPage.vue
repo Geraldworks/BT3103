@@ -168,20 +168,17 @@ export default {
 .goals-page {
   background-color: black;
   overflow-y: hidden;
-  min-width: 100vh;
-  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
 }
 
 .display-words {
   padding: 20px 10vw;
   margin: 0;
-  justify-content: flex-start;
   font-family: Teko;
   background-color: black;
   color: white;
   font-size: 3rem;
-  width: auto;
-  flex: 2;
 }
 
 .display-words > div {
@@ -233,6 +230,7 @@ button:hover {
 .container {
   font-family: "Source Sans Pro", sans-serif;
   font-size: larger;
+  margin: auto;
 }
 
 input {
@@ -240,7 +238,10 @@ input {
   background-color: #d9d9d9;
   border-radius: 10px;
   padding: 10px;
-  width: 300px;
 }
-</style>
 
+/* form {
+  padding: 0px 40px;
+} */
+
+</style>

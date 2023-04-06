@@ -86,7 +86,7 @@ export default {
       this.$router.push("/");
       Toast.fire({
         icon: "success",
-        title: "Signed out successfully",
+        title: "Signed Out",
       });
       sessionStorage.clear();
     },
