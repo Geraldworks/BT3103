@@ -4,8 +4,8 @@
     <div class="booking-page-header">
       <div>current bookings</div>
       <div class="button-container">
-        <button @click="showCancelModal()">Cancel Booking</button>
-        <button @click="showBookModal()">Make Booking</button>
+        <button class="pill-button" @click="showCancelModal()">Cancel Booking</button>
+        <button class="pill-button" @click="showBookModal()">Make Booking</button>
       </div>
     </div>
     <div class="popup">
@@ -306,7 +306,7 @@ export default {
   margin: auto;
   padding-top: 20px;
   display: flex;
-  justify-content: space-between
+  justify-content: space-between;
 }
 .booking-page {
   background-color: black;
@@ -319,6 +319,42 @@ export default {
   background-color: white;
   font-family: "Source Sans Pro", "sans-serif";
   font-size: 1.2rem;
+}
+
+.pill-button:hover {
+  animation-name: pill-button-highlight;
+  animation-duration: 0.15s;
+  animation-fill-mode: forwards;
+  box-sizing: border-box;
+}
+
+@keyframes pill-button-highlight {
+  from {
+    border: 0px white solid;
+  }
+  to {
+    border: 2px white solid;
+  }
+}
+.pill-button {
+  width: 200px;
+  height: 50px;
+  border-radius: 25px; /* half of height */
+  background-color: rgb(237, 31, 36);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  margin: 5px;
+  font-size: 1.5rem;
+  text-align: center;
+  box-sizing: border-box;
+  color: white;
+}
+
+.button-container {
+  text-align: center;
+  display: flex;
+  justify-content: center;
 }
 
 @media screen and (max-width: 800px) {
