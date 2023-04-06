@@ -12,6 +12,13 @@
       <div v-if="routineArr.length == 0" id="empty-routines">
         No routines currently... Create one now!
       </div>
+      <div class="item-container-header" v-else>
+        <div class="routinecreator-header">Routine Creator</div>
+        <div class="routinename-header">Routine Name</div>
+        <div class="exercisetypes-header">Routine Focus</div>
+        <div class="routinedate-header">Routine Date</div>
+        <div class="update-icon-header"></div>
+      </div>
       <RoutineBlock
         v-for="routine in routineArr.sort(this.comparatorForRoutine)"
         :routineCreator="routine.routineCreator"
@@ -204,6 +211,38 @@ export default {
 .interactive-top-area {
   padding-bottom: 1em;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.item-container-header {
+  display: flex;
+  flex-direction: row;
+  padding: 5px 20px 0px 20px;
+  font-size: 28px;
+  text-decoration: underline;
+}
+
+.routinecreator-header {
+  flex: 2;
+  margin-right: 5px;
+}
+
+.routinename-header {
+  flex: 5;
+  margin-right: 5px;
+}
+
+.exercisetypes-header {
+  flex: 3.8;
+  margin-right: 5px;
+}
+
+.routinedate-header {
+  flex: 1.4;
+  margin-right: 5px;
+}
+
+.update-icon-header {
+  flex: 0.5;
 }
 
 #new-routine {
