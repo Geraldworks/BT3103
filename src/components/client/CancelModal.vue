@@ -2,7 +2,7 @@
   <transition name="modal-fade">
     <div class="modal-overlay" @click="$emit('close-modal')">
       <div class="modal" @click.stop>
-        <div style="font-size: 2.5rem; margin-bottom: 20px">
+        <div style="font-size: 2.5rem; margin-bottom: 20px; color:white;">
           Select your Bookings to Cancel
         </div>
         <select v-model="selected" style="padding: 0px 2px" multiple>
@@ -194,25 +194,29 @@ export default {
   background-color: rgba(0, 0, 0, 0.7);
 }
 
-.modal {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  overflow: auto;
-  position: relative;
-  /* justify-content: center;
-  text-align: center; */
-  background-color: #d9d9d9;
-  width: 90%;
-  margin-top: 6%;
-  border-radius: 20px;
-  max-width: 50%;
-  max-height: 50%;
-  font-size: 28px;
-  padding: 30px 50px;
-  text-align: center;
-  min-width: 550px;
-}
+ .modal {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: auto;
+    position: relative;
+    /* justify-content: center;
+    text-align: center; */
+    background-color: black;
+    font-family: Teko;
+    height: 90%;
+    width: 90%;
+    margin-top: 6%;
+    border-radius: 25px;
+    border-style: solid;
+    border-width: 0.2em;
+    border-color: #ED1F24;
+    max-width: 50%;
+    max-height: 80%;
+    font-size: 28px;
+    padding: 1em 3em;
+    text-align: center;
+  }
 
 .modal::-webkit-scrollbar {
   display: none;

@@ -6,7 +6,7 @@
       <div class="button-container">
         <button class="pill-button" @click="showCancelModal()">Cancel Booking</button>
         <button class="pill-button" @click="showBookModal()">Make Booking</button>
-        <button class="pill-button" @click="showPreviousBookingModal()">Previous Bookings</button>
+        <button class="pill-button" @click="showPreviousBookingsModal()">Previous Bookings</button>
       </div>
     </div>
     <div class="popup">
@@ -335,6 +335,7 @@ export default {
   padding-top: 20px;
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 .booking-page {
   background-color: black;
@@ -382,7 +383,8 @@ export default {
 .button-container {
   text-align: center;
   display: flex;
-  justify-content: center;
+  justify-content: left;
+  flex-wrap: wrap;
 }
 
 @media screen and (max-width: 800px) {
