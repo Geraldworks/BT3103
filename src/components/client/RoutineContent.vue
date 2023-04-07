@@ -101,19 +101,32 @@ export default {
       });
 
       // function to convert dates to nicer format
-      function convertDateFormat(dateString) {
-        // Split the input string into date and time components, if applicable
-        const dateComponents = dateString.split(",")[0].split("/");
-        const timeComponents = dateString.split(",")[1];
-        // Check whether a time component is present
-        if (timeComponents) {
+      function convertDateFormat(dateObj) {
+        // Check whether the date object includes a time component
+        if (
+          dateObj.getHours() > 0 ||
+          dateObj.getMinutes() > 0 ||
+          dateObj.getSeconds() > 0
+        ) {
           // Format with time component: "mm/dd/yyyy, hh:mm:ss am" -> "dd/mm/yyyy, hh:mm:ss am"
-          const [month, day, year] = dateComponents;
-          return `${day}/${month}/${year}, ${timeComponents.trim()}`;
+          const formatter = new Intl.DateTimeFormat("en-SG", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+            hour12: true,
+          });
+          return formatter.format(dateObj);
         } else {
           // Format without time component: "mm/dd/yyyy" -> "dd/mm/yyyy"
-          const [month, day, year] = dateComponents;
-          return `${day}/${month}/${year}`;
+          const formatter = new Intl.DateTimeFormat("en-SG", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          });
+          return formatter.format(dateObj);
         }
       }
 
@@ -125,13 +138,11 @@ export default {
           routineCreator: routine.creatorName,
           routineName: routine.routineName,
           exerciseTypes: routine.exerciseTypes,
-          routineDate: convertDateFormat(
-            routine.routineDate.toDate().toLocaleDateString()
-          ),
+          routineDate: convertDateFormat(routine.routineDate.toDate()),
           updateBool: routine.updatedBool,
           lastUpdatedName: routine.lastUpdatedName,
           lastUpdatedTimestamp: convertDateFormat(
-            routine.lastUpdatedTimestamp.toDate().toLocaleString()
+            routine.lastUpdatedTimestamp.toDate()
           ),
           activityNextId: routine.activityNextId,
           activities: routine.activities,
