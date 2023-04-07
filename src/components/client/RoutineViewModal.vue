@@ -519,9 +519,9 @@ export default {
         if (result.isConfirmed) {
           this.prepDeleteActivity(activityId);
           Toast.fire({
-            icon:"success",
-            title:"Activity Deleted"
-          })
+            icon: "success",
+            title: "Activity Deleted",
+          });
         }
       });
     },
@@ -836,8 +836,8 @@ export default {
             this.saveRoutineToFS();
             Toast.fire({
               icon: "success",
-              title: "Routine Saved"
-            })
+              title: "Routine Saved",
+            });
           }
         });
       } else {
@@ -871,12 +871,14 @@ export default {
       newRoutine["routineDate"] = this.convertToFirestoreTimestamp(
         this.routineDate
       );
+      console.log("Saving Routine Date: ", this.routineDate);
       newRoutine["exerciseTypes"] = this.constructExerciseString();
       newRoutine["updatedBool"] = true;
       newRoutine["lastUpdatedName"] = this.userFullName; // WHAT IF TRAINER???
       newRoutine["lastUpdatedTimestamp"] = this.convertToFirestoreTimestamp(
         this.getCurrentDateTime()
       );
+      console.log("Saving lastUpdatedTimestamp: ", this.getCurrentDateTime());
       newRoutine["activityNextId"] = this.activityNextId;
       newRoutine["activities"] = this.compileActivites();
       newRoutine["routineComments"] = this.createNewCommentsArray();
@@ -923,8 +925,8 @@ export default {
           this.delRoutineFromFS();
           Toast.fire({
             icon: "success",
-            title: "Routine Deleted"
-          })
+            title: "Routine Deleted",
+          });
         }
       });
     },
