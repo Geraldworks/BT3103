@@ -1,7 +1,7 @@
 <template>
   <div class="routine-content-area">
     <div class="interactive-top-area">
-      <button @click="showRoutineCreateModal()" id="new-routine">
+      <button @click="showRoutineCreateModal()" id="new-routine" class="pill-button">
         Create New Routine
       </button>
       <!-- Include filter here if we decide to do it -->
@@ -218,6 +218,36 @@ export default {
   max-height: 59vh;
   overflow-y: auto;
 } */
+
+.pill-button:hover {
+  animation-name: pill-button-highlight;
+  animation-duration: 0.15s;
+  animation-fill-mode: forwards;
+  box-sizing: border-box;
+}
+
+@keyframes pill-button-highlight {
+  from {
+    border: 0px white solid;
+  }
+  to {
+    border: 2px white solid;
+  }
+}
+.pill-button {
+  width: 200px;
+  height: 50px;
+  border-radius: 25px; /* half of height */
+  background-color: rgb(237, 31, 36);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  margin: 5px;
+  font-size: 1.5rem;
+  text-align: center;
+  box-sizing: border-box;
+  color: white;
+}
 
 .interactive-top-area {
   padding-bottom: 1em;

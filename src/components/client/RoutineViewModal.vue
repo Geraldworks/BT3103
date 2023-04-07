@@ -48,7 +48,7 @@
                 >
               </div>
               <div class="top-right-btm">
-                <button @click="showAddActivity()">Add Activity</button>
+                <button class="pill-button" @click="showAddActivity()">Add Activity</button>
               </div>
             </div>
           </div>
@@ -244,17 +244,14 @@
           </div>
         </div>
 
-        <div style="text-align: center">
-          <!-- SAVE BUTTON -->
-          <div class="save-button" style="margin: 0.5em 0em">
-            <button @click="confirmSaveRoutineToFS()">Save</button>
-          </div>
+        <div style="text-align: center;">
           <!-- DELETE ROUTINE BUTTON -->
-          <div class="delete-button">
-            <button @click="confirmDelRoutineFromFS()" v-show="showUpdate">
-              Delete Routine
-            </button>
-          </div>
+          <button @click="confirmDelRoutineFromFS()" v-show="showUpdate" class="pill-button">
+            Delete Routine
+          </button>
+          <!-- SAVE BUTTON -->
+            <button @click="confirmSaveRoutineToFS()" class="pill-button">Save</button>
+
         </div>
       </div>
       <!-- Close Modal Button -->
@@ -1134,7 +1131,8 @@ export default {
 .content-area {
   background-color: #d9d9d9;
   border-radius: 25px;
-  margin-top: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   padding: 15px 20px;
   overflow: auto;
 }
@@ -1179,22 +1177,9 @@ export default {
   flex: 1;
   margin-left: auto; /* Align to the most right */
 }
-/* Button CSS */
-button {
-  border-radius: 25px; /* half of height */
-  background-color: #ed1f24;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 2px 10px;
-  font-size: 1.5rem;
-  text-align: center;
-  box-sizing: border-box;
-  color: white;
-  min-width: 5em;
-}
 
-button:hover {
+/* Button CSS */
+.pill-button:hover {
   animation-name: pill-button-highlight;
   animation-duration: 0.15s;
   animation-fill-mode: forwards;
@@ -1203,11 +1188,25 @@ button:hover {
 
 @keyframes pill-button-highlight {
   from {
-    border: 0px black solid;
+    border: 0px white solid;
   }
   to {
-    border: 2px black solid;
+    border: 2px white solid;
   }
+}
+.pill-button {
+  width: 200px;
+  height: 50px;
+  border-radius: 25px; /* half of height */
+  background-color: rgb(237, 31, 36);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  margin: 5px;
+  font-size: 1.5rem;
+  text-align: center;
+  box-sizing: border-box;
+  color: white;
 }
 
 /* Routine Activities */
