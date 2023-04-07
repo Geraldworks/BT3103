@@ -345,8 +345,8 @@ export default {
     margin-top: 6%;
     border-radius: 25px;
     border-style: solid;
-    border-width: 0.2em;
-    border-color: #ED1F24;
+    border-width: 2px;
+    border-color: #ed1f24;
     max-width: 50%;
     max-height: 80%;
     font-size: 28px;

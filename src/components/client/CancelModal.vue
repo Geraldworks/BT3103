@@ -209,7 +209,7 @@ export default {
     margin-top: 6%;
     border-radius: 25px;
     border-style: solid;
-    border-width: 0.2em;
+    border-width: 2px;
     border-color: #ED1F24;
     max-width: 50%;
     max-height: 80%;
