@@ -408,10 +408,15 @@ export default {
           newRoutine["routineDate"] = this.convertToFirestoreTimestamp(
             this.routineDate
           );
+          console.log("Data is not saved, routineDate: ", this.routineDate);
           newRoutine["exerciseTypes"] = this.constructExerciseString();
           newRoutine["updatedBool"] = false; // toggle this
           newRoutine["lastUpdatedName"] = this.lastUpdatedName;
           newRoutine["lastUpdatedTimestamp"] = this.convertToFirestoreTimestamp(
+            this.lastUpdatedTimestamp
+          );
+          console.log(
+            "Data is not saved, lastUpdatedTimestamp: ",
             this.lastUpdatedTimestamp
           );
           newRoutine["activityNextId"] = this.activityNextId;
@@ -991,8 +996,13 @@ export default {
         this.routineDate = this.formatDateForDatePicker(
           this.routineInfo.routineDate
         );
+        console.log("Entered Modal, routineDate is: ", this.routineDate);
         this.lastUpdatedName = this.routineInfo.lastUpdatedName;
         this.lastUpdatedTimestamp = this.routineInfo.lastUpdatedTimestamp;
+        console.log(
+          "Entered Modal, lastUpdatedTimestamp is: ",
+          this.lastUpdatedTimestamp
+        );
         this.routineComments = this.routineInfo.routineComments; // Array of Strings
 
         // Container to store activities (formatted for RoutineActivity)
