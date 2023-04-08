@@ -1,7 +1,11 @@
 <template>
   <div class="routine-content-area">
     <div class="interactive-top-area">
-      <button @click="showRoutineCreateModal()" id="new-routine" class="pill-button">
+      <button
+        @click="showRoutineCreateModal()"
+        id="new-routine"
+        class="pill-button"
+      >
         Create New Routine
       </button>
       <!-- Include filter here if we decide to do it -->
@@ -77,7 +81,7 @@ export default {
   },
   methods: {
     async fetchFireBaseData() {
-      console.log("====Fetching Firebase Data====");
+      // console.log("====Fetching Firebase Data====");
       // Container to store routines from firebase (raw)
       let routinesFromFirebase = [];
       // Container to store routines (formatted for RoutineBlock)
@@ -165,7 +169,7 @@ export default {
       this.showUpdateInViewing = false;
     },
     reloadPage() {
-      console.log("Reloading...");
+      // console.log("Reloading...");
       // this.$router.go(0);
       this.fetchFireBaseData();
     },

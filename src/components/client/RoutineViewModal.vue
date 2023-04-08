@@ -48,7 +48,9 @@
                 >
               </div>
               <div class="top-right-btm">
-                <button class="pill-button" @click="showAddActivity()">Add Activity</button>
+                <button class="pill-button" @click="showAddActivity()">
+                  Add Activity
+                </button>
               </div>
             </div>
           </div>
@@ -244,14 +246,19 @@
           </div>
         </div>
 
-        <div style="text-align: center;">
+        <div style="text-align: center">
           <!-- DELETE ROUTINE BUTTON -->
-          <button @click="confirmDelRoutineFromFS()" v-show="showUpdate" class="pill-button">
+          <button
+            @click="confirmDelRoutineFromFS()"
+            v-show="showUpdate"
+            class="pill-button"
+          >
             Delete Routine
           </button>
           <!-- SAVE BUTTON -->
-            <button @click="confirmSaveRoutineToFS()" class="pill-button">Save</button>
-
+          <button @click="confirmSaveRoutineToFS()" class="pill-button">
+            Save
+          </button>
         </div>
       </div>
       <!-- Close Modal Button -->
@@ -356,7 +363,7 @@ export default {
       });
 
       this.routineNextId = routineNextAvailId;
-      console.log("FROM FIREBASE: routineNextId IS", this.routineNextId);
+      // console.log("FROM FIREBASE: routineNextId IS", this.routineNextId);
     },
     showAddActivity() {
       this.addActivity = true;
@@ -390,7 +397,7 @@ export default {
 
         // also toggle the updateValue if previously updated
         if (this.updateBool) {
-          console.log("===Setting update bool to false===");
+          // console.log("===Setting update bool to false===");
           // navigate to the correct document & access routines
           const clientRef = doc(db, "client", this.email);
           const clientSnap = await getDoc(clientRef);
@@ -405,17 +412,17 @@ export default {
           newRoutine["routineDate"] = this.convertToFirestoreTimestamp(
             this.routineDate
           );
-          console.log("Data is not saved, routineDate: ", this.routineDate);
+          // console.log("Data is not saved, routineDate: ", this.routineDate);
           newRoutine["exerciseTypes"] = this.constructExerciseString();
           newRoutine["updatedBool"] = false; // toggle this
           newRoutine["lastUpdatedName"] = this.lastUpdatedName;
           newRoutine["lastUpdatedTimestamp"] = this.convertToFirestoreTimestamp(
             this.lastUpdatedTimestamp
           );
-          console.log(
-            "Data is not saved, lastUpdatedTimestamp: ",
-            this.lastUpdatedTimestamp
-          );
+          // console.log(
+          //   "Data is not saved, lastUpdatedTimestamp: ",
+          //   this.lastUpdatedTimestamp
+          // );
           newRoutine["activityNextId"] = this.activityNextId;
           newRoutine["activities"] = this.activityArr;
           newRoutine["routineComments"] = this.routineComments;
@@ -441,8 +448,8 @@ export default {
       }
     },
     prepEditActivity(activityInfo) {
-      console.log("Editing...");
-      console.log(activityInfo);
+      // console.log("Editing...");
+      // console.log(activityInfo);
 
       // Give existing values
       this.activityType = activityInfo.activityType || "";
@@ -528,10 +535,10 @@ export default {
       });
     },
     prepDeleteActivity(activityId) {
-      console.log("Deleting...");
+      // console.log("Deleting...");
       // Keep the activityId to be deleted
       let delActivityId = parseInt(activityId);
-      console.log(activityId);
+      // console.log(activityId);
 
       // Remove from activityArr (if it is there)
       const filteredActivityArr = this.activityArr.filter(
@@ -561,16 +568,16 @@ export default {
     },
     // Tracks if changes are made for routineName & routineDate
     updateChangeBool() {
-      console.log("Detected Change in Fields");
+      // console.log("Detected Change in Fields");
       this.hasFieldChanged = true;
     },
     // Tracks if changes are made for routineComments
     updateRoutineCommentsBool() {
-      console.log("Detected Change in Routine Comments");
+      // console.log("Detected Change in Routine Comments");
       this.hasRoutineCommentsChanged = true;
     },
     addActivityValidator() {
-      console.log("Checking");
+      // console.log("Checking");
       // Check activityType, activityName, activityDescription, and numSets
       if (
         this.activityType === "" ||
@@ -631,7 +638,7 @@ export default {
     // 2) Del from activityArr
     confirmAddActivity() {
       if (this.addActivityValidator()) {
-        console.log("values are acceptable");
+        // console.log("values are acceptable");
 
         if (this.isEditingActivity) {
           // If editing activity, remove old from `activityArr` (since updated is now in `newActivitiesArr`)
@@ -692,7 +699,7 @@ export default {
         }
         newActivityObj["setInfo"] = setsArr;
 
-        console.log(newActivityObj);
+        // console.log(newActivityObj);
         // Assign the new activities to data property
         this.newActivitiesArr.push(newActivityObj);
 
@@ -768,11 +775,11 @@ export default {
         // Check if fields are empty or no activities at all
         // Check if activity has been deleted
         if (this.routineName === "" || this.routineDate === "") {
-          console.log("FAIL 1");
+          // console.log("FAIL 1");
           return false;
         }
         if (this.newActivitiesArr.length == 0 && this.activityArr.length == 0) {
-          console.log("FAIL 2");
+          // console.log("FAIL 2");
           return false;
         }
         return true;
@@ -784,11 +791,11 @@ export default {
           this.routineDate === "" ||
           this.routineNewComments === ""
         ) {
-          console.log("FAIL 3");
+          // console.log("FAIL 3");
           return false;
         }
         if (this.newActivitiesArr.length == 0 && this.activityArr.length == 0) {
-          console.log("FAIL 4");
+          // console.log("FAIL 4");
           return false;
         }
         return true;
@@ -796,7 +803,7 @@ export default {
         // No changes were made to fields
         // Check routineName and routineDate
         if (this.routineName === "" || this.routineDate === "") {
-          console.log("FAIL 5");
+          // console.log("FAIL 5");
           return false;
         }
         // Check newActivitiesArr
@@ -804,7 +811,7 @@ export default {
           this.newActivitiesArr == null ||
           this.newActivitiesArr.length == 0
         ) {
-          console.log("FAIL 6");
+          // console.log("FAIL 6");
           return false;
         }
         return true;
@@ -860,27 +867,27 @@ export default {
       const clientSnap = await getDoc(clientRef);
       let routinesFromFirebase = [];
       routinesFromFirebase = clientSnap.data().routines;
-      console.log(routinesFromFirebase);
+      // console.log(routinesFromFirebase);
 
       // Create a new Routine based off current Modal
       let newRoutine = {};
       newRoutine["routineId"] = this.routineNextId;
       this.routineNextId += 1; // Increment
-      console.log("Incremented RoutineNextId:", this.routineNextId);
+      // console.log("Incremented RoutineNextId:", this.routineNextId);
 
       newRoutine["creatorName"] = this.creatorName;
       newRoutine["routineName"] = this.routineName;
       newRoutine["routineDate"] = this.convertToFirestoreTimestamp(
         this.routineDate
       );
-      console.log("Saving Routine Date: ", this.routineDate);
+      // console.log("Saving Routine Date: ", this.routineDate);
       newRoutine["exerciseTypes"] = this.constructExerciseString();
       newRoutine["updatedBool"] = true;
       newRoutine["lastUpdatedName"] = this.userFullName; // WHAT IF TRAINER???
       newRoutine["lastUpdatedTimestamp"] = this.convertToFirestoreTimestamp(
         this.getCurrentDateTime()
       );
-      console.log("Saving lastUpdatedTimestamp: ", this.getCurrentDateTime());
+      // console.log("Saving lastUpdatedTimestamp: ", this.getCurrentDateTime());
       newRoutine["activityNextId"] = this.activityNextId;
       newRoutine["activities"] = this.compileActivites();
       newRoutine["routineComments"] = this.createNewCommentsArray();
@@ -896,7 +903,7 @@ export default {
       });
       newRoutinesToFirebase.push(newRoutine);
 
-      console.log(newRoutinesToFirebase);
+      // console.log(newRoutinesToFirebase);
 
       // Update new Array of Routines & routineNextId to FireStore
       await updateDoc(clientRef, {
@@ -904,7 +911,7 @@ export default {
         routines: newRoutinesToFirebase,
       });
 
-      console.log("New RoutineNextId:", this.routineNextId);
+      // console.log("New RoutineNextId:", this.routineNextId);
 
       // reset data
       this.newActivitiesArr = [];
@@ -971,8 +978,8 @@ export default {
       // console.log("watch:", newFullName);
     },
     routineInfo() {
-      console.log("Change in routine info");
-      console.log(this.routineInfo);
+      // console.log("Change in routine info");
+      // console.log(this.routineInfo);
 
       //Reset Fields for each RoutineInfo Change
       this.hasFieldChanged = false;
@@ -982,9 +989,9 @@ export default {
       this.routineNewComments = "";
 
       if (this.action == "Viewing") {
-        console.log("Viewing");
+        // console.log("Viewing");
         this.updateBool = this.routineInfo.updateBool;
-        console.log(this.updateBool);
+        // console.log(this.updateBool);
         this.creatorName = this.routineInfo.routineCreator;
         this.routineNextId = this.routineInfo.routineNextId;
         this.routineId = this.routineInfo.routineId;
@@ -993,13 +1000,13 @@ export default {
         this.routineDate = this.formatDateForDatePicker(
           this.routineInfo.routineDate
         );
-        console.log("Entered Modal, routineDate is: ", this.routineDate);
+        // console.log("Entered Modal, routineDate is: ", this.routineDate);
         this.lastUpdatedName = this.routineInfo.lastUpdatedName;
         this.lastUpdatedTimestamp = this.routineInfo.lastUpdatedTimestamp;
-        console.log(
-          "Entered Modal, lastUpdatedTimestamp is: ",
-          this.lastUpdatedTimestamp
-        );
+        // console.log(
+        //   "Entered Modal, lastUpdatedTimestamp is: ",
+        //   this.lastUpdatedTimestamp
+        // );
         this.routineComments = this.routineInfo.routineComments; // Array of Strings
 
         // Container to store activities (formatted for RoutineActivity)
@@ -1024,7 +1031,7 @@ export default {
         }
       } else {
         // Creating
-        console.log("Creating");
+        // console.log("Creating");
         this.creatorName = this.userFullName;
         // No Data
         this.routineId = 0;
@@ -1047,10 +1054,10 @@ export default {
         (Array.isArray(this.routineComments) &&
           this.routineComments.length === 0)
       ) {
-        console.log("Comments: ", this.routineComments);
-        return "===No Comments Currently===";
+        // console.log("Comments: ", this.routineComments);
+        return "=== No Comments Currently ===";
       }
-      console.log("Comments: ", this.routineComments);
+      // console.log("Comments: ", this.routineComments);
       return this.routineCommentsStringFormatter(this.routineComments);
     },
   },
