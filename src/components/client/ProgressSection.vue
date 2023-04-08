@@ -115,17 +115,27 @@ export default {
           ).toFixed();
         } else {
           // if goal is hit or exceeded
-          console.log("Entered else condition");
+          // console.log("Entered else condition");
           muscleMassProgress = 100;
         }
 
         // Assign the values to data()
         this.weightGoal = `${weightGoalValue}kg`;
-        this.weightData.Progress = weightProgress;
-        this.weightData.Remaining = 100 - weightProgress;
+        // If currently no data ==> Can't have a progress!
+        if (documentData.weight.length === 0) {
+          this.weightData.Progress = 0;
+        } else {
+          this.weightData.Progress = weightProgress;
+        }
+        this.weightData.Remaining = 100 - this.weightData.Progress;
         this.muscleGoal = `${muscleMassGoalValue}%`;
-        this.muscleData.Progress = muscleMassProgress;
-        this.muscleData.Remaining = 100 - muscleMassProgress;
+        // If currently no data ==> Can't have a progress!
+        if (documentData.muscleMass.length === 0) {
+          this.muscleData.Progress = 0;
+        } else {
+          this.muscleData.Progress = muscleMassProgress;
+        }
+        this.muscleData.Remaining = 100 - this.muscleData.Progress;
       });
     } catch (error) {
       console.log(error);
@@ -147,7 +157,7 @@ export default {
   /* height: 34.5vh; */
   width: 100%;
   box-sizing: border-box;
-  padding: 15px
+  padding: 15px;
 }
 
 .progress-chart-container {
