@@ -1,9 +1,9 @@
 <template>
   <nav>
     <div class="navbar-brand">
-      <a href="/performance">
+      <router-link to="/performance" exact-active-class="active-nav-link">
         <img src="/gymmbuddy.png" alt="Logo" />
-      </a>
+      </router-link>
     </div>
     <div class="row">
       <div class="col">
@@ -105,7 +105,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 @import url("https://fonts.googleapis.com/css?family=Source Sans Pro");
 
 nav {
@@ -133,9 +133,8 @@ nav {
 .nav-link {
   color: #fff;
   text-decoration: none;
-  font-weight: bold;
   text-transform: uppercase;
-  padding: 0px 10px;
+  padding: 0px 5px;
   box-sizing: border-box;
   border-radius: 8px;
 }

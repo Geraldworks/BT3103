@@ -1,9 +1,13 @@
 <template>
   <nav>
     <div class="navbar-brand">
-      <a href="/clients">
+      <router-link
+        to="/clients"
+        exact-active-class="active-nav-link"
+        @click="removeStore"
+      >
         <img src="/gymmbuddy.png" alt="Logo" />
-      </a>
+      </router-link>
     </div>
     <div class="row">
       <div class="col">
@@ -11,7 +15,7 @@
           class="nav-link"
           to="/clients"
           exact-active-class="active-nav-link"
-          @click="removeEmailToRender"
+          @click="removeStore"
         >
           <p>CLIENTS</p>
         </router-link>
@@ -90,8 +94,9 @@ export default {
       });
       sessionStorage.clear();
     },
-    removeEmailToRender() {
+    removeStore() {
       this.$store.dispatch("setClientEmail", null);
+      this.$store.dispatch("setDisplayRoutinesStatus", false);
     },
   },
 };
@@ -125,9 +130,8 @@ nav {
 .nav-link {
   color: #fff;
   text-decoration: none;
-  font-weight: bold;
   text-transform: uppercase;
-  padding: 0px 10px;
+  padding: 0px 5px;
   box-sizing: border-box;
   border-radius: 8px;
 }
