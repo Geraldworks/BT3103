@@ -1,7 +1,7 @@
 <template>
   <div class="top-content">
     <a href="/">
-      <img src="gymmbuddy.png" alt="gymmbuddy logo" height="100" class="logo"/>
+      <img src="/gymmbuddy.png" alt="gymmbuddy logo" height="100" class="logo"/>
     </a>
     <div class="display-words">{{ headerWords }}</div>
   </div>
