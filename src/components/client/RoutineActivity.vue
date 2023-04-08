@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     reqEditActivity() {
-      console.log("Requesting Edit Activity from RoutineActivity");
+      // console.log("Requesting Edit Activity from RoutineActivity");
       let activityInfo = {
         uniqueId: this.uniqueId,
         activityId: this.uniqueId.split("-")[1],

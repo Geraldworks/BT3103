@@ -47,9 +47,9 @@ export default {
 
     this.email = this.user.data.email;
     this.userFullName = clientName;
-    console.log("--- Routines Page ---");
-    console.log(this.email);
-    console.log(this.userFullName);
+    // console.log("--- Routines Page ---");
+    // console.log(this.email);
+    // console.log(this.userFullName);
     // console.log(this.fullName);
   },
   methods: {
@@ -107,7 +107,7 @@ export default {
 
 @media screen and (max-width: 800px) {
   .routines-page {
-    padding-bottom: calc(600px - 10vh)
+    padding-bottom: calc(600px - 10vh);
   }
   .content-container {
     max-height: 80vh;
@@ -116,18 +116,17 @@ export default {
 
 @media screen and (max-width: 550px) {
   .routines-page {
-    padding-bottom: calc(850px - 10vh)
+    padding-bottom: calc(850px - 10vh);
   }
 }
 
 @media screen and (max-width: 400px) {
   .routines-page {
-    padding-bottom: calc(1200px - 10vh)
+    padding-bottom: calc(1200px - 10vh);
   }
 }
 
 body::-webkit-scrollbar {
   display: none;
 }
-
 </style>
