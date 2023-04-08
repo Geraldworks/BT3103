@@ -136,6 +136,10 @@ export default {
         parseFloat(this.weightGoal) < 0
       ) {
         this.errorMessage = "Please key in positive values only!";
+      } else if (
+        parseFloat(this.muscleMassGoal) > parseFloat(this.weightGoal)
+      ) {
+        this.errorMessage = "Muscle Mass cannot be more than Weight!";
       } else {
         this.isLoading = true;
         updateDoc(clientRef, {
@@ -243,5 +247,4 @@ input {
 /* form {
   padding: 0px 40px;
 } */
-
 </style>

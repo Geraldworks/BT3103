@@ -1,6 +1,6 @@
 <template>
   <div class="Trainer-Page">
-    <TrainerNavbar v-if="!user.displayRoutines && !user.clientEmail"/>
+    <TrainerNavbar v-if="!user.displayRoutines && !user.clientEmail" />
     <!-- v-if is used to render client information or trainer information selectively on the same page -->
     <!-- if the trainer clicks on a specific client, we update clientEmailToRender and refresh the page with 
          the client information with the email pass to clientEmailToRender -->
@@ -49,8 +49,8 @@
             <div class="session-routine">
               <div>
                 <h3 class="Session">
-                  <div class="red-text upper">Next Session: </div>
-                  <div class="red-text lower">Routine: </div>
+                  <div class="red-text upper">Next Session:</div>
+                  <div class="red-text lower">Routine:</div>
                 </h3>
               </div>
               <div class="filler">
@@ -125,19 +125,19 @@ export default {
     // this method helps to remove the specific client information to render when the trainer clicks back
     removeEmailToRender() {
       this.$store.dispatch("setClientEmail", null);
-      this.$store.dispatch("setDisplayRoutinesStatus", false)
+      this.$store.dispatch("setDisplayRoutinesStatus", false);
       //this.isDisplayRoutines = false;
       //this.clientEmailToRender = false;
       this.refreshPage();
     },
     setDisplayRoutine() {
-      this.$store.dispatch("setDisplayRoutinesStatus", true)
+      this.$store.dispatch("setDisplayRoutinesStatus", true);
       this.refreshPage();
       //this.isDisplayRoutines = true;
     },
     renderPerformance() {
       //this.isDisplayRoutines = false;
-      this.$store.dispatch("setDisplayRoutinesStatus", false)
+      this.$store.dispatch("setDisplayRoutinesStatus", false);
       this.refreshPage();
     },
     // this comparator method helps to compare the date for the bookings
@@ -315,7 +315,6 @@ export default {
   .Routine {
     text-align: center;
   }
-
 }
 
 .client-cards-container::-webkit-scrollbar {
@@ -345,7 +344,7 @@ export default {
 .Session {
   text-align: right;
   font-size: 100%;
-  font-size:1.2rem;
+  font-size: 1.2rem;
 }
 
 .upper {
@@ -408,7 +407,8 @@ export default {
     padding: 0px;
     margin: 0px;
   }
-  .red-text, .white-text{
+  .red-text,
+  .white-text {
     font-size: 12px;
   }
 
