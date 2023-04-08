@@ -217,7 +217,7 @@ export default {
   border-radius: 25px;
   border-style: solid;
   border-color: #ed1f24;
-  border-width: 0.2em;
+  border-width: 2px;
   max-width: 50%;
   max-height: 70%;
   font-size: 28px;
