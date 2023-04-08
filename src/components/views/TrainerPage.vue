@@ -286,7 +286,7 @@ export default {
   align-items: center;
   justify-content: flex-start;
   flex-direction: column;
-  height: 55vh;
+  max-height: 55vh;
 }
 
 @media screen and (max-width: 1200px) {
