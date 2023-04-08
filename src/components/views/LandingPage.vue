@@ -28,15 +28,26 @@
     <div id="about">
       <div class="container">
         <h2 class="about-gymmbuddy">ABOUT</h2>
-        <h2 class="about-gymmbuddy" style="color:#ed1f24">GYMMBUDDY</h2>
-        <h5 style="line-height: 2em; margin-top: 30px; margin: 0px 150px; font-size: 1.4rem">
-          Established in October 2010, GYMMBOXX started as a single gym situated
-          at the top of a multi-storey car park in Singapore (Bedok Reservoir).
-          Over the years, GYMMBOXX has made its mark as Singapore’s affordable
-          premium gym brand, serving the residential neighbourhoods and
-          heartlands. With a total of 8 gyms island-wide currently, GYMMBOXX
-          will continue to expand and bring quality gym facilities and service
-          to the rest of Singapore and beyond.
+        <h2 class="about-gymmbuddy" style="color: #ed1f24">GYMMBUDDY</h2>
+        <h5
+          style="
+            line-height: 2em;
+            margin-top: 30px;
+            margin: 0px 150px;
+            font-size: 1.4rem;
+          "
+        >
+          GYMMBUDDY is an exclusive web application that aids GYMMBOXX's clients
+          in their fitness planning and enhances the client-trainer
+          relationship. Our one-stop platform offers a range of features,
+          including progress tracking and building custom workout routines. You
+          can also book paid training sessions with your preferred trainer,
+          making your fitness journey more personalized. Our aim is to provide a
+          holistic approach to fitness by offering multiple features that are
+          entirely free to use. With GYMMBUDDY, you can achieve your fitness
+          goals with ease and convenience, making your fitness journey a more
+          enjoyable experience. Sign up for GYMMBUDDY today and start your
+          journey towards a healthier you!
         </h5>
       </div>
     </div>
@@ -44,18 +55,20 @@
     <div id="reasons">
       <div class="container">
         <h2 class="why-gymmbuddy">WHY</h2>
-        <h2 class="why-gymmbuddy" style="color: #ed1f24; margin-bottom: 30px;">GYMMBUDDY</h2>
+        <h2 class="why-gymmbuddy" style="color: #ed1f24; margin-bottom: 30px">
+          GYMMBUDDY
+        </h2>
         <div class="row">
           <div class="col">
-            <img src="/checklist.png" alt="" height="200px" width="250px"/>
+            <img src="/checklist.png" alt="" height="200px" width="250px" />
             <h4>TRACKING</h4>
           </div>
           <div class="col">
-            <img src="/dumbbell.png" alt="" height="200px" width="250px"/>
+            <img src="/dumbbell.png" alt="" height="200px" width="250px" />
             <h4>PERSONALISED TRAINING</h4>
           </div>
           <div class="col">
-            <img src="/thumb.png" alt="" height="200px" width="250px"/>
+            <img src="/thumb.png" alt="" height="200px" width="250px" />
             <h4>SIMPLE TO USE</h4>
           </div>
         </div>
@@ -156,7 +169,8 @@ body {
   color: white;
 }
 
-.about-gymmbuddy, .why-gymmbuddy{
+.about-gymmbuddy,
+.why-gymmbuddy {
   display: inline-block;
   padding: 0px 5px;
   margin-bottom: 30px;
