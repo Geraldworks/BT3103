@@ -292,6 +292,7 @@ export default {
   background-color: black;
   overflow-y: hidden;
   min-width: 100vw;
+  min-height: 100vh;
 }
 
 .display-words {
