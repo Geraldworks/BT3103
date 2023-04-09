@@ -21,7 +21,7 @@
       </table>
     </div>
     <div class="icons">
-      <!-- Include Edit Icon (On Hover show) -->
+      <!-- Edit Icon -->
       <div class="edit">
         <img
           class="edit-img"
@@ -30,7 +30,7 @@
           @click="reqEditActivity"
         />
       </div>
-      <!-- Include Delete Icon (On Hover show) -->
+      <!-- Delete Icon -->
       <div class="delete">
         <img
           class="delete-img"
@@ -50,10 +50,13 @@ export default {
     return {};
   },
   methods: {
+    // Called on clicking Edit Icon
     reqEditActivity() {
       // console.log("Requesting Edit Activity from RoutineActivity");
+      // Format correct Activity Info to be emitted
       let activityInfo = {
         uniqueId: this.uniqueId,
+        // Get the activity ID from the unique ID
         activityId: this.uniqueId.split("-")[1],
         activityType: this.activityType,
         activityName: this.activityName,
@@ -63,6 +66,7 @@ export default {
       };
       this.$emit("edit-activity", activityInfo);
     },
+    // Called on clicking Delete Icon
     reqDeleteActivity() {
       this.$emit("delete-activity", this.uniqueId.split("-")[1]);
     },
@@ -85,7 +89,7 @@ export default {
       row.insertCell(0).innerHTML = set.setNum;
       row.insertCell(1).innerHTML = set.weight;
       row.insertCell(2).innerHTML = set.reps;
-
+      // Set tick if true, else cross
       row.insertCell(3).innerHTML = set.done
         ? '<img src="src/assets/images/tick-icon.png" style="width: 20px; margin-bottom: 5px;"/>'
         : '<img src="src/assets/images/cross-black-icon.png" style="width: 20px; margin-bottom: 5px;"/>';

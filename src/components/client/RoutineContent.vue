@@ -1,6 +1,7 @@
 <template>
   <div class="routine-content-area">
     <div class="interactive-top-area">
+      <!-- Create Routine Button -->
       <button
         @click="showRoutineCreateModal()"
         id="new-routine"
@@ -16,6 +17,7 @@
       <div v-if="routineArr.length == 0" id="empty-routines">
         No routines currently... Create one now!
       </div>
+      <!-- If have routines -->
       <div class="item-container-header" v-else>
         <div class="routinecreator-header">Routine Creator</div>
         <div class="routinename-header">Routine Name</div>

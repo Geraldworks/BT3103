@@ -16,6 +16,7 @@
           <div class="top-part">
             <div class="top-left">
               <form action="" class="routine-info">
+                <!-- Routine Name Input -->
                 <label for="rname">Routine Name</label>
                 <input
                   type="text"
@@ -27,6 +28,7 @@
                   v-model="routineName"
                 />
                 <br />
+                <!-- Routine date Input -->
                 <label for="rdate">Routine Date</label>
                 <input
                   type="date"
@@ -40,6 +42,7 @@
               </form>
             </div>
             <div class="top-right">
+              <!-- Last Updated Display -->
               <!-- showUpdate is false for Creating, true for Viewing -->
               <div class="top-right-top" v-show="showUpdate">
                 <i
@@ -48,6 +51,7 @@
                 >
               </div>
               <div class="top-right-btm">
+                <!-- Add Activity Button -->
                 <button class="pill-button" @click="showAddActivity()">
                   Add Activity
                 </button>
@@ -58,6 +62,7 @@
           <div class="add-activity" v-show="addActivity">
             <form action="" style="display: flex">
               <div class="activity-left">
+                <!-- Activity Type Dropdown -->
                 <label for="muscles">ACTIVITY TYPE</label>
                 <select name="muscles" id="muscles" v-model="activityType">
                   <option value="Chest">Chest</option>
@@ -69,6 +74,7 @@
                   <option value="Cardio">Cardio</option>
                 </select>
                 <br />
+                <!-- Activity Name Input -->
                 <label for="aName">ACTIVITY NAME</label>
                 <input
                   type="text"
@@ -84,6 +90,7 @@
                   id="aSetNum"
                   v-model="numSets"
                 /> -->
+                <!-- Activity Sets Dropdown -->
                 <label for="aSetNum">SETS</label>
                 <select name="aSetNum" id="aSetNum" v-model="numSets">
                   <option value="1">1</option>
@@ -163,6 +170,7 @@
                 </div>
               </div>
               <div class="activity-right">
+                <!-- Activity Description TextBox -->
                 <label for="aDescription">DESCRIPTION</label> <br />
                 <textarea
                   name="aDescription"
@@ -174,6 +182,7 @@
               </div>
             </form>
             <div style="text-align: right">
+              <!-- Cancel Activity Button -->
               <button
                 @click="closeAddActivity()"
                 style="
@@ -185,6 +194,7 @@
               >
                 Cancel
               </button>
+              <!-- Add Activity Button -->
               <button @click="confirmAddActivity()">Add</button>
             </div>
           </div>
@@ -225,8 +235,10 @@
             class="workout-comments"
             v-if="activityArr.length > 0 || newActivitiesArr.length > 0"
           >
+            <!-- Display comments from FireStore -->
             <div style="margin-left: 0.5em">Workout Comments</div>
             <div v-html="formattedRoutineStrings" id="comments"></div>
+            <!-- Add comments as input -->
             <div>
               <label for="rComments" style="margin-left: 0.5em"
                 >Add Comment</label
@@ -351,6 +363,7 @@ export default {
       let routineNextAvailId;
       let clientName;
 
+      // Get correct collection and document
       const clientRef = collection(db, "client");
       const thisClientQuery = query(
         clientRef,
@@ -362,6 +375,7 @@ export default {
         routineNextAvailId = doc.data().routineNextId;
       });
 
+      // Assign correct routineNextId (if not it will always be 0)
       this.routineNextId = routineNextAvailId;
       // console.log("FROM FIREBASE: routineNextId IS", this.routineNextId);
     },
@@ -447,6 +461,7 @@ export default {
         }
       }
     },
+    // If Edit Activity Icon is clicked
     prepEditActivity(activityInfo) {
       // console.log("Editing...");
       // console.log(activityInfo);
@@ -534,6 +549,7 @@ export default {
         }
       });
     },
+    // If Delete Activity Icon is clicked
     prepDeleteActivity(activityId) {
       // console.log("Deleting...");
       // Keep the activityId to be deleted
@@ -556,6 +572,7 @@ export default {
       // Set status of deletion
       this.hasDeletedActivity = true;
     },
+    // Function to help parse correctly into html input datepicker
     formatDateForDatePicker(dateString) {
       if (dateString == null) {
         return;
@@ -576,6 +593,7 @@ export default {
       // console.log("Detected Change in Routine Comments");
       this.hasRoutineCommentsChanged = true;
     },
+    // Validate if an activity can be added
     addActivityValidator() {
       // console.log("Checking");
       // Check activityType, activityName, activityDescription, and numSets
@@ -626,16 +644,10 @@ export default {
     },
     // "Add" Button (Red Section)
     // CASE 1: NEW activities (freshly created) <==> Add Activity Button
-    // 1) Add to newActivitiesArr
     //
     // CASE 2: UPDATED activities (modified) <==> Edit Icon/Button
-    // 1) Add old version to delActivitiesArr
-    // 2) Add new version to newActivitiesArr
-    // 3) Del from activityArr
     //
     // CASE 3: DELETED activities <==> Delete Icon/Button
-    // 1) Add to delActivitiesArr
-    // 2) Del from activityArr
     confirmAddActivity() {
       if (this.addActivityValidator()) {
         // console.log("values are acceptable");
@@ -713,6 +725,7 @@ export default {
         });
       }
     },
+    // Format the current datetime correctly
     getCurrentDateTime() {
       let currentDate = new Date();
       let day = currentDate.getDate();
@@ -740,6 +753,7 @@ export default {
       // Return the formatted date and time string
       return formattedDateTime;
     },
+    // Convert a DD/MM/YYYY datestring to FireStore TImestamp
     convertToFirestoreTimestamp(dateString) {
       const dateParts = dateString.split(",");
       const dateStr = dateParts[0].trim();
@@ -769,6 +783,7 @@ export default {
       let newArr = this.activityArr.concat(this.newActivitiesArr);
       return newArr;
     },
+    // Check if Routine can be saved
     saveRoutineValidator() {
       // Check if changes are made to routineName / routineDate
       if (this.hasFieldChanged || this.hasDeletedActivity) {
@@ -817,7 +832,7 @@ export default {
         return true;
       }
     },
-    // Creates a new Comment Array based on
+    // Creates a new Comment Array based on FireStore and input
     createNewCommentsArray() {
       if (
         this.routineNewComments === "" ||
@@ -939,6 +954,7 @@ export default {
         }
       });
     },
+    // On click delete Routine at bottom of modal
     async delRoutineFromFS() {
       // navigate to the correct document & access routines
       const clientRef = doc(db, "client", this.email);
