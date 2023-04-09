@@ -1,12 +1,16 @@
 <template>
+  <!-- Edit Profile -->
   <div class="edit-page">
     <Navbar />
+    <!-- If page still loading -->
     <LoadingSpinner v-if="pageLoading" :pageLoading="pageLoading" />
 
+    <!-- If page done loading -->
     <div v-else class="container">
       <div class="row display-words">
         <div>EDIT PROFILE</div>
       </div>
+      <!-- Display Picture -->
       <div class="row picture">
         <label for="file-input">
           <img :src="displayPicture" alt="Image" class="dp" />
@@ -14,6 +18,7 @@
         </label>
         <input id="file-input" type="file" @change="onFileSelected" />
       </div>
+      <!-- Input fields to update personal particulars -->
       <div class="row justify-content-center">
         <div class="col-md-6">
           <div class="card background-color-change border-0">
@@ -25,6 +30,7 @@
                   onUpload();
                 "
               >
+              <!-- Full Name -->
                 <div class="form-group row py-2">
                   <label
                     for="fullName"
@@ -45,7 +51,8 @@
                     />
                   </div>
                 </div>
-
+                
+                <!-- Contact Number -->
                 <div class="form-group row py-2">
                   <label
                     for="contactNo"
@@ -65,6 +72,7 @@
                   </div>
                 </div>
 
+                <!-- Emergency Contact Name -->
                 <div class="form-group row py-2">
                   <label
                     for="emergencyContactName"
@@ -84,6 +92,7 @@
                   </div>
                 </div>
 
+                <!-- Emergency Contact Number -->
                 <div class="form-group row py-2">
                   <label
                     for="emergencyContactNo"
@@ -103,10 +112,12 @@
                   </div>
                 </div>
 
+                <!-- Error Message shown after validation -->
                 <p v-if="errorMessage" class="alert alert-danger mt-3">
                   {{ errorMessage }}
                 </p>
-
+                
+                <!-- Save Changes Button -->
                 <div class="form-group row mb-0">
                   <div class="button-div">
                     <button type="submit">
@@ -174,10 +185,12 @@ export default {
     auth.onAuthStateChanged((user) => {
       this.$store.dispatch("fetchUser", user);
     });
+    // Gets the current information
     const clientRef = doc(db, "client", this.user.data.email);
     getDoc(clientRef)
       .then((docSnap) => {
         const data = docSnap.data();
+        // Sets the current information to data variables to be shown to user
         this.fullName = data.fullName;
         this.contactNo = data.contactNo;
         this.emergencyContactName = data.emergencyContactName;
@@ -190,6 +203,7 @@ export default {
     const listRef = ref(storage);
     list(listRef)
       .then((res) => {
+        // Gets current display picture and displays it
         res.items.forEach((imageRef) => {
           const email = imageRef._location.path.slice(0, -4);
           if (email == this.user.data.email) {
@@ -200,6 +214,7 @@ export default {
         });
       })
       .finally(() => {
+        // Set default picture if no display picture
         if (!this.displayPicture) {
           this.displayPicture = defaultPic;
         }
@@ -207,6 +222,7 @@ export default {
       });
   },
   methods: {
+    // Function to push the updated information into firestore and firebase storage
     async update() {
       const clientRef = doc(db, "client", this.user.data.email);
       this.isLoading = true;
@@ -217,9 +233,8 @@ export default {
         emergencyContactNo: this.emergencyContactNo,
       })
         .then((response) => {
-          // some sort of feedback to show that it's done here
           this.isLoading = false;
-          // location.reload();
+          // Feedback when profile is updated
           Toast.fire({
             icon: "success",
             title: "Profile Saved",
@@ -229,6 +244,7 @@ export default {
           console.log(err);
         });
     },
+    // Read the file and display the picture immediately when uploaded
     onFileSelected(event) {
       let reader = new FileReader();
       reader.onload = (e) => {
@@ -237,6 +253,7 @@ export default {
       reader.readAsDataURL(event.target.files[0]);
       this.profilePicture = event.target.files[0];
     },
+    // Function to upload image to firebase storage
     onUpload() {
       // Register three observers:
       // 1. 'state_changed' observer, called any time the state changes

@@ -1,5 +1,6 @@
 <template>
   <nav>
+    <!-- GymmBuddy Logo -->
     <div class="navbar-brand">
       <router-link
         to="/clients"
@@ -9,7 +10,9 @@
         <img src="/gymmbuddy.png" alt="Logo" />
       </router-link>
     </div>
+    <!-- Navbar Links -->
     <div class="row">
+      <!-- Clients Tab -->
       <div class="col">
         <router-link
           class="nav-link"
@@ -20,6 +23,7 @@
           <p>CLIENTS</p>
         </router-link>
       </div>
+      <!-- Calendar Tab -->
       <div class="col">
         <router-link
           class="nav-link"
@@ -29,8 +33,10 @@
           <p>CALENDAR</p>
         </router-link>
       </div>
+      <!-- Dropdown -->
       <div class="col">
         <CDropdown class="d-flex" variant="nav-item" :popper="false">
+          <!-- Dropdown Toggle -->
           <CDropdownToggle color="secondary">
             <img
               src="/abstract-user-flat-4.svg"
@@ -39,6 +45,7 @@
               height="24"
             />
           </CDropdownToggle>
+          <!-- Dropdown Menu -->
           <CDropdownMenu>
             <CDropdownItem style="cursor: pointer" @click="signOut"
               >Sign Out</CDropdownItem
@@ -85,6 +92,7 @@ export default {
     };
   },
   methods: {
+    // Sign out function
     async signOut() {
       await this.$store.dispatch("logOut");
       this.$router.push("/");
@@ -94,6 +102,7 @@ export default {
       });
       sessionStorage.clear();
     },
+    // Function that resets client email and display routines status
     removeStore() {
       this.$store.dispatch("setClientEmail", null);
       this.$store.dispatch("setDisplayRoutinesStatus", false);

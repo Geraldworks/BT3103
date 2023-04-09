@@ -1,11 +1,14 @@
 <template>
   <nav>
+    <!-- GymmBuddy Logo -->
     <div class="navbar-brand">
       <router-link to="/performance" exact-active-class="active-nav-link">
         <img src="/gymmbuddy.png" alt="Logo" />
       </router-link>
     </div>
+    <!-- Navbar Links -->
     <div class="row">
+      <!-- Performance Tab -->
       <div class="col">
         <router-link
           class="nav-link"
@@ -15,6 +18,7 @@
           <p>PERFORMANCE</p>
         </router-link>
       </div>
+      <!-- Booking Tab -->
       <div class="col">
         <router-link
           class="nav-link"
@@ -24,6 +28,7 @@
           <p>BOOKING</p>
         </router-link>
       </div>
+      <!-- Routines Tab -->
       <div class="col">
         <router-link
           class="nav-link"
@@ -33,8 +38,10 @@
           <p>ROUTINES</p>
         </router-link>
       </div>
+      <!-- Dropdown -->
       <div class="col signOut">
         <CDropdown class="d-flex" variant="nav-item" :popper="false">
+          <!-- Dropdown Toggle -->
           <CDropdownToggle color="secondary">
             <img
               src="/abstract-user-flat-4.svg"
@@ -43,6 +50,7 @@
               height="24"
             />
           </CDropdownToggle>
+          <!-- Dropdown Menu -->
           <CDropdownMenu>
             <CDropdownItem href="/editprofile">Edit Profile</CDropdownItem>
             <CDropdownItem href="/goals">Edit Goals</CDropdownItem>
@@ -92,13 +100,17 @@ export default {
     ...mapGetters(["user"]),
   },
   methods: {
+    // Sign out function
     async signOut() {
       await this.$store.dispatch("logOut");
+      // Pushes to landing page after sign out
       this.$router.push("/");
+      // Sign out feedback
       Toast.fire({
         icon: "success",
         title: "Signed Out",
       });
+      // Clear local storage
       sessionStorage.clear();
     },
   },

@@ -3,18 +3,21 @@
     <div>
       <Navbar />
     </div>
-
+    <!-- If page still loading -->
     <LoadingSpinner v-if="pageLoading" :pageLoading="pageLoading" />
 
+    <!-- If page done loading -->
     <div v-else class="container">
       <div class="row display-words">
         <div>RECORDS</div>
       </div>
+      <!-- Input fields to update personal records -->
       <div class="row justify-content-center">
         <div class="col-md-6">
           <div class="card background-color-change border-0">
             <div class="card-body">
               <form action="#" @submit.prevent="update">
+                <!-- Bench Press Personal Best -->
                 <div class="form-group row py-2">
                   <label
                     for="benchPress"
@@ -35,7 +38,8 @@
                     />
                   </div>
                 </div>
-
+                
+                <!-- Deadlift Personal Best -->
                 <div class="form-group row py-2">
                   <label
                     for="deadlift"
@@ -55,6 +59,7 @@
                   </div>
                 </div>
 
+                <!-- Squat Personal Best -->
                 <div class="form-group row py-2">
                   <label
                     for="squat"
@@ -74,10 +79,12 @@
                   </div>
                 </div>
 
+                <!-- Error Message shown after validation -->
                 <p v-if="errorMessage" class="alert alert-danger mt-3">
                   {{ errorMessage }}
                 </p>
 
+                <!-- Save Changes Button -->
                 <div class="form-group row mb-0">
                   <div class="button-div">
                     <button type="submit">
@@ -135,11 +142,13 @@ export default {
     auth.onAuthStateChanged((user) => {
       this.$store.dispatch("fetchUser", user);
     });
-
+    
+    // Gets the current information
     const clientRef = doc(db, "client", this.user.data.email);
     getDoc(clientRef)
       .then((docSnap) => {
         const records = docSnap.data().records;
+        // Sets the current information to data variables to be shown to user
         this.benchPress = records.benchPress;
         this.deadlift = records.deadlift;
         this.squat = records.squat;
@@ -150,11 +159,14 @@ export default {
       });
   },
   methods: {
+    // Function to push the updated information into firestore
     async update() {
       const clientRef = doc(db, "client", this.user.data.email);
       if (
-        parseFloat(this.muscleMassGoal) < 0 ||
-        parseFloat(this.weightGoal) < 0
+        // Validate that the values are not negative
+        parseFloat(this.benchPress) < 0 ||
+        parseFloat(this.deadLift) < 0 ||
+        parseFloat(this.squat) < 0
       ) {
         this.errorMessage = "Please key in positive values only!";
       } else {
@@ -167,10 +179,9 @@ export default {
           },
         })
           .then((response) => {
-            // some sort of feedback to show that it's done here
             this.isLoading = false;
             this.errorMessage = "";
-            // location.reload();
+            // Feedback when records are updated
             Toast.fire({
               icon: "success",
               title: "Records Saved",

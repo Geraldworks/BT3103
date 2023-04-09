@@ -1,7 +1,8 @@
 <template>
-    <div v-if="pageLoading" class="loading">
-      <div class="spinner-border mx-auto" style="width: 5rem; height: 5rem;" role="status"></div>
-    </div>
+  <!-- Loading Spinner Component -->
+  <div v-if="pageLoading" class="loading">
+    <div class="spinner-border mx-auto" style="width: 5rem; height: 5rem;" role="status"></div>
+  </div>
 </template>
 
 <script>

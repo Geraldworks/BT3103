@@ -1,8 +1,11 @@
 <template>
+  <!-- Sign Up / Sign In Header Component -->
   <div class="top-content">
     <a href="/">
+      <!-- Logo -->
       <img src="/gymmbuddy.png" alt="gymmbuddy logo" height="100" class="logo"/>
     </a>
+    <!-- Words to be displayed on component -->
     <div class="display-words">{{ headerWords }}</div>
   </div>
 </template>

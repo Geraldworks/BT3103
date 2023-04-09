@@ -1,8 +1,10 @@
 <template>
   <body>
+    <!-- GymmBuddy x GymmBoxx Logo -->
     <div id="logo">
       <img src="/logo.png" alt="" />
     </div>
+    <!-- Slogan -->
     <div id="slogan">
       <div class="container">
         <div class="row">
@@ -11,13 +13,16 @@
             <h4>
               An all-in-one platform that caters to you and your fitness trainer
             </h4>
+            <!-- Sign Up Button -->
             <router-link to="/signup">
               <button class="pill-button">SIGN-UP</button>
             </router-link>
+            <!-- Sign In Button -->
             <router-link to="/signin">
               <button class="pill-button">SIGN-IN</button>
             </router-link>
           </div>
+          <!-- Image -->
           <div class="col" id="women-exercising">
             <img src="/women-exercising.jpg" alt="" width="380" height="400" />
           </div>
@@ -25,6 +30,7 @@
       </div>
     </div>
 
+    <!-- About -->
     <div id="about">
       <div class="container">
         <h2 class="about-gymmbuddy">ABOUT</h2>
@@ -52,6 +58,7 @@
       </div>
     </div>
 
+    <!-- Reasons -->
     <div id="reasons">
       <div class="container">
         <h2 class="why-gymmbuddy">WHY</h2>

@@ -1,12 +1,15 @@
 <template>
   <div class="signUp-page">
     <SignUpHeader :headerWords="headerWords" />
+    <!-- Personal Particular Page -->
     <div v-if="pageNo === 1" class="container">
       <div class="row justify-content-center">
         <div class="col-md-8">
           <div class="card background-color-change">
             <div class="card-body">
+              <!-- Sign Up Form -->
               <form action="#">
+                <!-- Full Name -->
                 <div class="form-group row py-2">
                   <label
                     for="fullName"
@@ -28,6 +31,7 @@
                   </div>
                 </div>
 
+                <!-- GymmBoxx ID (start with U + 5 digits)-->
                 <div class="form-group row py-2">
                   <label
                     for="gymmboxxid"
@@ -47,6 +51,7 @@
                   </div>
                 </div>
 
+                <!-- Contact Number (start with 8 or 9, 8 digits) -->
                 <div class="form-group row py-2">
                   <label
                     for="contactNo"
@@ -66,6 +71,7 @@
                   </div>
                 </div>
 
+                <!-- Emergency Contact Name -->
                 <div class="form-group row py-2">
                   <label
                     for="emergencyContactName"
@@ -85,6 +91,7 @@
                   </div>
                 </div>
 
+                <!-- Emergency Contact Number (start with 8 or 9, 8 digits) -->
                 <div class="form-group row py-2">
                   <label
                     for="emergencyContactNo"
@@ -104,6 +111,7 @@
                   </div>
                 </div>
 
+                <!-- Email Address (_@_._) -->
                 <div class="form-group row py-2">
                   <label
                     for="email"
@@ -125,6 +133,7 @@
                   </div>
                 </div>
 
+                <!-- Password (at least 6 characters) -->
                 <div class="form-group row py-2">
                   <label
                     for="password"
@@ -144,6 +153,7 @@
                   </div>
                 </div>
 
+                <!-- Confirm Password (have to be same as password) -->
                 <div class="form-group row py-2">
                   <label
                     for="confirmPassword"
@@ -161,6 +171,7 @@
                       v-model="confirmPassword"
                     />
                   </div>
+                  <!-- List of Errors -->
                   <p v-if="errorMessage.length" class="alert alert-danger mt-3">
                     <b>Please correct the following error(s):</b>
                     <ul>
@@ -170,6 +181,7 @@
                 </div>
 
                 <div class="form-group row mb-0">
+                  <!-- Button to Trainer Selection Page -->
                   <div class="button-div">
                     <button v-if="pageNo === 1" type="button" @click="validateForm(); nextPage();">
                       Next
@@ -183,11 +195,13 @@
       </div>
     </div>
 
+    <!-- Trainer Selection Page -->
     <div v-else>
       <div class="row justify-content-center">
         <div class="col-md-8">
           <div class="card background-color-change">
             <div class="card-body d-flex flex-row justify-content-center">
+              <!-- All Available Trainers -->
               <div
                 v-for="(trainerDetails, trainerEmail) in trainerInfo"
               >
@@ -198,15 +212,12 @@
                 </div>
               </div>
             </div>
-            <p v-if="errorMessage.length" class="alert alert-danger mt-3">
-              <b>Please correct the following error(s):</b>
-              <ul>
-                <li v-for="error in errorMessage">{{ error }}</li>
-              </ul>
-            </p>
             <div class="row mb-0">
                 <div class="button-div">
+                  <!-- Previous Page Button -->
                   <button type="button" @click="previousPage">Back</button>
+
+                  <!-- Sign Up Button -->
                   <button type="submit" @click="SignUp" :disabled="selectedTrainer == null">
                     <div
                       v-if="isLoading"
@@ -263,35 +274,44 @@ export default {
     SignUpHeader,
   },
   methods: {
+    // Function to select trainer 
     selectTrainer(trainerEmail) {
       this.selectedTrainer = trainerEmail;
     },
+    // Function to move back to personal particulars page
     previousPage() {
       this.pageNo -= 1;
       this.headerWords = "Sign Up For Account";
     },
+    // Function to move to trainer selection page
     nextPage() {
       if (this.errorMessage.length == 0) {
         this.pageNo += 1;
         this.headerWords = "Select Your Trainer";
       }
     },
+    // Function to check for valid Singaporean contact number
     validContact(contactNo) {
       return (contactNo.length == 8 && (contactNo.charAt(0) == "9" || contactNo.charAt(0) == "8"));
     },
+    // Function to check for valid Gymmboxx ID
     validId(id) {
       return (id.length == 6 && id.charAt(0) == "U");
     },
+    // Function to check for valid email address
     validEmail(email) {
       var re = /\S+@\S+\.\S+/;
       return re.test(email);
     },
+    // Function to highlight field to red if there are errors regarding that field
     highlightField(id) {
       document.getElementById(id).style.border = "1px red solid";
     },
+    // Function to unhighlight field 
     unhighlightField(id) {
       document.getElementById(id).style.border = null;
     },
+    // Function to check if all the fields are filled
     fieldsFilled() {
       var fields = [this.fullName, this.gymmboxxid, this.contactNo, this.emergencyContactName, this.emergencyContactNo, this.email, this.password, this.confirmPassword];
       var ids = ["fullName", "gymmboxxid", "contactNo", "emergencyContactName", "emergencyContactNo", "email", "password", "confirmPassword"];
@@ -304,11 +324,12 @@ export default {
       }
       return (this.fullName != "" && this.gymmboxxid != "" && this.contactNo != "" && this.emergencyContactName != "" && this.emergencyContactNo != "" && this.email != "" && this.password != "" && this.confirmPassword != "");
     },
+    // Function to validate password length
     validPasswordLength() {
       return (this.password.length >= 6);
     },
+    // Function to validate all the fields in the form
     validateForm() {
-      // validate that passwords are the same
       this.errorMessage = [];
         if (!this.fieldsFilled()) {
           // Only show this error if there are empty fields.
@@ -341,6 +362,7 @@ export default {
         } 
       }
     },
+    // Function to sign up
     async SignUp() {
       this.isLoading = true;
       try {
@@ -356,7 +378,9 @@ export default {
             trainerEmail: this.selectedTrainer,
           })
           .then((response) => {
+            // Push client to sign in page after successful sign up
             this.$router.push("/signin");
+            // Feedback when sign up is successflul
             Toast.fire({
               icon: "success",
               title: "Sign up successful"
@@ -388,20 +412,20 @@ export default {
         trainerInfo[documentData.email] = currTrainer;
       });
 
-      // // Storing image URLs
-      // const storage = getStorage();
-      // const listRef = ref(storage);
+      // Storing image URLs
+      const storage = getStorage();
+      const listRef = ref(storage);
 
-      // list(listRef).then((res) => {
-      //   res.items.forEach((imageRef) => {
-      //     const email = imageRef._location.path.slice(0, -4);
-      //     if (trainerInfo[email]) {
-      //       getDownloadURL(imageRef).then((url) => {
-      //         trainerInfo[email][1] = url;
-      //       });
-      //     }
-      //   });
-      // });
+      list(listRef).then((res) => {
+        res.items.forEach((imageRef) => {
+          const email = imageRef._location.path.slice(0, -4);
+          if (trainerInfo[email]) {
+            getDownloadURL(imageRef).then((url) => {
+              trainerInfo[email][1] = url;
+            });
+          }
+        });
+      });
 
       // assign all client information to the variable clientInfo
       this.trainerInfo = trainerInfo;

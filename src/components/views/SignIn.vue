@@ -77,7 +77,9 @@ form {
         <div class="col-md-7">
           <div class="card background-color-change">
             <div class="card-body">
+              <!-- Sign In Form -->
               <form action="#" @submit.prevent="SignIn">
+                <!-- Email Address -->
                 <div class="form-group row py-2">
                   <label
                     for="email"
@@ -99,6 +101,7 @@ form {
                   </div>
                 </div>
 
+                <!-- Password -->
                 <div class="form-group row py-2">
                   <label
                     for="password"
@@ -118,6 +121,7 @@ form {
                   </div>
                 </div>
 
+                <!-- Sign In Button -->
                 <div class="form-group row mb-0">
                   <div class="button-div">
                     <button type="submit">
@@ -128,6 +132,7 @@ form {
                       Sign In
                     </button>
                   </div>
+                  <!-- Error Message -->
                   <div v-if="error" class="alert alert-danger mt-4">
                     {{ error }}
                   </div>
@@ -151,7 +156,6 @@ import { db } from "../../firebase";
 import SignUpHeader from "../SignUpHeader.vue";
 import Swal from "sweetalert2";
 
-// cool alert
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -194,12 +198,13 @@ export default {
                 const id = docSnap.data().gymmboxxid;
                 if (id.includes("T")) {
                   // TRAINER ACCOUNT
-                  console.log("TRAINER ACCOUNT");
-
-                  // SET AS TRAINER
+                  // Set as trainer account
                   this.$store.dispatch("fetchTrainer");
 
+                  // Push to clients page
                   this.$router.push("/clients");
+
+                  // Feedback when trainer signs in
                   Toast.fire({
                     icon: "success",
                     title: "Signed In"
@@ -209,9 +214,10 @@ export default {
               })
               .catch((err) => {
                 // CLIENT ACCOUNT
-                console.log("CLIENT ACCOUNT");
-
+                // Push to performance page
                 this.$router.push("/performance");
+
+                // Feedback when client signs in
                 Toast.fire({
                   icon: "success",
                   title: "Signed In",
@@ -220,6 +226,7 @@ export default {
           });
       } catch (err) {
         this.isLoading = false;
+        // Rewriting the common error messages for aesthetic purposes
         if (err.code === "auth/wrong-password") {
           this.error = "Incorrect password, please try again.";
         } else if (err.code === "auth/user-not-found") {
