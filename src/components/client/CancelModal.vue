@@ -2,7 +2,7 @@
   <transition name="modal-fade">
     <div class="modal-overlay" @click="$emit('close-modal')">
       <div class="modal" @click.stop>
-        <div style="font-size: 2.5rem; margin-bottom: 20px; color:white;">
+        <div style="font-size: 2.5rem; margin-bottom: 20px; color: white">
           Select your Bookings to Cancel
         </div>
         <select v-model="selected" style="padding: 0px 2px" multiple>
@@ -39,6 +39,8 @@ import { db, auth } from "../../firebase.js";
 import { updateDoc, doc, getDoc } from "firebase/firestore";
 import { mapGetters } from "vuex";
 import Swal from "sweetalert2";
+
+let today = new Date();
 
 const Toast = Swal.mixin({
   toast: true,
@@ -123,20 +125,21 @@ export default {
         });
       });
 
-
       // update the new set of bookings to firebase
       await updateDoc(clientDoc, { bookings: bookingsFromFirebase });
 
       // creating a new array of bookings to be set to the client's new set of bookings
       let newClientBookings = bookingsFromFirebase;
-      newClientBookings = newClientBookings.map((x) => {
-        return {
-          title: x.title,
-          focus: x.focus,
-          from: x.from.toDate(),
-          to: x.to.toDate(),
-        };
-      });
+      newClientBookings = newClientBookings
+        .map((x) => {
+          return {
+            title: x.title,
+            focus: x.focus,
+            from: x.from.toDate(),
+            to: x.to.toDate(),
+          };
+        })
+        .filter((booking) => today < booking["from"]);
 
       // emitting the event to parent component to set it for cancel modal
       this.$emit("setNewClientBookings", newClientBookings);
@@ -194,29 +197,29 @@ export default {
   background-color: rgba(0, 0, 0, 0.7);
 }
 
- .modal {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    overflow: auto;
-    position: relative;
-    /* justify-content: center;
+.modal {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: auto;
+  position: relative;
+  /* justify-content: center;
     text-align: center; */
-    background-color: black;
-    font-family: Teko;
-    height: 90%;
-    width: 90%;
-    margin-top: 6%;
-    border-radius: 25px;
-    border-style: solid;
-    border-width: 2px;
-    border-color: #ED1F24;
-    max-width: 50%;
-    max-height: 80%;
-    font-size: 28px;
-    padding: 1em 3em;
-    text-align: center;
-  }
+  background-color: black;
+  font-family: Teko;
+  height: 90%;
+  width: 90%;
+  margin-top: 6%;
+  border-radius: 25px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #ed1f24;
+  max-width: 50%;
+  max-height: 80%;
+  font-size: 28px;
+  padding: 1em 3em;
+  text-align: center;
+}
 
 .modal::-webkit-scrollbar {
   display: none;
