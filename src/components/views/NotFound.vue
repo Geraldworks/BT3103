@@ -1,11 +1,11 @@
 <template>
   <div class="error-page">
     <img src="../../assets/images/gymmboxx_environment.jpg" alt="" />
-    <div class="error-msg">
+    <div class="error-msg" style="color: white">
       <h1>Error 404</h1>
       <h2>Page not found.</h2>
       <a href="/">
-        <button>Return to Home</button>
+        <button class="pill-button">Return to Home</button>
       </a>
     </div>
   </div>
@@ -37,23 +37,35 @@ export default {
   text-align: center;
 }
 
-.error-msg button {
-  width: 120px;
+.pill-button {
+  width: 150px;
   height: 50px;
   border-radius: 25px; /* half of height */
-  background-color: rgb(237, 31, 36);
+  background-color: rgb(237, 12, 16);
   border: none;
   outline: none;
   cursor: pointer;
-  margin: 5px;
+  margin: 30px;
   font-size: 1.5rem;
   text-align: center;
-  box-sizing: content-box;
-  padding-left: 10px;
-  padding-right: 10px;
+  box-sizing: border-box;
+  color: white;
+  font-family: Teko;
 }
 
-.error-msg button:hover {
-    background-color: white;
+.pill-button:hover {
+  animation-name: pill-button-highlight;
+  animation-duration: 0.15s;
+  animation-fill-mode: forwards;
+  box-sizing: border-box;
+}
+
+@keyframes pill-button-highlight {
+  from {
+    border: 0px white solid;
+  }
+  to {
+    border: 2px white solid;
+  }
 }
 </style>
