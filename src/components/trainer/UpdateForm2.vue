@@ -25,7 +25,7 @@
                 v-if="showFatsError"
                 class="error-message"
               >
-                The number must be positive and not greater than 100.
+                fat percentage must be positive and not greater than 100.
               </div>
               <label for="">Weight (kg) </label>
               <input
@@ -41,7 +41,7 @@
                 v-if="showWeightError"
                 class="error-message"
               >
-                The number must be positive.
+                weight must be positive.
               </div>
               <label for="">Muscle Mass (kg) </label>
               <input
@@ -57,7 +57,7 @@
                 v-if="showMuscleError"
                 class="error-message"
               >
-                The number must be positive and not greater than the weight.
+                mauscle mass must be positive and not greater than the weight.
               </div>
             </form>
           </div>
