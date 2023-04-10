@@ -47,7 +47,7 @@
           </CDropdownToggle>
           <!-- Dropdown Menu -->
           <CDropdownMenu>
-            <CDropdownItem style="cursor: pointer" @click="signOut"
+            <CDropdownItem style="cursor: pointer" @click="removeStore(); signOut()"
               >Sign Out</CDropdownItem
             >
           </CDropdownMenu>
