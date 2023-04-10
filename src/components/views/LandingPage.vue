@@ -24,7 +24,7 @@
           </div>
           <!-- Image -->
           <div class="col" id="women-exercising">
-            <img src="/women-exercising.jpg" alt="" width="380" height="400" />
+            <img src="/women-exercising.jpg" alt="" width="500" style="box-shadow: 0px 0px 10px rgb(0,0,0,0.5);"/>
           </div>
         </div>
       </div>
