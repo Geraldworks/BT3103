@@ -9,7 +9,7 @@
       <ClientRoutine
         :email="user.clientEmail"
         :userFullName="trainerFullName"
-        :profilePicURL="clientInfo[user.clientEmail][1]"
+        :profilePicURL="user.clientInfo[clientEmail][1]"
         @returnToHome="removeEmailToRender()"
         @routeToPerformance="renderPerformance()"
       />
@@ -21,7 +21,7 @@
              we then render everything again using the :key attribute -->
       <ClientPerformance
         :clientEmail="user.clientEmail"
-        :profilePicURL="clientInfo[user.clientEmail][1]"
+        :profilePicURL="user.clientInfo[clientEmail][1]"
         :key="refreshCount"
         @returnToHome="removeEmailToRender()"
         @routeToRoutine="setDisplayRoutine()"
@@ -29,51 +29,56 @@
     </div>
     <!-- Displaying the original client selection screen -->
     <div v-else>
-      <div class="header1">YOUR CLIENTS</div>
-      <div class="client-cards-container">
-        <div
-          v-for="(clientInfo, clientEmail) in clientInfo"
-          class="box"
-          :key="refreshCount"
-          @click="setEmailToRender(clientEmail)"
-        >
-          <div class="client-card">
-            <div class="image-name">
-              <div class="profile-pic">
-                <img :src="clientInfo[1]" alt="DP" />
+      <div v-if="isLoading">
+        <LoadingSpinner :pageLoading="isLoading"></LoadingSpinner>
+      </div>
+      <div v-else>
+        <div class="header1">YOUR CLIENTS</div>
+        <div class="client-cards-container">
+          <div
+            v-for="(clientInfo, clientEmail) in clientInfo"
+            class="box"
+            :key="refreshCount"
+            @click="setEmailToRender(clientEmail)"
+          >
+            <div class="client-card">
+              <div class="image-name">
+                <div class="profile-pic">
+                  <img :src="user.clientInfo[clientEmail][1]" alt="DP" />
+                </div>
+                <div class="Name">
+                  {{ clientInfo[0].split(" ")[0] }}
+                </div>
               </div>
-              <div class="Name">
-                {{ clientInfo[0].split(" ")[0] }}
-              </div>
-            </div>
-            <div class="session-routine">
-              <div>
-                <h3 class="Session">
-                  <div class="red-text upper">Next Session:</div>
-                  <div class="red-text lower">Routine:</div>
-                </h3>
-              </div>
-              <div class="filler">
-                <div>_</div>
-                <div>_</div>
-              </div>
-              <div>
-                <h3 class="Routine">
-                  <div class="white-text upper">
-                    {{
-                      clientInfo[2][0]
-                        ? formatDate(clientInfo[2][0]["from"])
-                        : "No Upcoming Session"
-                    }}
-                  </div>
-                  <div class="white-text lower">
-                    {{
-                      clientInfo[2][0]
-                        ? clientInfo[2][0]["focus"]
-                        : "No Upcoming Routine"
-                    }}
-                  </div>
-                </h3>
+              <div class="session-routine">
+                <div>
+                  <h3 class="Session">
+                    <div class="red-text upper">Next Session:</div>
+                    <div class="red-text lower">Routine:</div>
+                  </h3>
+                </div>
+                <div class="filler">
+                  <div>_</div>
+                  <div>_</div>
+                </div>
+                <div>
+                  <h3 class="Routine">
+                    <div class="white-text upper">
+                      {{
+                        clientInfo[2][0]
+                          ? formatDate(clientInfo[2][0]["from"])
+                          : "No Upcoming Session"
+                      }}
+                    </div>
+                    <div class="white-text lower">
+                      {{
+                        clientInfo[2][0]
+                          ? clientInfo[2][0]["focus"]
+                          : "No Upcoming Routine"
+                      }}
+                    </div>
+                  </h3>
+                </div>
               </div>
             </div>
           </div>
@@ -92,6 +97,7 @@ import TrainerNavbar from "../trainer/TrainerNavbar.vue";
 import ClientPerformance from "../trainer/ClientPerformance.vue";
 import ClientRoutine from "../trainer/ClientRoutine.vue";
 import defaultPic from "../../assets/images/default_dp.svg";
+import LoadingSpinner from "../LoadingSpinner.vue";
 
 export default {
   name: "TrainerComponent",
@@ -99,6 +105,7 @@ export default {
     TrainerNavbar,
     ClientPerformance,
     ClientRoutine,
+    LoadingSpinner,
   },
   data() {
     return {
@@ -107,9 +114,16 @@ export default {
       refreshCount: 0, // helps to update components when there are state changes,
       trainerFullName: null,
       emailToRender: "", // client email to render for the routines
+      isLoading: true,
       // clientEmailToRender: false, // helps to know which page to render
       // isDisplayRoutines: false, // helps to know which page to render
     };
+  },
+  watch: {
+    clientInfo(newClientInfo) {
+      console.log("NEW CLIENT INFO")
+      console.log(newClientInfo);
+    }
   },
   methods: {
     // this method helps to render components
@@ -218,20 +232,26 @@ export default {
       const storage = getStorage();
       const listRef = ref(storage);
 
-      list(listRef).then((res) => {
-        res.items.forEach((imageRef) => {
-          const email = imageRef._location.path.slice(0, -4);
-          if (clientInfo[email]) {
-            getDownloadURL(imageRef).then((url) => {
-              clientInfo[email][1] = url;
-            });
+      list(listRef)
+        .then((res) => {
+          res.items.forEach((imageRef) => {
+            const email = imageRef._location.path.slice(0, -4);
+            if (clientInfo[email]) {
+              getDownloadURL(imageRef).then((url) => {
+                clientInfo[email][1] = url;
+              });
+            }
+          });
+        })
+        .then(() => {
+          // assign all client information to the variable clientInfo
+          if (this.user.clientInfo == null) {
+            this.$store.dispatch("setClientInfo", clientInfo);
           }
+          // console.log(this.user);
+          this.clientInfo = clientInfo;
+          this.isLoading = false;
         });
-      });
-
-      // assign all client information to the variable clientInfo
-      this.clientInfo = clientInfo;
-      console.log(this.clientInfo);
     } catch (error) {
       // error handling
       console.log(error);
