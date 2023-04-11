@@ -16,7 +16,6 @@ const store = createStore({
       isTrainer: null,
       clientEmail: null,
       displayRoutines: false,
-      clientInfo: null,
     },
   },
   getters: {
@@ -39,9 +38,6 @@ const store = createStore({
     },
     SET_ROUTINES(state, value) {
       state.user.displayRoutines = value;
-    },
-    SET_CLIENTINFO(state, value) {
-      state.user.clientInfo = value;
     }
   },
   plugins: [
@@ -146,10 +142,6 @@ const store = createStore({
 
     async setDisplayRoutinesStatus(context, bool) {
       context.commit("SET_ROUTINES", bool);
-    },
-
-    async setClientInfo(context, clientInfo) {
-      context.commit("SET_CLIENTINFO", clientInfo);
     }
   },
 });
