@@ -99,6 +99,8 @@ import ClientRoutine from "../trainer/ClientRoutine.vue";
 import defaultPic from "../../assets/images/default_dp.svg";
 import LoadingSpinner from "../LoadingSpinner.vue";
 
+const today = new Date();
+
 export default {
   name: "TrainerComponent",
   components: {
@@ -227,7 +229,11 @@ export default {
         let currClient = [];
         //searching for the next session
         const bookings = documentData2.bookings;
-        const sortedBookings = bookings.sort(this.comparatorForTime);
+        const sortedBookings = bookings
+          .sort(this.comparatorForTime)
+          .filter((timeInDb) => {
+            return timeInDb.from.seconds > today.getTime() / 1000;
+          });
 
         // pushing the information into the list to store
         currClient.push(documentData2.fullName);
