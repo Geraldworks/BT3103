@@ -337,7 +337,7 @@ export default {
           this.errorMessage.push("Fields cannot be empty.")
         } else {
           if (!this.validId(this.gymmboxxid)) {
-          this.errorMessage.push("Invalid Gymmboxx ID.");
+          this.errorMessage.push("Invalid Gymmboxx ID, e.g. U00001.");
           this.highlightField("gymmboxxid");
         } 
         if (!this.validContact(this.contactNo)) {
