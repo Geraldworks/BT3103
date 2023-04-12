@@ -9,7 +9,7 @@
     <!-- If page done loading -->
     <div v-else class="container">
       <div class="row display-words">
-        <div>RECORDS</div>
+        <div>EDIT RECORDS</div>
       </div>
       <!-- Input fields to update personal records -->
       <div class="row justify-content-center">

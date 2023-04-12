@@ -9,7 +9,7 @@
     <!-- If page done loading -->
     <div v-else class="container">
       <div class="row display-words">
-        <div>GOALS</div>
+        <div>EDIT GOALS</div>
       </div>
       <!-- Input fields to update goals -->
       <div class="row justify-content-center">
