@@ -11,7 +11,7 @@
           <hr />
           <div id="update-form">
             <form action="">
-              <label for="">Fat Percentage </label>
+              <label for="">Fat Percentage (%) </label>
               <input
                 @input="checkFatsInput(fats)"
                 type="number"
@@ -43,7 +43,7 @@
               >
                 weight must be positive.
               </div>
-              <label for="">Muscle Mass (kg) </label>
+              <label for="">Muscle Mass (%) </label>
               <input
                 @input="checkMuscleInput(muscle)"
                 type="number"
