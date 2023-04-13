@@ -90,7 +90,7 @@ const router = createRouter({
 router.beforeEach(async (to, from) => {
   if (store.state.user.isTrainer) {
     // NAV GUARDS FOR TRAINER
-    console.log("trainer");
+    // console.log("trainer");
     if (
       store.state.user.loggedIn &&
       (to.name == "Performance" ||

@@ -192,7 +192,7 @@ export default {
           .then((response) => {
             // Fetch data to check if trainer
             const docRef = doc(db, "trainer", this.email);
-            console.log(this.email);
+            // console.log(this.email);
             getDoc(docRef)
               .then((docSnap) => {
                 const id = docSnap.data().gymmboxxid;
