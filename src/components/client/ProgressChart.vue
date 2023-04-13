@@ -21,8 +21,8 @@ export default {
     progressOutput: String,
     goal: String,
     chartData: Object,
-    chartColors: String,
-    chartLibrary: String,
+    chartColors: Array,
+    chartLibrary: Object  ,
   },
 };
 </script>

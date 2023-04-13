@@ -7,6 +7,7 @@
 
 <script>
 export default {
+  name: "Chart",
   props: {
     chartName: String,
     chartData: Object,

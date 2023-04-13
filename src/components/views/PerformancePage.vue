@@ -53,7 +53,7 @@ export default {
   },
   watch: {
     email(newEmail) {
-      console.log(newEmail);
+      // console.log(newEmail);
     },
   },
 };
