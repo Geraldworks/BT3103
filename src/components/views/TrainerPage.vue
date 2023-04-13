@@ -232,7 +232,7 @@ export default {
         const sortedBookings = bookings
           .sort(this.comparatorForTime)
           .filter((timeInDb) => {
-            return timeInDb.from.seconds > today.getTime() / 1000;
+            return timeInDb.from.toDate() > today;
           });
 
         // pushing the information into the list to store
