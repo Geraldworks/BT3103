@@ -330,8 +330,10 @@ export default {
       /* Top Part of Modal */
       routineName: "",
       routineDate: "",
+      routineDateObject: null, // Date Object
       lastUpdatedName: "",
       lastUpdatedTimestamp: "",
+      lastUpdatedTimeStampObject: null, // Date Object
       /* Activity - General */
       activityArr: [], // Pass each object in this for each RoutineActivity
       addActivity: false,
@@ -430,8 +432,11 @@ export default {
           newRoutine["exerciseTypes"] = this.constructExerciseString();
           newRoutine["updatedBool"] = false; // toggle this
           newRoutine["lastUpdatedName"] = this.lastUpdatedName;
-          newRoutine["lastUpdatedTimestamp"] = this.convertToFirestoreTimestamp(
-            this.lastUpdatedTimestamp
+          // newRoutine["lastUpdatedTimestamp"] = this.convertToFirestoreTimestamp(
+          //   this.lastUpdatedTimestamp
+          // );
+          newRoutine["lastUpdatedTimestamp"] = Timestamp.fromDate(
+            this.lastUpdatedTimeStampObject
           );
           // console.log(
           //   "Data is not saved, lastUpdatedTimestamp: ",
@@ -1016,9 +1021,12 @@ export default {
         this.routineDate = this.formatDateForDatePicker(
           this.routineInfo.routineDate
         );
+        this.routineDateObject = this.routineInfo.routineDateObject;
         // console.log("Entered Modal, routineDate is: ", this.routineDate);
         this.lastUpdatedName = this.routineInfo.lastUpdatedName;
         this.lastUpdatedTimestamp = this.routineInfo.lastUpdatedTimestamp;
+        this.lastUpdatedTimeStampObject =
+          this.routineInfo.lastUpdatedTimeStampObject;
         // console.log(
         //   "Entered Modal, lastUpdatedTimestamp is: ",
         //   this.lastUpdatedTimestamp
@@ -1053,8 +1061,10 @@ export default {
         this.routineId = 0;
         this.routineName = "";
         this.routineDate = "";
+        this.routineDateObject = null;
         this.lastUpdatedName = "";
         this.lastUpdatedTimestamp = "";
+        this.lastUpdatedTimeStampObject = null;
         this.activityArr = [];
         this.backupActivityArr = [];
         this.activityNextId = 1;

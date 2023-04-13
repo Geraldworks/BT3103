@@ -145,11 +145,13 @@ export default {
           routineName: routine.routineName,
           exerciseTypes: routine.exerciseTypes,
           routineDate: convertDateFormat(routine.routineDate.toDate()),
+          routineDateObject: routine.routineDate.toDate(),
           updateBool: routine.updatedBool,
           lastUpdatedName: routine.lastUpdatedName,
           lastUpdatedTimestamp: convertDateFormat(
             routine.lastUpdatedTimestamp.toDate()
           ),
+          lastUpdatedTimeStampObject: routine.lastUpdatedTimestamp.toDate(),
           activityNextId: routine.activityNextId,
           activities: routine.activities,
           routineComments: routine.routineComments,
