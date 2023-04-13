@@ -18,11 +18,11 @@ export default {
   name: "ProgressChart",
   props: {
     chartName: String,
-    progressOutput: String,
+    progressOutput: Number,
     goal: String,
     chartData: Object,
     chartColors: Array,
-    chartLibrary: Object  ,
+    chartLibrary: Object,
   },
 };
 </script>

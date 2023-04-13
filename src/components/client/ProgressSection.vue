@@ -96,10 +96,10 @@ export default {
 
         if (weightData < weightGoalValue) {
           // if goal has not been hit
-          // Compute the progress
-          weightProgress = Number(
+          // Compute the progress and save in number format
+          weightProgress = Number(Number(
             (weightData / weightGoalValue) * 100
-          ).toFixed();
+          ).toFixed()); 
         } else {
           // if goal is hit or exceeded
           weightProgress = 100;
@@ -110,9 +110,9 @@ export default {
 
         if (muscleMassData < muscleMassGoalValue) {
           // Compute the progress
-          muscleMassProgress = Number(
+          muscleMassProgress = Number(Number(
             (muscleMassData / muscleMassGoalValue) * 100
-          ).toFixed();
+          ).toFixed());
         } else {
           // if goal is hit or exceeded
           // console.log("Entered else condition");
