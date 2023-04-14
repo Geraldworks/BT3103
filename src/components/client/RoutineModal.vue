@@ -52,7 +52,7 @@
                 </div>
               </form>
             </div>
-            <!-- add activity form -->
+            <!-- adding activity form -->
             
           </div>
         </div>

@@ -39,7 +39,6 @@
 
 <script>
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { mapGetters, useStore } from "vuex";
 import { db, auth } from "../../firebase.js";
 
 import RoutineViewModal from "../client/RoutineViewModal.vue";

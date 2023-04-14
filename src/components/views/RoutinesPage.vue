@@ -33,6 +33,7 @@ export default {
     });
   },
   async created() {
+    // firestore querying for the correct information
     const clientRef = collection(db, "client");
     const thisClientQuery = query(
       clientRef,

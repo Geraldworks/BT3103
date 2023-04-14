@@ -22,8 +22,6 @@ export default {
   display: flex;
   margin: 1vw;
   flex-wrap: wrap;
-  /* flex: 0 0 auto; */
-  /* align-items: baseline; */
 }
 .blackPart {
   color: #000;

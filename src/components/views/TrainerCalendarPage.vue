@@ -4,6 +4,7 @@
     <div class="booking-page-header">
       <div>current bookings</div>
     </div>
+    <!-- Creating the calendar for trainer -->
     <div
       style="
         height: 800px;
@@ -31,6 +32,7 @@
         }"
         :timeCellHeight="70"
       />
+      <!-- Creates a popup as required when clicking on an event on the calendar -->
       <div class="popup">
         <TrainerCalendarDetailModal
           v-show="showModal"

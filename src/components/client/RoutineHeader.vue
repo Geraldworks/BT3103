@@ -31,7 +31,7 @@
       auth.onAuthStateChanged((user) => {
         this.$store.dispatch("fetchUser", user);
       });
-  
+      // retrieving the display picture
       const storage = getStorage();
       const listRef = ref(storage);
   

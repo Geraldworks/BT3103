@@ -242,6 +242,7 @@ import { ref, getStorage, getDownloadURL, list } from "@firebase/storage";
 import defaultPic from "../../assets/images/default_dp.svg";
 import Swal from "sweetalert2";
 
+// an object to create the alerts
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",

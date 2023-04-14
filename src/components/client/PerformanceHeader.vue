@@ -6,6 +6,7 @@
       :src="displayPicture"
       alt="an image"
     />
+    <!-- Text displaying YOUR PROFILE at the top of the performance page -->
     <div class="your-profile">
       <div>YOUR PROFILE</div>
     </div>
@@ -32,9 +33,10 @@ export default {
       this.$store.dispatch("fetchUser", user);
     });
 
+    // retrieving the profile picture for this client
     const storage = getStorage();
     const listRef = ref(storage);
-
+  
     list(listRef).then((res) => {
       res.items.forEach((imageRef) => {
         const email = imageRef._location.path.slice(0, -4);

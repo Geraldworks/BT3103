@@ -3,7 +3,7 @@
     <div class="modal-overlay" @click="$emit('close-modal')">
       <div class="modal" @click.stop>
         <!-- <img class="check" src="~/assets/check-icon.png" alt="" /> -->
-        <div style="font-size: 2.5rem; color:white;">Select a Date to Book</div>
+        <div style="font-size: 2.5rem; color: white">Select a Date to Book</div>
         <div>
           <Datepicker
             v-model="date"
@@ -12,7 +12,10 @@
             :max-date="maxDate"
           />
         </div>
-        <div v-if="date" style="font-size: 2.5rem; margin-top: 10px; color:white;">
+        <div
+          v-if="date"
+          style="font-size: 2.5rem; margin-top: 10px; color: white"
+        >
           Available Slots
         </div>
         <select
@@ -30,7 +33,7 @@
         </select>
         <!-- ADD routine options here -->
         <div
-          style="font-size: 2.5rem; margin-top: 10px; color:white;"
+          style="font-size: 2.5rem; margin-top: 10px; color: white"
           v-if="date && selected.length > 0"
         >
           Select 1 - 2 Routines
@@ -90,6 +93,7 @@ import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { mapGetters } from "vuex";
 import "@vuepic/vue-datepicker/dist/main.css";
 
+// an object to create alerts
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -98,9 +102,10 @@ const Toast = Swal.mixin({
   timerProgressBar: true,
 });
 
+// initialising a fixed set gym starting times and routine options for the client to pick from
 const gymStartingTimes = [9, 11, 13, 15, 17, 19];
 const routineOptions = [
-  "", // in case a user misclicks
+  "", // in case a user misclicks, this is an empty string
   "Chest",
   "Arms",
   "Shoulders",
@@ -110,6 +115,7 @@ const routineOptions = [
   "Cardio",
 ];
 
+// setting initial dates for proper date management
 let minDate = new Date();
 let maxDate = new Date();
 minDate.setDate(minDate.getDate() + 1);
@@ -133,6 +139,7 @@ export default {
     };
   },
   methods: {
+    // confirmation pop up of booking before uploading to the firestore
     confirmBooking() {
       Swal.fire({
         title: "Confirm Your Bookings",
@@ -145,12 +152,15 @@ export default {
         cancelButtonText: "Cancel",
       }).then((result) => {
         if (result.isConfirmed) {
+          // submit the booking to firestore
           this.submitBooking();
+          // ui feedback for success
           Toast.fire({
             icon: "success",
             title: "Bookings Successful",
           });
         } else {
+          // ui feedback for unsuccessful
           Toast.fire({
             icon: "error",
             title: "Bookings Cancelled",
@@ -183,7 +193,7 @@ export default {
         let newBooking = { focus, from, title, to };
         // bookings to be passed to cancel modal and booking page
         this.newBookings.push(newBooking);
-        // adding to the booked session for this component
+        // adding to the booked sessions for this component
         this.addBookedSession(newBooking);
         // updating the bookings field on firebase with a new booking
         await updateDoc(clientRef, {
@@ -202,6 +212,7 @@ export default {
       this.routineOne = "";
       this.routineTwo = "";
     },
+    // displayed a list of possible bookings that can be made based on the given date
     listOfPossibleBookings(stringDate) {
       let output = [];
       let bookedSessions = this.allBookedSessions[stringDate];
@@ -215,6 +226,7 @@ export default {
       }
       return output;
     },
+    // a method to create nicely formatted time string using am and pm
     createTimeString(time) {
       let pm = false;
       if (time >= 12) {
@@ -224,6 +236,7 @@ export default {
         ? String(time === 12 ? 12 : time % 12) + "pm"
         : String(time) + "am";
     },
+    // making routines into a nicely formatted string
     parseRoutines(routineOne, routineTwo) {
       return routineTwo === "" ? routineOne : `${routineOne}, ${routineTwo}`;
     },
@@ -233,12 +246,15 @@ export default {
       let day = booking.from.getDate();
       let startHour = booking.from.getHours();
 
+      // if the date exists, just add to the array
       if (this.allBookedSessions.hasOwnProperty(`${day}, ${month}`)) {
         this.allBookedSessions[`${day}, ${month}`].push(startHour);
       } else {
+        // otherwise create a new key -> sessions mapping
         this.allBookedSessions[`${day}, ${month}`] = [startHour];
       }
     },
+    // a method to display the bookings on the confirmation pop up
     displayBookings(bookings) {
       let output = `
       ${this.date.getDate()} 
@@ -252,15 +268,6 @@ export default {
         output += "</div>";
       });
       return output;
-    },
-    createTimeString(time) {
-      let pm = false;
-      if (time >= 12) {
-        pm = true;
-      }
-      return pm
-        ? String(time === 12 ? 12 : time % 12) + "pm"
-        : String(time) + "am";
     },
   },
   components: {
@@ -311,7 +318,6 @@ export default {
     auth.onAuthStateChanged((user) => {
       this.$store.dispatch("fetchUser", user);
     });
-    //console.log(this.user.data.email)
   },
 };
 </script>
@@ -330,29 +336,27 @@ export default {
   background-color: rgba(0, 0, 0, 0.7);
 }
 
- .modal {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    overflow: auto;
-    position: relative;
-    /* justify-content: center;
-    text-align: center; */
-    background-color: black;
-    font-family: Teko;
-    height: 90%;
-    width: 90%;
-    margin-top: 6%;
-    border-radius: 25px;
-    border-style: solid;
-    border-width: 2px;
-    border-color: #ed1f24;
-    max-width: 50%;
-    max-height: 80%;
-    font-size: 28px;
-    padding: 1em 3em;
-    text-align: center;
-  }
+.modal {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: auto;
+  position: relative;
+  background-color: black;
+  font-family: Teko;
+  height: 90%;
+  width: 90%;
+  margin-top: 6%;
+  border-radius: 25px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #ed1f24;
+  max-width: 50%;
+  max-height: 80%;
+  font-size: 28px;
+  padding: 1em 3em;
+  text-align: center;
+}
 .modal::-webkit-scrollbar {
   display: none;
 }

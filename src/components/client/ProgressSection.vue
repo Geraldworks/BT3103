@@ -4,6 +4,7 @@
       <ComponentHeader :blackHeader="blackHeader" :redHeader="redHeader" />
     </div>
     <div class="progress-chart-container">
+      <!-- Create the ProgressChart for Weight -->
       <ProgressChart
         chartName="Weight"
         :progressOutput="weightData.Progress"
@@ -16,6 +17,7 @@
           color: '#000',
         }"
       />
+      <!-- Creates the ProgressChart for Muscle Mass -->
       <ProgressChart
         chartName="Muscle Mass"
         :chartData="muscleData"
@@ -80,10 +82,10 @@ export default {
       const querySnapshot = await getDocs(q);
 
       querySnapshot.forEach((doc) => {
-        // Retrieving the only data will the correct email
+        // Retrieving the only data with the correct email
         let documentData = doc.data();
 
-        // storing the latest information
+        // storing the latest information for weight and muscle mass
         let weightData = documentData.weight.slice(-1)[0];
         let muscleMassData = documentData.muscleMass.slice(-1)[0];
 

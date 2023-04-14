@@ -5,6 +5,7 @@
         <div style="font-size: 2.5rem; margin-bottom: 20px; color:white">
           Previous Bookings
         </div>
+        <!-- Display the previous bookings from today of the given client -->
         <div style="color:white;" v-if="previousBookings.length === 0">---- No Previous Bookings! ----</div>
         <div class="previous">
             <div
@@ -31,6 +32,7 @@ import { mapGetters } from "vuex";
 export default {
   name: "PreviousBookingsModal",
   methods: {
+    // create nicely formatted string when a booking object is passed into this method
     parseBookingObject(bookingObject) {
       let fromTime = bookingObject["from"];
       const month = fromTime.toLocaleString("default", { month: "long" });
@@ -40,6 +42,7 @@ export default {
               ${this.createTimeString(fromTime.getHours() + 1)},
               ${bookingObject.focus}`;
     },
+    // create nicely formatted time string in am and pm
     createTimeString(time) {
       let pm = false;
       if (time >= 12) {
@@ -49,6 +52,7 @@ export default {
         ? String(time === 12 ? 12 : time % 12) + "pm"
         : String(time) + "am";
     },
+    // compares the bookings for two bookings, given the time of starting
     comparatorForTime(bookingOne, bookingTwo) {
       if (bookingOne.from < bookingTwo.from) {
         return -1;

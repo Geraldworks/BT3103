@@ -12,6 +12,7 @@
 </template>
 
 <script>
+// displays a not found page when the user keys in an unrecognised url
 export default {
   name: "NotFound",
 };

@@ -1,6 +1,7 @@
 <template>
   <div class="performance-page">
     <TrainerNavbar />
+    <!-- Creating the specified client email performance page -->
     <TrainerPerformanceHeader
       :email="clientEmail"
       :profilePic="profilePicURL"
@@ -30,9 +31,11 @@ export default {
     TrainerNavbar,
   },
   methods: {
+    // return back to the client selection menu when the method is run
     returnBackToTrainerHomePage() {
       this.$emit("returnToHome");
     },
+    // goes to the routine page when the method is run
     routeToRoutinePage() {
       this.$emit("routeToRoutine");
     },

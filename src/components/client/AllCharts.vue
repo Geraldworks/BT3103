@@ -5,6 +5,8 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { useStore, mapGetters } from "vuex";
 
 export default {
+  // creates a component, "AllCharts", that holds 3 child Chart components and displays three different charts on the performance page
+  name: "AllCharts",
   data() {
     return {
       fatDateObject: {},
@@ -16,9 +18,11 @@ export default {
     };
   },
   props: {
+    // takes in an email prop to know which client charts to display
     email: String,
   },
   methods: {
+    // create the object to be passed down to chartkick
     makeObject(dates, healthData) {
       let obj = {};
       for (let i = 0; i < dates.length; i++) {
@@ -39,14 +43,15 @@ export default {
       store.dispatch("fetchUser", user);
     });
   },
+  // retrieve user information from firestore 
   async created() {
     try {
-      // console.log(this.email)
+      // query matching to find the correct user
       const clientRef = collection(db, "client");
-      const q = query(clientRef, where("email", "==", this.email)); // this should be made reactive
+      const q = query(clientRef, where("email", "==", this.email));
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
-        // Retrieving the only data will the correct email
+        // retrieve client data from firestore
         let documentData = doc.data();
 
         // storing the array information (only getting last 5 data)
@@ -55,7 +60,7 @@ export default {
         let muscleMassData = documentData.muscleMass.slice(-5);
         let dates = documentData.datetime.slice(-5).map((dt) => dt.toDate());
 
-        // assigning the recent health data
+        // assigning the most recent health data
         this.recentFat = fatPercentageData[fatPercentageData.length - 1];
         this.recentWeight = weightData[weightData.length - 1];
         this.recentMuscle = muscleMassData[muscleMassData.length - 1];
@@ -66,15 +71,17 @@ export default {
         this.muscleDateObject = this.makeObject(dates, muscleMassData);
       });
     } catch (error) {
+      // error catching for debugging purposes
       console.log(error);
       console.log("No email observed in database");
     }
-  }
+  },
 };
 </script>
 
 <template>
   <div class="chart-container">
+    <!-- Create a Fat Percentage chart -->
     <Chart
       class="chart"
       chartName="Fat Percentage"
@@ -83,6 +90,7 @@ export default {
       :recentData="recentFat"
       metric="%"
     />
+    <!-- Create a Weight chart -->
     <Chart
       class="chart"
       chartName="Weight"
@@ -91,6 +99,7 @@ export default {
       :recentData="recentWeight"
       metric="KG"
     />
+    <!-- Create a Muscle Mass chart -->
     <Chart
       class="chart"
       chartName="Muscle Mass"

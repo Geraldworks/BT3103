@@ -8,7 +8,7 @@
           Viewing
           <span style="color: #ed1f24">{{ clientName.split(" ")[0] }}</span>
         </div>
-        <!-- <router-link to="/routines"><div  class="right-side-items">Routine</div></router-link> -->
+        <!-- buttons that the trainer can click to navigate and understand the client better -->
         <div class="trainer-options">
           <div class="right-side-items" @click="routeToPerformancePage()">
             Performance
@@ -43,7 +43,6 @@ import { doc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase.js";
 import UpdateForm2 from "./UpdateForm2.vue";
 import RoutineContent from "../client/RoutineContent.vue";
-import { mapGetters } from "vuex";
 
 export default {
   name: "TrainerPerformanceHeader",
@@ -63,15 +62,19 @@ export default {
     profilePic: String,
   },
   methods: {
+    // returns to the trainer menu selection page
     returnBackToTrainerHomePage() {
       this.$emit("returnToHome");
     },
+    // popups up the update form when this method is run
     showUpdateForm() {
       this.updateForm = true;
     },
+    // displays the routine page when this method is run
     routeToRoutinePage() {
       this.$emit("routeToRoutine");
     },
+    // displays the client performance page when this method is run
     routeToPerformancePage() {
       this.$emit("routeToPerformance");
     },
@@ -79,10 +82,12 @@ export default {
   emits: ["returnToHome", "routeToRoutine", "routeToPerformance"],
   async created() {
     try {
+      // data base querying for the correct client information to render
       const clientRef = collection(db, "client");
       const q = query(clientRef, where("email", "==", this.email));
       const querySnapshot = await getDocs(q);
 
+      // retrieving all the needed client information
       querySnapshot.forEach((doc) => {
         let documentData = doc.data();
         let clientName = documentData.fullName;
@@ -93,14 +98,6 @@ export default {
       console.log("No email observed in database");
     }
   },
-  // mounted() {
-  //   auth.onAuthStateChanged((user) => {
-  //     this.$store.dispatch("fetchUser", user);
-  //   });
-  // },
-  // computed: {
-  //   ...mapGetters(["user"])
-  // }
 };
 </script>
 

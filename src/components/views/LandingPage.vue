@@ -58,7 +58,7 @@
       </div>
     </div>
 
-    <!-- Reasons -->
+    <!-- Reasons for using GYMMBUDDY-->
     <div id="reasons">
       <div class="container">
         <h2 class="why-gymmbuddy">WHY</h2>

@@ -90,7 +90,7 @@
                   id="aSetNum"
                   v-model="numSets"
                 /> -->
-                <!-- Activity Sets Dropdown -->
+                <!-- Activity Sets Dropdown options-->
                 <label for="aSetNum">SETS</label>
                 <select name="aSetNum" id="aSetNum" v-model="numSets">
                   <option value="1">1</option>
@@ -288,7 +288,6 @@
 import RoutineActivity from "./RoutineActivity.vue";
 import Swal from "sweetalert2";
 import { db, auth } from "../../firebase.js";
-import * as firebase from "firebase/app";
 import {
   doc,
   updateDoc,

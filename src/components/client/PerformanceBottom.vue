@@ -1,8 +1,10 @@
 <template>
   <div class="bottom-container">
+    <!-- Create the Records Section -->
     <div class="records-section">
       <Records :email="email" />
     </div>
+    <!-- Create the Progress Section -->
     <div class="progress-section">
       <ProgressSection :email="email" />
     </div>
@@ -14,13 +16,12 @@ import Records from "./Records.vue";
 import ProgressSection from "./ProgressSection.vue";
 
 export default {
+  // a component to create the bottom section of the performance page
   name: "PerformanceBottom",
-  data() {
-    return {};
-  },
   props: {
     email: String,
   },
+  // uses Records and ProgressSection as the child components
   components: {
     Records,
     ProgressSection,

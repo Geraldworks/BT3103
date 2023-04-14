@@ -7,13 +7,14 @@
 
 <script>
 export default {
+  // create a child component, Chart, that takes in this set of props to render the chart for viewing on the performance page
   name: "Chart",
   props: {
     chartName: String,
     chartData: Object,
     recentData: Number,
     chartColor: Array,
-    metric: String
+    metric: String,
   },
 };
 </script>

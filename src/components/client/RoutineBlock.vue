@@ -29,7 +29,7 @@ export default {
     exerciseTypes: String,
     routineDate: String,
     updateBool: Boolean,
-    hiddenInfo: Object, // Contain all Routine-related info
+    hiddenInfo: Object, // Contain all Routine-related information
   },
   methods: {
     showRoutineViewModal() {

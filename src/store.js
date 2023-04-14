@@ -6,7 +6,7 @@ import {
 import { auth, db } from "./firebase";
 import { signOut } from "firebase/auth";
 import { arrayUnion, doc, setDoc, updateDoc } from "firebase/firestore";
-import createPersistedState from 'vuex-persistedstate';
+import createPersistedState from "vuex-persistedstate";
 
 const store = createStore({
   state: {
@@ -38,12 +38,12 @@ const store = createStore({
     },
     SET_ROUTINES(state, value) {
       state.user.displayRoutines = value;
-    }
+    },
   },
   plugins: [
     createPersistedState({
       storage: window.sessionStorage,
-    })
+    }),
   ],
   actions: {
     async signUp(
@@ -86,8 +86,8 @@ const store = createStore({
           records: {
             benchPress: 0,
             deadlift: 0,
-            squat: 0
-          }, 
+            squat: 0,
+          },
           goals: {
             muscleMassGoal: 0,
             weightGoal: 0,
@@ -97,7 +97,7 @@ const store = createStore({
 
         await updateDoc(doc(db, "trainer", trainerEmail), {
           ClientsId: arrayUnion(email),
-        })
+        });
       } else {
         throw new Error("Unable to register user");
       }
@@ -142,7 +142,7 @@ const store = createStore({
 
     async setDisplayRoutinesStatus(context, bool) {
       context.commit("SET_ROUTINES", bool);
-    }
+    },
   },
 });
 

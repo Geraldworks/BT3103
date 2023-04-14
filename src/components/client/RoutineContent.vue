@@ -177,6 +177,7 @@ export default {
       // this.$router.go(0);
       this.fetchFireBaseData();
     },
+    // comparing routines for sorting of routines by time
     comparatorForRoutine(routineOne, routineTwo) {
       const dateOne = new Date(
         `${routineOne.routineDate.split("/")[1]}/${

@@ -129,28 +129,25 @@ export default {
     // this method helps to set the specific client information to render
     setEmailToRender(email) {
       this.$store.dispatch("setClientEmail", email);
-      //this.clientEmailToRender = true;
       this.refreshPage();
     },
     // this method helps to remove the specific client information to render when the trainer clicks back
     removeEmailToRender() {
       this.$store.dispatch("setClientEmail", null);
       this.$store.dispatch("setDisplayRoutinesStatus", false);
-      //this.isDisplayRoutines = false;
-      //this.clientEmailToRender = false;
       this.refreshPage();
     },
+    // this method helps to set true for the routine page to be rendered for the trainer
     setDisplayRoutine() {
       this.$store.dispatch("setDisplayRoutinesStatus", true);
       this.refreshPage();
-      //this.isDisplayRoutines = true;
     },
+    // this method helps to set false for the routine page and disable rendering
     renderPerformance() {
-      //this.isDisplayRoutines = false;
       this.$store.dispatch("setDisplayRoutinesStatus", false);
       this.refreshPage();
     },
-    // this comparator method helps to compare the date for the bookings
+    // this comparator method helps to compare the date for the bookings and sort them in order
     comparatorForTime(bookingOne, bookingTwo) {
       if (bookingOne.from < bookingTwo.from) {
         return -1;
@@ -159,6 +156,7 @@ export default {
       }
       return 0;
     },
+    // format the date for displaying on the trainer page
     formatDate(timestamp) {
       const date = timestamp.toDate();
       const options = {

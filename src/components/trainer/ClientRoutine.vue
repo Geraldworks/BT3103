@@ -29,9 +29,11 @@ export default {
     TrainerNavbar,
   },
   methods: {
+    // goes back to the client selection page
     returnBackToTrainerHomePage() {
       this.$emit("returnToHome");
     },
+    // goes to the routines page
     routeToPerformancePage() {
       this.$emit("routeToPerformance");
     },

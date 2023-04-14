@@ -2,6 +2,7 @@
   <div class="records-section-container">
     <ComponentHeader :blackHeader="blackHeader" :redHeader="redHeader" />
     <table class="record-info">
+      <!-- Creating a table for the personal records of the client -->
       <tbody>
         <tr>
           <td style="padding-left: 50px">Deadlift</td>
@@ -17,10 +18,6 @@
         </tr>
       </tbody>
     </table>
-
-    <!-- <h3 class="prTitle">Deadlift: {{ deadliftData }}kg</h3>
-    <h3 class="prTitle">Bench Press: {{ benchPressData }}kg</h3>
-    <h3 class="prTitle">Squat: {{ squatData }}kg</h3> -->
   </div>
 </template>
 
@@ -58,12 +55,13 @@ export default {
   },
   async created() {
     try {
+      // database querying
       const clientRef = collection(db, "client");
       const q = query(clientRef, where("email", "==", this.email));
       const querySnapshot = await getDocs(q);
 
       querySnapshot.forEach((doc) => {
-        // Retrieving the only data will the correct email
+        // Retrieving the only data with the correct email
         let documentData = doc.data();
 
         // retrieve personal records
@@ -88,10 +86,8 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk&family=Teko:wght@500;600&display=swap");
 
 .records-section-container {
-  /* display: inline-block; */
   display: flex;
   flex-direction: column;
-  /* height: 34.5vh; */
   width: 100%;
   box-sizing: border-box;
   padding: 15px;

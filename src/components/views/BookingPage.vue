@@ -3,12 +3,14 @@
     <Navbar />
     <div class="booking-page-header">
       <div>current bookings</div>
+      <!-- the buttons to be displayed at the top for booking management -->
       <div class="button-container">
         <button class="pill-button" @click="showCancelModal()">Cancel Booking</button>
         <button class="pill-button" @click="showBookModal()">Make Booking</button>
         <button class="pill-button" @click="showPreviousBookingsModal()">Previous Bookings</button>
       </div>
     </div>
+    <!-- Cancel / Book / Previous bookings popups to be displayed when clicked accordingly -->
     <div class="popup">
       <CancelModal
         v-show="cancelModal"
@@ -35,6 +37,7 @@
         :previousBookings="previousClientBookings"
       />
     </div>
+    <!-- calendar component to be rendered for the specific client -->
     <div
       style="
         height: 800px;
@@ -68,6 +71,7 @@
         :max-date="maxDate"
         events-count-on-year-view
       />
+      <!-- details of the booking event when the event is clicked on the calendar -->
       <div class="popup">
         <CalendarDetailModal
           v-show="showModal"
@@ -95,6 +99,7 @@ import { db, auth } from "../../firebase.js";
 import { mapGetters } from "vuex";
 import "vue-cal/dist/vuecal.css";
 
+// creating initial dates for date management when doing bookings
 let minDate = new Date();
 let maxDate = new Date();
 minDate.setDate(minDate.getDate() + 1);
@@ -104,6 +109,7 @@ export default {
   name: "BookingPage",
   data() {
     return {
+      // date related to calendar
       viewPortWidth: null,
       key: 0,
       clientTrainer: "",
@@ -144,7 +150,6 @@ export default {
       this.$store.dispatch("fetchUser", user);
     });
     this.viewPortWidth = window.innerWidth;
-    //console.log(this.user.data.email)
   },
   // first fetch of information
   async created() {
@@ -181,9 +186,11 @@ export default {
       let from = booking.from.toDate();
       let to = booking.from.toDate();
 
+      // only bookings that are made after today will be displayed on the calendar
       if (today < from) {
         clientBookings.push({ title, focus, from, to });
       } else {
+        // otherwise, it will be shown in the "Previous Bookings" modal
         previousClientBookings.push({ title, focus, from, to });
       }
     });
@@ -214,7 +221,7 @@ export default {
         let start = doc.from.toDate();
         let end = doc.to.toDate();
         let title = doc.title;
-        let focus = doc.focus; // added stuff here
+        let focus = doc.focus;
         let obj = { start, end, title, focus };
 
         // checking for date
@@ -247,7 +254,7 @@ export default {
     });
   },
   watch: {
-    // if new bookings are made, i will display more information on the calendar
+    // if new bookings are made, display new information on the calendar
     newBookingsFromBookModal(newBookings) {
       newBookings.forEach((x) => {
         this.events.push({
@@ -260,7 +267,7 @@ export default {
       });
       this.key++;
     },
-    // if bookings are cancelled, i will remove these events from the calendar
+    // if bookings are cancelled, remove these events from the calendar
     cancelledBookingsFromCancelModal(cancelledBookings) {
       cancelledBookings.forEach((x) => {
         this.events = this.events.filter((y) => {
@@ -271,29 +278,32 @@ export default {
     },
   },
   methods: {
+    // displays the cancel pop up
     showCancelModal() {
       this.cancelModal = true;
     },
+    // displays the booking pop up
     showBookModal() {
       this.bookModal = true;
     },
+    // displayed the previous bookings pop up
     showPreviousBookingsModal() {
       this.previousBookingsModal = true;
     },
-    // pass the new bookings over to cancel modal to be able to cancel more bookings
+    // pass the new bookings over to cancel modal to be able to cancel more bookings reactively
     updateCancelModal(newBookings) {
       this.newBookingsFromBookModal = newBookings;
     },
-    // pass the cancel bookings over to book modal to be able to make more bookings
+    // pass the cancelled bookings over to book modal to be able to make more bookings reactively
     updateBookModal(cancelledBookings) {
       this.cancelledBookingsFromCancelModal = cancelledBookings;
     },
-    // pass the client bookings over to cancel modal to be able to make more bookings
+    // pass the client bookings over to cancel modal to be able to make more bookings reactively
     updateClientBookings(newClientBookings) {
       this.clientBookings = newClientBookings;
     },
+    // function required for display the pop up
     onEventClick(event, e) {
-      console.log("Clicked the event");
       this.eventTitle = event.title;
       // Convert to Date object for now because not connected to FS yet
       this.eventDate = new Date(event.start).toLocaleDateString();

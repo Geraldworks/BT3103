@@ -76,6 +76,7 @@ import { mapGetters } from "vuex";
 import { auth } from "@/firebase.js";
 import Swal from "sweetalert2";
 
+// An object to create the alert messages 
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",

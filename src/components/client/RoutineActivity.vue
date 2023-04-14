@@ -52,7 +52,6 @@ export default {
   methods: {
     // Called on clicking Edit Icon
     reqEditActivity() {
-      // console.log("Requesting Edit Activity from RoutineActivity");
       // Format correct Activity Info to be emitted
       let activityInfo = {
         uniqueId: this.uniqueId,

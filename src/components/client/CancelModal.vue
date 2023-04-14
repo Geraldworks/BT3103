@@ -2,6 +2,7 @@
   <transition name="modal-fade">
     <div class="modal-overlay" @click="$emit('close-modal')">
       <div class="modal" @click.stop>
+        <!-- provides options on bookings to cancel -->
         <div style="font-size: 2.5rem; margin-bottom: 20px; color: white">
           Select your Bookings to Cancel
         </div>
@@ -40,8 +41,10 @@ import { updateDoc, doc, getDoc } from "firebase/firestore";
 import { mapGetters } from "vuex";
 import Swal from "sweetalert2";
 
+// setting a reference date
 let today = new Date();
 
+// an object to display alerts
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -67,6 +70,7 @@ export default {
               ${this.createTimeString(fromTime.getHours() + 1)},
               ${bookingObject.focus}`;
     },
+    // a method to confirm cancellation of bookings
     confirmCancellation() {
       Swal.fire({
         title: "Confirm Your Cancellations",
@@ -79,12 +83,14 @@ export default {
         cancelButtonText: "Cancel",
       }).then((result) => {
         if (result.isConfirmed) {
+          // method is run with UI confirmation of successful
           this.cancelBookings();
           Toast.fire({
             icon: "success",
             title: "Cancellations Successful",
           });
         } else {
+          // UI confirmation of unsuccessful
           Toast.fire({
             icon: "error",
             title: "Cancellations Unsuccessful",

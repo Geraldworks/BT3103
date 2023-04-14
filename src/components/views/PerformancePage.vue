@@ -36,25 +36,11 @@ export default {
   },
   async created() {
     this.email = this.user.data.email; // setting and passing the prop down to allcharts
-    // const docRef = doc(db, "client", this.user.data.email);
-    // const docSnap = await getDoc(docRef);
-
-    // if (docSnap.exists()) {
-    //   console.log("Document data:", docSnap.data());
-    // } else {
-    //   // doc.data() will be undefined in this case
-    //   console.log("No such document!");
-    // }
   },
   components: {
     AllCharts,
     PerformanceBottom,
     PerformanceHeader,
-  },
-  watch: {
-    email(newEmail) {
-      // console.log(newEmail);
-    },
   },
 };
 </script>

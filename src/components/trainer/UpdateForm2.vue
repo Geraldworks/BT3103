@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- requried is not working -->
+    <!-- pops up a modal when update stats is click -->
     <transition name="modal-fade">
       <div class="modal-overlay" @click="$emit('close-modal')">
         <div class="modal" @click.stop>
@@ -9,6 +9,7 @@
             <b style="color: #ed1f24">{{ clientName.split(" ")[0] }}</b>
           </div>
           <hr />
+          <!-- form with all the information that can be included for updating -->
           <div id="update-form">
             <form action="">
               <label for="">Fat Percentage (%) </label>
@@ -85,6 +86,7 @@ import { auth, db } from "../../firebase";
 import { doc, getDoc, updateDoc, Timestamp } from "@firebase/firestore";
 import Swal from "sweetalert2";
 
+// an object to create the alerts
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -121,9 +123,6 @@ export default {
   },
   emit: ["close-modal"],
   methods: {
-    sleep(ms) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    },
     async updateDataBase() {
       if (
         this.showFatsError ||
@@ -163,6 +162,7 @@ export default {
           datetime: clientDate,
         })
           .then((response) => {
+            // ui feedback
             this.isLoading = false;
             this.$emit("close-modal");
             Toast.fire({
@@ -176,13 +176,16 @@ export default {
           });
       }
     },
+    // validation for Fat percentage
     checkFatsInput(value) {
       this.showFatsError = value > 100 || value < 0;
     },
+    // validation for Weight
     checkWeightInput(value) {
       this.checkMuscleInput(this.muscle);
       this.showWeightError = value < 0;
     },
+    // validation for Muscle Mass
     checkMuscleInput(value) {
       this.showMuscleError = this.weight < value || value < 0;
     },

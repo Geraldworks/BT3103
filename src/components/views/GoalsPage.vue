@@ -93,6 +93,7 @@ import LoadingSpinner from "../LoadingSpinner.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import "sweetalert2/src/sweetalert2.scss";
 
+// an object to create the alerts 
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -122,7 +123,7 @@ export default {
       this.$store.dispatch("fetchUser", user);
     });
 
-    // Gets the current information
+    // Gets the current information of goals
     const clientRef = doc(db, "client", this.user.data.email);
     getDoc(clientRef)
       .then((docSnap) => {

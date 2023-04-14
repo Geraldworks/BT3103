@@ -1,6 +1,7 @@
 <template>
   <div class="chart">
     <h1 class="chartTitle">{{ goal }} {{ chartName }}</h1>
+    <!-- Create a pie chart with the props obtained -->
     <pie-chart
       class="progress-chart"
       :donut="true"
@@ -15,6 +16,7 @@
 
 <script>
 export default {
+  // this is a ProgressChart component that generates the pie chart for Weight and Muscle mass progress
   name: "ProgressChart",
   props: {
     chartName: String,

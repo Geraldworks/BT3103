@@ -2,7 +2,7 @@
   <transition name="modal-fade">
     <div class="modal-overlay" @click="$emit('close-modal')">
       <div class="modal" @click.stop>
-        <!-- <img class="check" src="~/assets/check-icon.png" alt="" /> -->
+        <!-- displaying the information of the bookings when an event is clicked on the calendar -->
         <div class="modal-title">
           {{ eventTitle }} on
           <span style="color: #ed1f24">{{ eventDate }}</span>
@@ -36,9 +36,6 @@
 <script>
 export default {
   name: "CalendarDetailModal",
-  data() {
-    return {};
-  },
   props: {
     eventTrainer: String,
     eventTitle: String,

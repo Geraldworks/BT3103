@@ -146,7 +146,6 @@ form {
     <div class="no-account">
       <div @click="goToSignUp()">Don't have an account? Create one</div>
     </div>
-    <!-- Make this a push to the sign up page -->
   </div>
 </template>
 
@@ -156,6 +155,7 @@ import { db } from "../../firebase";
 import SignUpHeader from "../SignUpHeader.vue";
 import Swal from "sweetalert2";
 
+// an object to create the alerts
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -207,9 +207,8 @@ export default {
                   // Feedback when trainer signs in
                   Toast.fire({
                     icon: "success",
-                    title: "Signed In"
-                  }
-                  )
+                    title: "Signed In",
+                  });
                 }
               })
               .catch((err) => {

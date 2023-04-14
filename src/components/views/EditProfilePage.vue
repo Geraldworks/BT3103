@@ -30,7 +30,7 @@
                   onUpload();
                 "
               >
-              <!-- Full Name -->
+                <!-- Full Name -->
                 <div class="form-group row py-2">
                   <label
                     for="fullName"
@@ -51,7 +51,7 @@
                     />
                   </div>
                 </div>
-                
+
                 <!-- Contact Number -->
                 <div class="form-group row py-2">
                   <label
@@ -116,7 +116,7 @@
                 <p v-if="errorMessage" class="alert alert-danger mt-3">
                   {{ errorMessage }}
                 </p>
-                
+
                 <!-- Save Changes Button -->
                 <div class="form-group row mb-0">
                   <div class="button-div">
@@ -153,6 +153,7 @@ import defaultPic from "../../assets/images/default_dp.svg";
 import LoadingSpinner from "../LoadingSpinner.vue";
 import Swal from "sweetalert2";
 
+// an object to create the alerts
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -346,7 +347,7 @@ export default {
 .picture > label {
   width: auto;
   /* so that it can only be clicked in the circle */
-  border-radius: 50%; 
+  border-radius: 50%;
 }
 
 .picture .overlay {
