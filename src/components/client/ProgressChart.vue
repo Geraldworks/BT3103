@@ -10,6 +10,7 @@
       :library="chartLibrary"
       style="height: 150px; width: 100%; font-family: 'Teko', sans-serif"
     ></pie-chart>
+    <line-chart :data="{ '2017-05-13': 2, '2017-05-14': 5 }"></line-chart>
     <h1 class="chartDescription">{{ progressOutput }}% Complete</h1>
   </div>
 </template>
