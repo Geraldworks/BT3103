@@ -5,7 +5,7 @@
     </div>
     <div class="progress-chart-container">
       <!-- Create the ProgressChart for Weight -->
-      <!-- <ProgressChart
+      <ProgressChart
         chartName="Weight"
         :progressOutput="weightData.Progress"
         :goal="weightGoal"
@@ -16,9 +16,9 @@
           borderColor: '#ED1F24',
           color: '#000',
         }"
-      /> -->
+      />
       <!-- Creates the ProgressChart for Muscle Mass -->
-      <!-- <ProgressChart
+      <ProgressChart
         chartName="Muscle Mass"
         :chartData="muscleData"
         :progressOutput="muscleData.Progress"
@@ -29,14 +29,6 @@
           borderColor: '#ED1F24',
           color: '#000',
         }"
-      /> -->
-      <Chart
-        class="chart"
-        chartName="Muscle Mass"
-        :chartData="muscleDateObject"
-        :chartColor="['#FF0000']"
-        :recentData="recentMuscle"
-        metric="%"
       />
     </div>
   </div>
@@ -49,8 +41,6 @@ import { useStore, mapGetters } from "vuex";
 
 import ProgressChart from "./ProgressChart.vue";
 import ComponentHeader from "./ComponentHeader.vue";
-import Chart from "./Chart.vue";
-
 export default {
   name: "ProgressSection",
   data() {
@@ -67,11 +57,6 @@ export default {
         Progress: null,
         Remaining: null,
       },
-      muscleDateObject: {
-        "2017-05-13": 2,
-        "2017-05-14": 5,
-      },
-      recentMuscle: 7,
     };
   },
   props: {
@@ -83,7 +68,6 @@ export default {
   components: {
     ProgressChart,
     ComponentHeader,
-    Chart,
   },
   mounted() {
     const store = useStore();
@@ -115,9 +99,9 @@ export default {
         if (weightData < weightGoalValue) {
           // if goal has not been hit
           // Compute the progress and save in number format
-          weightProgress = Number(
-            Number((weightData / weightGoalValue) * 100).toFixed()
-          );
+          weightProgress = Number(Number(
+            (weightData / weightGoalValue) * 100
+          ).toFixed()); 
         } else {
           // if goal is hit or exceeded
           weightProgress = 100;
@@ -128,9 +112,9 @@ export default {
 
         if (muscleMassData < muscleMassGoalValue) {
           // Compute the progress
-          muscleMassProgress = Number(
-            Number((muscleMassData / muscleMassGoalValue) * 100).toFixed()
-          );
+          muscleMassProgress = Number(Number(
+            (muscleMassData / muscleMassGoalValue) * 100
+          ).toFixed());
         } else {
           // if goal is hit or exceeded
           // console.log("Entered else condition");
