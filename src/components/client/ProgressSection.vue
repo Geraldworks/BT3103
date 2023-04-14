@@ -7,7 +7,7 @@
       <!-- Create the ProgressChart for Weight -->
       <ProgressChart
         chartName="Weight"
-        :progressOutput="weightData[0][1]"
+        :progressOutput="weightProgress"
         :goal="weightGoal"
         :chartData="weightData"
         :chartColors="['#ED1F24', '#FFFFFF']"
@@ -21,7 +21,7 @@
       <ProgressChart
         chartName="Muscle Mass"
         :chartData="muscleData"
-        :progressOutput="muscleData[0][1]"
+        :progressOutput="muscleProgress"
         :goal="muscleGoal"
         :chartColors="['#ED1F24', '#FFFFFF']"
         :chartLibrary="{
@@ -49,8 +49,10 @@ export default {
       redHeader: "Progress",
       weightGoal: null,
       weightData: [],
+      weightProgress: null,
       muscleGoal: null,
       muscleData: [],
+      muscleProgress: null,
     };
   },
   props: {
@@ -121,9 +123,11 @@ export default {
         if (documentData.weight.length === 0) {
           this.weightData.push(["Progress", 0]);
           this.weightData.push(["Remaining", 100]);
+          this.weightProgress = 0;
         } else {
           this.weightData.push(["Progress", weightProgress]);
           this.weightData.push(["Remaining", 100 - weightProgress]);
+          this.weightProgress = weightProgress;
         }
 
         this.muscleGoal = `${muscleMassGoalValue}%`;
@@ -131,9 +135,11 @@ export default {
         if (documentData.muscleMass.length === 0) {
           this.muscleData.push(["Progress", 0]);
           this.muscleData.push(["Remaining", 100]);
+          this.muscleProgress = 0;
         } else {
           this.muscleData.push(["Progress", muscleMassProgress]);
           this.muscleData.push(["Remaining", 100 - muscleMassProgress]);
+          this.muscleProgress = muscleMassProgress;
         }
       });
     } catch (error) {
