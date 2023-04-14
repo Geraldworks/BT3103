@@ -7,7 +7,7 @@
       <!-- Create the ProgressChart for Weight -->
       <ProgressChart
         chartName="Weight"
-        :progressOutput="weightData.Progress"
+        :progressOutput="weightData[0][1]"
         :goal="weightGoal"
         :chartData="weightData"
         :chartColors="['#ED1F24', '#FFFFFF']"
@@ -21,7 +21,7 @@
       <ProgressChart
         chartName="Muscle Mass"
         :chartData="muscleData"
-        :progressOutput="muscleData.Progress"
+        :progressOutput="muscleData[0][1]"
         :goal="muscleGoal"
         :chartColors="['#ED1F24', '#FFFFFF']"
         :chartLibrary="{
@@ -48,15 +48,9 @@ export default {
       blackHeader: "Current",
       redHeader: "Progress",
       weightGoal: null,
-      weightData: {
-        Progress: null,
-        Remaining: null,
-      },
+      weightData: [],
       muscleGoal: null,
-      muscleData: {
-        Progress: null,
-        Remaining: null,
-      },
+      muscleData: [],
     };
   },
   props: {
@@ -99,9 +93,9 @@ export default {
         if (weightData < weightGoalValue) {
           // if goal has not been hit
           // Compute the progress and save in number format
-          weightProgress = Number(Number(
-            (weightData / weightGoalValue) * 100
-          ).toFixed()); 
+          weightProgress = Number(
+            Number((weightData / weightGoalValue) * 100).toFixed()
+          );
         } else {
           // if goal is hit or exceeded
           weightProgress = 100;
@@ -112,9 +106,9 @@ export default {
 
         if (muscleMassData < muscleMassGoalValue) {
           // Compute the progress
-          muscleMassProgress = Number(Number(
-            (muscleMassData / muscleMassGoalValue) * 100
-          ).toFixed());
+          muscleMassProgress = Number(
+            Number((muscleMassData / muscleMassGoalValue) * 100).toFixed()
+          );
         } else {
           // if goal is hit or exceeded
           // console.log("Entered else condition");
@@ -125,19 +119,22 @@ export default {
         this.weightGoal = `${weightGoalValue}kg`;
         // If currently no data ==> Can't have a progress!
         if (documentData.weight.length === 0) {
-          this.weightData.Progress = 0;
+          this.weightData.push(["Progress", 0]);
+          this.weightData.push(["Remaining", 100]);
         } else {
-          this.weightData.Progress = weightProgress;
+          this.weightData.push(["Progress", weightProgress]);
+          this.weightData.push(["Remaining", 100 - weightProgress]);
         }
-        this.weightData.Remaining = 100 - this.weightData.Progress;
+
         this.muscleGoal = `${muscleMassGoalValue}%`;
         // If currently no data ==> Can't have a progress!
         if (documentData.muscleMass.length === 0) {
-          this.muscleData.Progress = 0;
+          this.muscleData.push(["Progress", 0]);
+          this.muscleData.push(["Remaining", 100]);
         } else {
-          this.muscleData.Progress = muscleMassProgress;
+          this.muscleData.push(["Progress", muscleMassProgress]);
+          this.muscleData.push(["Remaining", 100 - muscleMassProgress]);
         }
-        this.muscleData.Remaining = 100 - this.muscleData.Progress;
       });
     } catch (error) {
       console.log(error);
