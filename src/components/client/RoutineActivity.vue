@@ -90,8 +90,8 @@ export default {
       row.insertCell(2).innerHTML = set.reps;
       // Set tick if true, else cross
       row.insertCell(3).innerHTML = set.done
-        ? '<img src="src/assets/images/tick-icon.png" style="width: 20px; margin-bottom: 5px;"/>'
-        : '<img src="src/assets/images/cross-black-icon.png" style="width: 20px; margin-bottom: 5px;"/>';
+        ? '<img src="@/assets/images/tick-icon.png" style="width: 20px; margin-bottom: 5px;"/>'
+        : '<img src="@/assets/images/cross-black-icon.png" style="width: 20px; margin-bottom: 5px;"/>';
       index++;
     });
   },
