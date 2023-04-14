@@ -75,3 +75,9 @@ export default {
   max-width: 100%;
 }
 </style>
+
+<style>
+.apexcharts-tooltip span {
+  color: #000;
+}
+</style>
