@@ -10,6 +10,12 @@
       :library="chartLibrary"
       style="height: 150px; width: 100%; font-family: 'Teko', sans-serif"
     ></pie-chart>
+    <pie-chart
+      :data="[
+        ['Blueberry', 44],
+        ['Strawberry', 23],
+      ]"
+    ></pie-chart>
     <h1 class="chartDescription">{{ progressOutput }}% Complete</h1>
   </div>
 </template>
