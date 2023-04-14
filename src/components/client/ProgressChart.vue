@@ -7,6 +7,7 @@
       :donut="true"
       :data="chartData"
       :colors="chartColors"
+      :library="chartLibrary"
       style="height: 150px; width: 100%; font-family: 'Teko', sans-serif"
     ></pie-chart>
     <h1 class="chartDescription">{{ progressOutput }}% Complete</h1>
@@ -23,6 +24,7 @@ export default {
     goal: String,
     chartData: Object,
     chartColors: Array,
+    chartLibrary: Object,
   },
 };
 </script>

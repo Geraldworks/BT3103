@@ -11,6 +11,11 @@
         :goal="weightGoal"
         :chartData="weightData"
         :chartColors="['#ED1F24', '#FFFFFF']"
+        :chartLibrary="{
+          cutout: '80%',
+          borderColor: '#ED1F24',
+          color: '#000',
+        }"
       />
       <!-- Creates the ProgressChart for Muscle Mass -->
       <ProgressChart
@@ -19,6 +24,11 @@
         :progressOutput="muscleData.Progress"
         :goal="muscleGoal"
         :chartColors="['#ED1F24', '#FFFFFF']"
+        :chartLibrary="{
+          cutout: '80%',
+          borderColor: '#ED1F24',
+          color: '#000',
+        }"
       />
     </div>
   </div>
@@ -89,9 +99,9 @@ export default {
         if (weightData < weightGoalValue) {
           // if goal has not been hit
           // Compute the progress and save in number format
-          weightProgress = Number(
-            Number((weightData / weightGoalValue) * 100).toFixed()
-          );
+          weightProgress = Number(Number(
+            (weightData / weightGoalValue) * 100
+          ).toFixed()); 
         } else {
           // if goal is hit or exceeded
           weightProgress = 100;
@@ -102,9 +112,9 @@ export default {
 
         if (muscleMassData < muscleMassGoalValue) {
           // Compute the progress
-          muscleMassProgress = Number(
-            Number((muscleMassData / muscleMassGoalValue) * 100).toFixed()
-          );
+          muscleMassProgress = Number(Number(
+            (muscleMassData / muscleMassGoalValue) * 100
+          ).toFixed());
         } else {
           // if goal is hit or exceeded
           // console.log("Entered else condition");
