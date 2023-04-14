@@ -5,30 +5,18 @@
     </div>
     <div class="progress-chart-container">
       <!-- Create the ProgressChart for Weight -->
-      <ProgressChart
+      <ProgressChartNew
         chartName="Weight"
         :progressOutput="weightData.Progress"
         :goal="weightGoal"
-        :chartData="weightData"
-        :chartColors="['#ED1F24', '#FFFFFF']"
-        :chartLibrary="{
-          cutout: '80%',
-          borderColor: '#ED1F24',
-          color: '#000',
-        }"
+        :chartSeries="weightArray"
       />
       <!-- Creates the ProgressChart for Muscle Mass -->
-      <ProgressChart
+      <ProgressChartNew
         chartName="Muscle Mass"
-        :chartData="muscleData"
         :progressOutput="muscleData.Progress"
         :goal="muscleGoal"
-        :chartColors="['#ED1F24', '#FFFFFF']"
-        :chartLibrary="{
-          cutout: '80%',
-          borderColor: '#ED1F24',
-          color: '#000',
-        }"
+        :chartSeries="muscleArray"
       />
     </div>
   </div>
@@ -39,7 +27,7 @@ import { db, auth } from "../../firebase.js";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useStore, mapGetters } from "vuex";
 
-import ProgressChart from "./ProgressChart.vue";
+import ProgressChartNew from "./ProgressChartNew.vue";
 import ComponentHeader from "./ComponentHeader.vue";
 export default {
   name: "ProgressSection",
@@ -52,11 +40,13 @@ export default {
         Progress: null,
         Remaining: null,
       },
+      weightArray: [],
       muscleGoal: null,
       muscleData: {
         Progress: null,
         Remaining: null,
       },
+      muscleArray: [],
     };
   },
   props: {
@@ -66,7 +56,7 @@ export default {
     ...mapGetters(["user"]),
   },
   components: {
-    ProgressChart,
+    ProgressChartNew,
     ComponentHeader,
   },
   mounted() {
@@ -99,9 +89,9 @@ export default {
         if (weightData < weightGoalValue) {
           // if goal has not been hit
           // Compute the progress and save in number format
-          weightProgress = Number(Number(
-            (weightData / weightGoalValue) * 100
-          ).toFixed()); 
+          weightProgress = Number(
+            Number((weightData / weightGoalValue) * 100).toFixed()
+          );
         } else {
           // if goal is hit or exceeded
           weightProgress = 100;
@@ -112,9 +102,9 @@ export default {
 
         if (muscleMassData < muscleMassGoalValue) {
           // Compute the progress
-          muscleMassProgress = Number(Number(
-            (muscleMassData / muscleMassGoalValue) * 100
-          ).toFixed());
+          muscleMassProgress = Number(
+            Number((muscleMassData / muscleMassGoalValue) * 100).toFixed()
+          );
         } else {
           // if goal is hit or exceeded
           // console.log("Entered else condition");
@@ -130,6 +120,9 @@ export default {
           this.weightData.Progress = weightProgress;
         }
         this.weightData.Remaining = 100 - this.weightData.Progress;
+        this.weightArray.push(this.weightData.Progress);
+        this.weightArray.push(this.weightData.Remaining);
+
         this.muscleGoal = `${muscleMassGoalValue}%`;
         // If currently no data ==> Can't have a progress!
         if (documentData.muscleMass.length === 0) {
@@ -138,6 +131,8 @@ export default {
           this.muscleData.Progress = muscleMassProgress;
         }
         this.muscleData.Remaining = 100 - this.muscleData.Progress;
+        this.muscleArray.push(this.muscleData.Progress);
+        this.muscleArray.push(this.muscleData.Remaining);
       });
     } catch (error) {
       console.log(error);

@@ -11,6 +11,7 @@
     "@coreui/coreui": "^4.2.6",
     "@coreui/vue": "^4.7.0",
     "@vuepic/vue-datepicker": "^4.2.3",
+    "apexcharts": "^3.38.0",
     "chart.js": "^4.2.1",
     "dotenv": "^16.0.3",
     "firebase": "^9.17.2",
@@ -21,6 +22,7 @@
     "vue-chartjs": "^5.2.0",
     "vue-chartkick": "^1.1.0",
     "vue-router": "^4.1.6",
+    "vue3-apexcharts": "^1.4.1",
     "vuex": "^4.0.2",
     "vuex-persistedstate": "^4.1.0"
   },
