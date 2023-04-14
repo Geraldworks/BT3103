@@ -4,7 +4,6 @@
     <!-- Create a pie chart with the props obtained -->
     <pie-chart
       class="progress-chart"
-      :donut="true"
       :data="chartData"
       :colors="chartColors"
       style="height: 150px; width: 100%; font-family: 'Teko', sans-serif"
