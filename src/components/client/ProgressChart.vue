@@ -22,7 +22,7 @@ export default {
     chartName: String,
     progressOutput: Number,
     goal: String,
-    chartData: Object,
+    chartData: Array,
     chartColors: Array,
     chartLibrary: Object,
   },
