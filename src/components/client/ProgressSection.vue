@@ -5,30 +5,18 @@
     </div>
     <div class="progress-chart-container">
       <!-- Create the ProgressChart for Weight -->
-      <ProgressChart
+      <ProgressChartNew
         chartName="Weight"
-        :progressOutput="weightData[0][1]"
+        :progressOutput="weightData.Progress"
         :goal="weightGoal"
-        :chartData="weightData"
-        :chartColors="['#ED1F24', '#FFFFFF']"
-        :chartLibrary="{
-          cutout: '80%',
-          borderColor: '#ED1F24',
-          color: '#000',
-        }"
+        :chartSeries="weightArray"
       />
       <!-- Creates the ProgressChart for Muscle Mass -->
-      <ProgressChart
+      <ProgressChartNew
         chartName="Muscle Mass"
-        :chartData="muscleData"
-        :progressOutput="muscleData[0][1]"
+        :progressOutput="muscleData.Progress"
         :goal="muscleGoal"
-        :chartColors="['#ED1F24', '#FFFFFF']"
-        :chartLibrary="{
-          cutout: '80%',
-          borderColor: '#ED1F24',
-          color: '#000',
-        }"
+        :chartSeries="muscleArray"
       />
     </div>
   </div>
@@ -39,7 +27,7 @@ import { db, auth } from "../../firebase.js";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useStore, mapGetters } from "vuex";
 
-import ProgressChart from "./ProgressChart.vue";
+import ProgressChartNew from "./ProgressChartNew.vue";
 import ComponentHeader from "./ComponentHeader.vue";
 export default {
   name: "ProgressSection",
@@ -48,9 +36,17 @@ export default {
       blackHeader: "Current",
       redHeader: "Progress",
       weightGoal: null,
-      weightData: [],
+      weightData: {
+        Progress: null,
+        Remaining: null,
+      },
+      weightArray: [],
       muscleGoal: null,
-      muscleData: [],
+      muscleData: {
+        Progress: null,
+        Remaining: null,
+      },
+      muscleArray: [],
     };
   },
   props: {
@@ -60,7 +56,7 @@ export default {
     ...mapGetters(["user"]),
   },
   components: {
-    ProgressChart,
+    ProgressChartNew,
     ComponentHeader,
   },
   mounted() {
@@ -119,22 +115,24 @@ export default {
         this.weightGoal = `${weightGoalValue}kg`;
         // If currently no data ==> Can't have a progress!
         if (documentData.weight.length === 0) {
-          this.weightData.push(["Progress", 0]);
-          this.weightData.push(["Remaining", 100]);
+          this.weightData.Progress = 0;
         } else {
-          this.weightData.push(["Progress", weightProgress]);
-          this.weightData.push(["Remaining", 100 - weightProgress]);
+          this.weightData.Progress = weightProgress;
         }
+        this.weightData.Remaining = 100 - this.weightData.Progress;
+        this.weightArray.push(this.weightData.Progress);
+        this.weightArray.push(this.weightData.Remaining);
 
         this.muscleGoal = `${muscleMassGoalValue}%`;
         // If currently no data ==> Can't have a progress!
         if (documentData.muscleMass.length === 0) {
-          this.muscleData.push(["Progress", 0]);
-          this.muscleData.push(["Remaining", 100]);
+          this.muscleData.Progress = 0;
         } else {
-          this.muscleData.push(["Progress", muscleMassProgress]);
-          this.muscleData.push(["Remaining", 100 - muscleMassProgress]);
+          this.muscleData.Progress = muscleMassProgress;
         }
+        this.muscleData.Remaining = 100 - this.muscleData.Progress;
+        this.muscleArray.push(this.muscleData.Progress);
+        this.muscleArray.push(this.muscleData.Remaining);
       });
     } catch (error) {
       console.log(error);
