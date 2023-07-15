@@ -1,4 +1,4 @@
-# BT3103 Project - GymmBuddy
+# GymmBuddy
 
 GymmBuddy is an interactive fitness management application for clients and trainers. Clients can use this application to keep track of their fitness goals, make personal trainer bookings, and even configure their workout routines. Trainers can use the application to manage their clients and monitor the fitness progress of their clients. 
 
