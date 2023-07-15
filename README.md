@@ -1,6 +1,8 @@
-# vue-project
+# BT3103 Project - GymmBuddy
 
-This template should help get you started developing with Vue 3 in Vite.
+GymmBuddy is an interactive fitness management application for clients and trainers. Clients can use this application to keep track of their fitness goals, make personal trainer bookings, and even configure their workout routines. Trainers can use the application to manage their clients and monitor the fitness progress of their clients. 
+
+Try out the web application [here!](https://gymmbuddy-3e930.web.app/)
 
 ## Recommended IDE Setup
 
