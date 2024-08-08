@@ -2,7 +2,8 @@
 
 GYMMBUDDY is an interactive fitness management application for clients and trainers. Clients can use this application to keep track of their fitness goals, make personal trainer bookings, and even configure their workout routines. Trainers can use the application to manage their clients and monitor the fitness progress of their clients. 
 
-Try out the web application [here!](https://gymmbuddy-3e930.web.app/)
+Try out the web application [here](https://gymmbuddy-3e930.web.app/)   
+View the application demo video [here](https://www.youtube.com/watch?v=tTE65w3bNRA)
 
 ## Recommended IDE Setup
 
